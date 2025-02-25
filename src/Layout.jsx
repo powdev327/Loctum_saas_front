@@ -6,7 +6,7 @@ const Layout = ({ pageTitle, scrollVariant, children }) => {
     <HelmetProvider>
       <Helmet>
         {/* title tag */}
-        {pageTitle ? <title>{pageTitle}</title> : <title>Staco</title>}
+        {pageTitle ? <title>{pageTitle}</title> : <title>QuickLocum</title>}
 
         {/* favicon included here  */}
         <link rel="shortcut icon" href="/favicon.png" type="image/x-icon" />

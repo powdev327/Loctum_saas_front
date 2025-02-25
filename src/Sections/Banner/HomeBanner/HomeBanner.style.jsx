@@ -5,7 +5,7 @@ import CurveLineImg from "../../../assets/images/shape/curve-line.png";
 import HoggleImg from "../../../assets/images/icons/hoogle-icon.svg";
 
 const HomeBannerStyle = styled.section`
-  padding: 235px 0px 165px 0px;
+  padding: 180px 0px 165px 0px;
   background-color: ${({ theme }) => theme.colors.bgHero};
   background-image: url(${BgImg});
   background-repeat: no-repeat;
@@ -15,7 +15,7 @@ const HomeBannerStyle = styled.section`
   z-index: 0;
   overflow: hidden;
   border-radius: 0px 0px 50px 50px;
-  
+
   .shape-img {
     position: absolute;
     z-index: -1;
@@ -327,6 +327,7 @@ const HomeBannerStyle = styled.section`
       }
     }
   }
+
 `;
 
 export default HomeBannerStyle;

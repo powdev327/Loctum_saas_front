@@ -5,27 +5,27 @@ import Features3Image from "../../../assets/images/main-demo/features3.svg";
 
 export const homeOneFeaturesData = [
   {
-    animetiondelay: 250,
-    cardclassName: "feature-card",
-    icon: Features1Image,
-    cardTitle: "AI Matching",
-    cardText:
-      "Our intelligent AI-powered system connects locum professionals with the right clients instantly, ensuring the best fit for both parties",
+      animetiondelay: 250,
+      cardclassName: "feature-card",
+      icon: Features1Image,
+      cardTitle: "AI-Powered Smart Matching",
+      cardText:
+        "Connect top healthcare professionals with leading medical facilities. AI-powered precision ensures the best fit for skills, needs, and availability—instantly.",
   },
   {
-    animetiondelay: 300,
-    cardclassName: "feature-card active",
-    icon: Features2Image,
-    cardTitle: "Marketplace",
-    cardText:
-      "A dynamic marketplace where clinics can post jobs and locum professionals can find opportunities that match their expertise",
+      animetiondelay: 300,
+      cardclassName: "feature-card active",
+      icon: Features2Image,
+      cardTitle: "Seamless Marketplace",
+      cardText:
+        "Buy and sell clinics, hospitals, and healthcare businesses with ease. AI-driven insights help you secure the best deals quickly and strategically.",
   },
   {
     animetiondelay: 350,
     cardclassName: "feature-card",
     icon: Features3Image,
-    cardTitle: "Affiliation Program",
+    cardTitle: "Growth & Affiliation Program",
     cardText:
-      "Expand your business by opening new pharmacies or clinics as part of the QuickLocum network, benefiting from our streamlined support system",
+      "Expand your healthcare business with expert support. Acquire, affiliate, or launch new ventures seamlessly while ensuring long-term success.",
   },
 ];

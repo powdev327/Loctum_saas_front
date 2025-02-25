@@ -21,13 +21,13 @@ const FooterOne = () => {
                       <img src={FooterLogo} alt="footer-logo" />
                     </a>
                     <p>
-                      Staco is the dedicated platform for performance management
-                      that helps to grow your startup quickly
+                      QuickLocum is the dedicated platform for managing and connecting healthcare professionals with locum opportunities, helping your healthcare organization grow quickly and efficiently
+
+
                     </p>
                   </div>
 
                   <FooterContractCard/>
-                  <FooterNewsletter/>
 
                   <div className="footer-follow">
                     <ul className="social-link dark footer-one-social-link">
@@ -59,7 +59,7 @@ const FooterOne = () => {
             <div className="row">
               <div className="col-md-5 order-md-1 order-2">
                 <div className="footer-copyright">
-                  <p className="mb-0">2025 <a href="#">Staco</a>. All rights reserved.</p>
+                  <p className="mb-0">2025 <a href="#">QuickLocum</a>. All rights reserved.</p>
                 </div>
               </div>
               <div className="col-md-7 order-md-2 order-1">

@@ -4,31 +4,22 @@ const menuData = [
         parentClass: 'one',
         items: [
             {
-                title: 'Products 🔥',
+                title: 'Core Features 🔥',
                 items: [
                     {
-                        label: 'HR Management',
+                        label: 'Locum Services',
                         subItems: [
-                            { label: 'Invoice System', href: '#' },
-                            { label: 'Profile Management', href: '#' },
-                            { label: 'Web Services', href: '#' },
-                            { label: 'Employee Onboarding', href: '#' },
+                            { label: 'Browse Job Listings', href: '/sign-up' },
+                            { label: 'Manage Profiles', href: '/sign-up' },
+                            { label: 'Schedule Availability', href: '/sign-up' },
                         ]
                     },
                     {
-                        label: 'Marketing Tools',
+                        label: 'Tools for Clients',
                         subItems: [
-                            { label: 'Newsletter Templates', href: '#' },
-                            { label: 'Email Campaigns', href: '#' },
-                            { label: 'Social Media Analytics', href: '#' },
-                        ]
-                    },
-                    {
-                        label: 'Payment Solutions',
-                        subItems: [
-                            { label: 'Ecommerce Invoicing', href: '#' },
-                            { label: 'Marketplace', href: '#' },
-                            { label: 'Risk Scoring', href: '#' },
+                            { label: 'Find Available Locums', href: '/sign-up' },
+                            { label: 'Manage Contracts', href: '/sign-up' },
+                            { label: 'Generate Invoices', href: '/sign-up' },
                         ]
                     }
                 ]
@@ -40,32 +31,24 @@ const menuData = [
         parentClass: 'two',
         items: [
             {
-                title: 'Resources ❇️',
-                items: [
-                    { label: 'Latest Blog', href: '#' },
-                    {
-                        label: 'Help and Support',
-                        subItems: [
-                            { label: 'Knowledgebase', href: '#' },
-                            { label: 'FAQs', href: '#' },
-                            { label: 'Partners and Affiliates', href: '#' },
-                            { label: 'Customer Stories', href: '#' },
-                        ]
-                    }
-                ]
-            },
-            {
-                title: 'Developer Docs 📈',
+                title: 'Support & Services ❇️',
                 items: [
                     {
-                        label: null, // Represents a section without a main label
+                        label: 'Help Center',
                         subItems: [
-                            { label: 'Documentation', href: '#' },
-                            { label: 'Tutorials', href: '#' }
+                            { label: 'Knowledge Base', href: '#' },
+                            { label: 'Faq', href: '#' },
+                            { label: 'Client Success Stories', href: '#' },
                         ]
                     },
-                    { label: 'Changelog', href: '#' },
-                    { label: 'Community Forum', href: '#' }
+                    {
+                        label: 'Billing & Payments 💳',
+                        subItems: [
+                            { label: 'Process Payments', href: '/sign-up' },
+                            { label: 'Track Invoices', href: '/sign-up' },
+                            { label: 'Manage Payroll', href: '/sign-up' },
+                        ]
+                    }
                 ]
             }
         ]
@@ -75,24 +58,24 @@ const menuData = [
         parentClass: 'three',
         items: [
             {
-                title: 'Company 💎',
+                title: 'About Quicklocum 💎',
                 items: [
                     {
-                        label: null, // Represents a section without a main label
+                        label: null, // Section without a main label
                         subItems: [
-                            { label: 'About', href: '#' },
-                            { label: 'What We Do', href: '#' },
-                            { label: 'Contact Us', href: '#' },
-                            { label: 'Careers', href: '#', badge: 'Hiring' }
+                            { label: 'Who We Are', href: '/about-us' },
+                            { label: 'Our Mission', href: 'our-services' },
+                            { label: 'Contact Quicklocum', href: '/contact-us' },
+                            { label: 'Join Our Team', href: '/', badge: 'Hiring' }
                         ]
                     }
                 ]
             },
             {
-                title: 'Why Choose 🌟',
+                title: 'Why Choose Us? 🌟',
                 items: [
-                    { label: 'Customer Stories', href: '#' },
-                    { label: 'Feedbacks', href: '#' }
+                    { label: 'What Our Clients Say', href: '#' },
+                    { label: 'Our Success Stories', href: '#' }
                 ]
             }
         ]

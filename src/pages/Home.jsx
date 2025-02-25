@@ -22,9 +22,9 @@ const Home = () => {
         <UsabilitySlider />
         <HomeOneMarketingSection />
         <TestimonialsOne />
-        <HomeIntegrate />
+        {/*<HomeIntegrate />*/}
         <FaqHome />
-        <HomePricing />
+        {/*<HomePricing />*/}
         <FooterOne />
       </div>
     </Layout>
