@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, {useState, useRef, useEffect} from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import AuthenticationStyleWrapper from "./Authentication.style";
@@ -10,6 +10,10 @@ import FacebookIcon from "../../assets/images/auth-and-utility/facebook.svg";
 import useSignupForm from "../../hooks/auth/useSignUpHook.js";
 import {resendOtp, signup, verifyOtp} from "../../services/auth/signupService.js";
 import OtpModal from "./OtpModal.jsx";
+import {industries} from "../../config/locum/industryList.js";
+import {businessList} from "../../config/owner/businessList.js";
+import {institutionListType} from "../../config/owner/institutionList.js";
+import toast from "react-hot-toast";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -27,11 +31,10 @@ const Signup = () => {
     error, setError,
     loading, setLoading,
     showOtpModal, setShowOtpModal,
-    otp, setOtp,
     userEmail, setUserEmail,
-    otpError, setOtpError,
-    otpLoading, setOtpLoading,
-    resendLoading, setResendLoading
+    setOtpError,
+    setOtpLoading,
+    resendLoading, setResendLoading,
   } = useSignupForm();
 
   const handleRecaptchaChange = (token) => {
@@ -78,7 +81,9 @@ const Signup = () => {
     try {
       await signup(formData);
       setUserEmail(trimmedEmail);
-      setShowOtpModal(true)
+      setShowOtpModal(true);
+      localStorage.setItem("pendingOtpVerification", "true");
+      localStorage.setItem("pendingEmail", trimmedEmail);
       setStep(2);
     } catch (error) {
       console.error("Signup error:", error);
@@ -89,23 +94,27 @@ const Signup = () => {
     }
   };
 
-  const handleOtpVerification = async () => {
-    setOtpError("");
+  const handleOtpVerification = async (otp) => {
     setOtpLoading(true);
-
     try {
-      const res = await verifyOtp({ email: userEmail, otp_code: otp });
-      if (res.success) {
+      const res = await verifyOtp(userEmail, otp);
+      if (res.message) {
+        localStorage.removeItem("pendingOtpVerification");
+        localStorage.removeItem("pendingEmail");
+        setShowOtpModal(false);
+        navigate('/sign-in');
         return true;
       } else {
+        setOtpError(res.message || "OTP verification failed.");
         return false;
       }
     } catch (error) {
-      setOtpError(error.message);
+      setOtpError(error.message || "An error occurred during OTP verification.");
     } finally {
       setOtpLoading(false);
     }
   };
+
 
 
   const handleResendOtp = async () => {
@@ -113,13 +122,30 @@ const Signup = () => {
 
     try {
       await resendOtp(userEmail);
-      alert("A new OTP has been sent to your email.");
+      toast.success("A new OTP has been sent to your email.");
     } catch (error) {
-      alert(`Error: ${error.message}`);
+      toast.error(`Error: ${error.message}`);
     } finally {
       setResendLoading(false);
     }
   };
+
+  const handleCloseOtpModal = () => {
+    localStorage.removeItem("pendingOtpVerification");
+    localStorage.removeItem("pendingEmail");
+    setShowOtpModal(false);
+  };
+
+
+  useEffect(() => {
+    const shouldShowOtp = localStorage.getItem("pendingOtpVerification");
+    const savedEmail = localStorage.getItem("pendingEmail");
+
+    if (shouldShowOtp === "true" && savedEmail) {
+      setUserEmail(savedEmail);
+      setShowOtpModal(true);
+    }
+  }, []);
 
   return (
       <>
@@ -207,18 +233,24 @@ const Signup = () => {
                 </ScrollAnimate>
 
                 {userType === "locum" && (
-                    <ScrollAnimate delay={600}>
+                    <ScrollAnimate delay={620}>
                       <div className="form-group">
                         <label>Industry Type</label>
-                        <input
-                            type="text"
-                            placeholder="e.g. Nursing, Dental, etc."
-                            required
+                        <select
                             value={industryType}
                             onChange={(e) => setIndustryType(e.target.value)}
-                        />
+                            required
+                        >
+                          <option value="" disabled>Select your industry</option>
+                          {industries.map((industry) => (
+                              <option key={industry} value={industry}>
+                                {industry}
+                              </option>
+                          ))}
+                        </select>
                       </div>
                     </ScrollAnimate>
+
                 )}
 
                 {userType === "client" && (
@@ -226,25 +258,35 @@ const Signup = () => {
                       <ScrollAnimate delay={600}>
                         <div className="form-group">
                           <label>Business Sector</label>
-                          <input
-                              type="text"
-                              placeholder="e.g. Hospital, Clinic, etc."
-                              required
+                          <select
                               value={businessSector}
                               onChange={(e) => setBusinessSector(e.target.value)}
-                          />
+                              required
+                          >
+                            <option value="" disabled>Select business sector</option>
+                            {businessList.map((sector) => (
+                                <option key={sector} value={sector}>
+                                  {sector.charAt(0).toUpperCase() + sector.slice(1)}
+                                </option>
+                            ))}
+                          </select>
                         </div>
                       </ScrollAnimate>
                       <ScrollAnimate delay={620}>
                         <div className="form-group">
                           <label>Institution Type</label>
-                          <input
-                              type="text"
-                              placeholder="e.g. Private, Public, etc."
-                              required
+                          <select
                               value={institutionType}
                               onChange={(e) => setInstitutionType(e.target.value)}
-                          />
+                              required
+                          >
+                            <option value="" disabled>Select institution type</option>
+                            {institutionListType.map((type) => (
+                                <option key={type} value={type}>
+                                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                                </option>
+                            ))}
+                          </select>
                         </div>
                       </ScrollAnimate>
                     </>
@@ -288,7 +330,13 @@ const Signup = () => {
 
       </AuthenticationStyleWrapper>
         {showOtpModal && (
-              <OtpModal email={userEmail} isOpen={showOtpModal} onClose={setShowOtpModal} onVerify={handleOtpVerification} />
+            <OtpModal
+                email={userEmail}
+                isOpen={showOtpModal}
+                onClose={handleCloseOtpModal}
+                onVerify={handleOtpVerification}
+                onResend={handleResendOtp}
+            />
         )}
       </>
   );
