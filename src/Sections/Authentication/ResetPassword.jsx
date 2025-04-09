@@ -1,24 +1,32 @@
-import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import AuthenticationStyleWrapper from "./Authentication.style";
 import AuthFormWrapper from "./AuthFormWrapper";
 import AuthRightSection from "./AuthRightSection";
 import ScrollAnimate from "../../Components/ScrollAnimate";
+import useResetPassword from "../../hooks/auth/useResetPasswordHook.js";
+import {requestResetPassword} from "../../services/auth/forgotPasswordService.js";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const token = params.get('token'); // Get token from URL
-
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-  const [buttonText, setButtonText] = useState("Reset Password");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const token = params.get('token');
+  const {
+    newPassword,
+    setNewPassword,
+    confirmPassword,
+    setConfirmPassword,
+    error,
+    setError,
+    buttonText,
+    setButtonText,
+    isSubmitting,
+    setIsSubmitting,
+    resetState,
+  } = useResetPassword();
 
   const validatePasswords = () => {
-    if (newPassword.length < 6) {
-      setError("Password must be at least 6 characters long.");
+    if (newPassword.length < 8) {
+      setError("Password must be at least 8 characters long.");
       return false;
     }
     if (newPassword !== confirmPassword) {
@@ -27,6 +35,7 @@ const ResetPassword = () => {
     }
     return true;
   };
+
 
   const handleReset = async (event) => {
     event.preventDefault();
@@ -41,20 +50,8 @@ const ResetPassword = () => {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/reset-password/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, new_password: newPassword }),
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.detail || "An error occurred while resetting password.");
-      }
-
+      await requestResetPassword(token, newPassword)
       setButtonText("✅ Password Reset Successfully! Redirecting...");
-
-      // Redirect after 5 seconds
       setTimeout(() => {
         navigate("/sign-in");
       }, 5000);
