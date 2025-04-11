@@ -7,6 +7,7 @@ import {NavLink, useNavigate} from "react-router-dom";
 import ScrollAnimate from "../../Components/ScrollAnimate";
 import login from "../../services/auth/loginService.js";
 import useLoginHook from "../../hooks/auth/useLoginHook.js";
+import toast from "react-hot-toast";
 
 const Signin = () => {
   const navigate = useNavigate();
@@ -37,7 +38,10 @@ const Signin = () => {
 
       navigate(data.user_type === "client" ? "/client-dashboard" : "/locum-dashboard");
     } catch (err) {
-      setError(err.message || "Login failed");
+      setError("Login failed");
+      toast.error("Incorrect email or password", {
+        duration: 4000,
+      });
     } finally {
       setLoading(false);
     }
@@ -102,6 +106,14 @@ const Signin = () => {
               />
             </div>
           </ScrollAnimate>
+
+          {error && (
+              <ScrollAnimate delay={300}>
+                <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4">
+                  {error}
+                </div>
+              </ScrollAnimate>
+          )}
 
           {/* Rest of the form elements */}
           <ScrollAnimate delay={350}>
