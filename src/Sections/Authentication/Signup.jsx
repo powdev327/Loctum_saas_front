@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from "react";
+import React, {useEffect} from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import AuthenticationStyleWrapper from "./Authentication.style";
@@ -18,23 +18,25 @@ import toast from "react-hot-toast";
 const Signup = () => {
   const navigate = useNavigate();
   const {
-    recaptchaRef,
-    step, setStep,
-    userType, setUserType,
-    fullName, setFullName,
-    email, setEmail,
-    password, setPassword,
-    industryType, setIndustryType,
-    businessSector, setBusinessSector,
-    institutionType, setInstitutionType,
-    recaptchaToken, setRecaptchaToken,
-    error, setError,
-    loading, setLoading,
-    showOtpModal, setShowOtpModal,
-    userEmail, setUserEmail,
-    setOtpError,
-    setOtpLoading,
-    resendLoading, setResendLoading,
+      recaptchaRef,
+      step, setStep,
+      userType, setUserType,
+      fullName, setFullName,
+      email, setEmail,
+      password, setPassword,
+      passwordRetyping, setPasswordRetyping,
+      industryType, setIndustryType,
+      businessSector, setBusinessSector,
+      customInstitutionType, setCustomInstitutionType,
+      institutionType, setInstitutionType,
+      recaptchaToken, setRecaptchaToken,
+      error, setError,
+      loading, setLoading,
+      showOtpModal, setShowOtpModal,
+      userEmail, setUserEmail,
+      setOtpError,
+      setOtpLoading,
+      resendLoading, setResendLoading,
   } = useSignupForm();
 
   const handleRecaptchaChange = (token) => {
@@ -65,18 +67,40 @@ const Signup = () => {
     const trimmedEmail = email?.trim() || "";
     const trimmedPassword = password?.trim() || "";
 
+    if (password !== passwordRetyping) {
+      toast.error("Passwords do not match")
+      setLoading(false);
+      return;
+    }
+
     const formData = {
       user_type: userType,
       full_name: fullName,
       email: trimmedEmail,
       password: trimmedPassword,
       recaptcha_token: recaptchaToken,
-      ...(userType === "locum" && { industry_type: "healthcare" }),
+      ...(userType === "locum" && { industry_type: industryType }),
       ...(userType === "client" && {
-        business_sector: "pharmacy",
-        institution_type: "private",
+        institution_type: institutionType,
+        business_sector:
+            institutionType === "public" ? customInstitutionType : businessSector,
       }),
     };
+
+    if (
+        !trimmedEmail ||
+        !trimmedPassword ||
+        !passwordRetyping ||
+        !fullName ||
+        !userType ||
+        (institutionType === "public" && !customInstitutionType)
+    ) {
+      setError("All fields are required");
+      toast.error("All fields are required")
+      setLoading(false);
+      return;
+    }
+
 
     try {
       await signup(formData);
@@ -86,10 +110,9 @@ const Signup = () => {
       localStorage.setItem("pendingEmail", trimmedEmail);
       setStep(2);
     } catch (error) {
-      console.error("Signup error:", error);
-      setError(error?.response?.data?.message || error.message || "Signup failed.");
+      setError("Signup failed.");
     } finally {
-      setLoading(false);
+      setLoading(false)
       recaptchaRef?.current?.reset?.();
     }
   };
@@ -105,26 +128,23 @@ const Signup = () => {
         navigate('/sign-in');
         return true;
       } else {
-        setOtpError(res.message || "OTP verification failed.");
+        setOtpError("OTP verification failed.");
         return false;
       }
     } catch (error) {
-      setOtpError(error.message || "An error occurred during OTP verification.");
+      setOtpError("An error occurred during OTP verification.");
     } finally {
       setOtpLoading(false);
     }
   };
 
-
-
   const handleResendOtp = async () => {
     setResendLoading(true);
-
     try {
       await resendOtp(userEmail);
       toast.success("A new OTP has been sent to your email.");
     } catch (error) {
-      toast.error(`Error: ${error.message}`);
+      toast.error(`Error retry to resend`);
     } finally {
       setResendLoading(false);
     }
@@ -232,6 +252,20 @@ const Signup = () => {
                   </div>
                 </ScrollAnimate>
 
+                <ScrollAnimate delay={550}>
+                  <div className="form-group">
+                    <label>Retyping Password</label>
+                    <input
+                        type="password"
+                        placeholder="********"
+                        required
+                        minLength="8"
+                        value={passwordRetyping}
+                        onChange={(e) => setPasswordRetyping(e.target.value)}
+                    />
+                  </div>
+                </ScrollAnimate>
+
                 {userType === "locum" && (
                     <ScrollAnimate delay={620}>
                       <div className="form-group">
@@ -257,23 +291,6 @@ const Signup = () => {
                     <>
                       <ScrollAnimate delay={600}>
                         <div className="form-group">
-                          <label>Business Sector</label>
-                          <select
-                              value={businessSector}
-                              onChange={(e) => setBusinessSector(e.target.value)}
-                              required
-                          >
-                            <option value="" disabled>Select business sector</option>
-                            {businessList.map((sector) => (
-                                <option key={sector} value={sector}>
-                                  {sector.charAt(0).toUpperCase() + sector.slice(1)}
-                                </option>
-                            ))}
-                          </select>
-                        </div>
-                      </ScrollAnimate>
-                      <ScrollAnimate delay={620}>
-                        <div className="form-group">
                           <label>Institution Type</label>
                           <select
                               value={institutionType}
@@ -289,8 +306,44 @@ const Signup = () => {
                           </select>
                         </div>
                       </ScrollAnimate>
+
+                      {institutionType === "private" && (
+                          <ScrollAnimate delay={620}>
+                            <div className="form-group">
+                              <label>Business Sector</label>
+                              <select
+                                  value={businessSector}
+                                  onChange={(e) => setBusinessSector(e.target.value)}
+                                  required
+                              >
+                                <option value="" disabled>Select business sector</option>
+                                {businessList.map((sector) => (
+                                    <option key={sector} value={sector}>
+                                      {sector.charAt(0).toUpperCase() + sector.slice(1)}
+                                    </option>
+                                ))}
+                              </select>
+                            </div>
+                          </ScrollAnimate>
+                      )}
+
+                      {institutionType === "public" && (
+                          <ScrollAnimate delay={640}>
+                            <div className="form-group">
+                              <label>Custom Institution Type</label>
+                              <input
+                                  type="text"
+                                  value={customInstitutionType}
+                                  onChange={(e) => setCustomInstitutionType(e.target.value)}
+                                  placeholder="Enter institution type"
+                                  required
+                              />
+                            </div>
+                          </ScrollAnimate>
+                      )}
                     </>
                 )}
+
 
                 <ScrollAnimate delay={650}>
                   <div className="flex justify-center">
@@ -312,6 +365,7 @@ const Signup = () => {
                     {loading ? "Processing..." : "Sign Up"}
                   </button>
                 </ScrollAnimate>
+
               </form>
           )}
 
