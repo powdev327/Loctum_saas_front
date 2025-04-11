@@ -8,8 +8,10 @@ const useSignupForm = () => {
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [passwordRetyping, setPasswordRetyping] = useState("");
     const [industryType, setIndustryType] = useState(""); // for locum
     const [businessSector, setBusinessSector] = useState(""); // for client
+    const [customInstitutionType, setCustomInstitutionType] = useState('');
     const [institutionType, setInstitutionType] = useState(""); // for client
     const [recaptchaToken, setRecaptchaToken] = useState(null);
     const [error, setError] = useState("");
@@ -28,8 +30,10 @@ const useSignupForm = () => {
         fullName, setFullName,
         email, setEmail,
         password, setPassword,
+        passwordRetyping, setPasswordRetyping,
         industryType, setIndustryType,
         businessSector, setBusinessSector,
+        customInstitutionType, setCustomInstitutionType,
         institutionType, setInstitutionType,
         recaptchaToken, setRecaptchaToken,
         error, setError,
