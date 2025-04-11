@@ -5,6 +5,7 @@ import AuthRightSection from "./AuthRightSection";
 import ScrollAnimate from "../../Components/ScrollAnimate";
 import useResetPassword from "../../hooks/auth/useResetPasswordHook.js";
 import {requestResetPassword} from "../../services/auth/forgotPasswordService.js";
+import toast from "react-hot-toast";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ const ResetPassword = () => {
       return false;
     }
     if (newPassword !== confirmPassword) {
-      setError("Passwords do not match.");
+      toast.error("Passwords do not match ");
       return false;
     }
     return true;
@@ -52,11 +53,12 @@ const ResetPassword = () => {
     try {
       await requestResetPassword(token, newPassword)
       setButtonText("✅ Password Reset Successfully! Redirecting...");
+      toast.success("Password reset successfully!");
       setTimeout(() => {
         navigate("/sign-in");
-      }, 5000);
+      }, 4000);
     } catch (err) {
-      setError(err.message);
+      toast.error('error in reset password');
       setButtonText("Reset Password");
       setIsSubmitting(false);
     }

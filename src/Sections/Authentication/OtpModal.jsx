@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../../assets/styles/otp-style.css';
+import toast from "react-hot-toast";
 
 const OtpModal = ({ isOpen, onClose, email, onVerify, onResend }) => {
     const [otp, setOtp] = useState(new Array(6).fill(""));
@@ -18,7 +19,10 @@ const OtpModal = ({ isOpen, onClose, email, onVerify, onResend }) => {
     const handleSubmit = async () => {
         const success = await onVerify(otp.join(""));
         if (success) {
+            toast.success('OTP has been verified');
             onClose();
+        }else {
+            toast.error("Otp verification failed try another one");
         }
     };
 

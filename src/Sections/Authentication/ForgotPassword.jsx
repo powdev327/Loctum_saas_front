@@ -5,6 +5,7 @@ import AuthRightSection from "./AuthRightSection";
 import ScrollAnimate from "../../Components/ScrollAnimate";
 import useForgotPassword from "../../hooks/auth/useForgotPasswordHook.js";
 import {requestReset} from "../../services/auth/forgotPasswordService.js";
+import toast from "react-hot-toast";
 
 const ForgotPassword = () => {
   const {
@@ -31,7 +32,8 @@ const ForgotPassword = () => {
       setShowMessage(true);
       setEmail("");
     } catch (err) {
-      setForgotPasswordError(err.message);
+      setForgotPasswordError('sending email failed');
+      toast.error('try to enter your correct email');
       setIsSubmitting(false);
     }
   };
