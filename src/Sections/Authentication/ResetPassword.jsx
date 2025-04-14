@@ -40,7 +40,6 @@ const ResetPassword = () => {
 
   const handleReset = async (event) => {
     event.preventDefault();
-    setError("");
     setIsSubmitting(true);
     setButtonText("Processing...");
 
@@ -56,9 +55,9 @@ const ResetPassword = () => {
       toast.success("Password reset successfully!");
       setTimeout(() => {
         navigate("/sign-in");
-      }, 4000);
+      }, 3000);
     } catch (err) {
-      toast.error('error in reset password');
+      toast.error(error?.response?.data?.detail);
       setButtonText("Reset Password");
       setIsSubmitting(false);
     }
@@ -99,12 +98,6 @@ const ResetPassword = () => {
             </div>
           </ScrollAnimate>
 
-          {/* 🔴 Error Message (if validation or API call fails) */}
-          {error && (
-            <ScrollAnimate>
-              <p className="text-red-500 text-sm">{error}</p>
-            </ScrollAnimate>
-          )}
 
           <ScrollAnimate>
             <button

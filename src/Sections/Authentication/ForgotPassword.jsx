@@ -11,8 +11,6 @@ const ForgotPassword = () => {
   const {
     email,
     setEmail,
-    forgotPasswordError,
-    setForgotPasswordError,
     showMessage,
     setShowMessage,
     isSubmitting,
@@ -23,17 +21,18 @@ const ForgotPassword = () => {
 
   const handleForgotPasswordSubmit = async (event) => {
     event.preventDefault();
-    setForgotPasswordError("");
     setShowMessage(false);
     setIsSubmitting(true);
 
     try {
       await requestReset(email);
-      setShowMessage(true);
+      toast.success('Email sent! Please check your inbox ...', {
+        duration: 4000,
+      })
+      setIsSubmitting(false);
       setEmail("");
     } catch (err) {
-      setForgotPasswordError('sending email failed');
-      toast.error('try to enter your correct email');
+      toast.error(err?.response?.data?.detail);
       setIsSubmitting(false);
     }
   };
@@ -61,12 +60,6 @@ const ForgotPassword = () => {
             </div>
           </ScrollAnimate>
 
-          {/* 🔴 Error Message (if request fails) */}
-          {forgotPasswordError && (
-            <ScrollAnimate>
-              <p className="text-red-500 text-sm">{forgotPasswordError}</p>
-            </ScrollAnimate>
-          )}
 
           <ScrollAnimate>
             <button
