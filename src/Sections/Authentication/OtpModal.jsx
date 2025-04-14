@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import '../../assets/styles/otp-style.css';
 import toast from "react-hot-toast";
 
-const OtpModal = ({ isOpen, onClose, email, onVerify, onResend }) => {
+const OtpModal = ({ isOpen, onClose, email, onVerify, onResend, resendLoading }) => {
     const [otp, setOtp] = useState(new Array(6).fill(""));
 
     const handleChange = (element, index) => {
@@ -21,8 +21,6 @@ const OtpModal = ({ isOpen, onClose, email, onVerify, onResend }) => {
         if (success) {
             toast.success('OTP has been verified');
             onClose();
-        }else {
-            toast.error("Otp verification failed try another one");
         }
     };
 
@@ -53,8 +51,12 @@ const OtpModal = ({ isOpen, onClose, email, onVerify, onResend }) => {
                 </div>
 
                 <div className="otp-footer">
-                    <button onClick={onResend} className="otp-link">
-                        Didn't get OTP try other one !
+                    <button
+                        onClick={onResend}
+                        className="otp-link"
+                        disabled={resendLoading}
+                    >
+                        {resendLoading ? "Sending new OTP..." : "Didn't get OTP? Try another one!"}
                     </button>
 
                     <button
