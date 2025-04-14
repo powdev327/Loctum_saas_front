@@ -26,6 +26,7 @@ const Signup = () => {
       password, setPassword,
       passwordRetyping, setPasswordRetyping,
       industryType, setIndustryType,
+      customIndustryType, setCustomIndustryType,
       businessSector, setBusinessSector,
       customInstitutionType, setCustomInstitutionType,
       institutionType, setInstitutionType,
@@ -34,7 +35,6 @@ const Signup = () => {
       loading, setLoading,
       showOtpModal, setShowOtpModal,
       userEmail, setUserEmail,
-      setOtpError,
       setOtpLoading,
       resendLoading, setResendLoading,
   } = useSignupForm();
@@ -59,7 +59,7 @@ const Signup = () => {
     setLoading(true);
 
     if (!recaptchaToken) {
-      setError("Please complete the reCAPTCHA.");
+      toast.error("Please complete the reCAPTCHA.");
       setLoading(false);
       return;
     }
@@ -79,38 +79,39 @@ const Signup = () => {
       email: trimmedEmail,
       password: trimmedPassword,
       recaptcha_token: recaptchaToken,
-      ...(userType === "locum" && { industry_type: industryType }),
+      ...(userType === "locum" && { industry_type: industryType === 'Other' ? customIndustryType : industryType }),
       ...(userType === "client" && {
         institution_type: institutionType,
         business_sector:
             institutionType === "public" ? customInstitutionType : businessSector,
       }),
     };
-
     if (
         !trimmedEmail ||
         !trimmedPassword ||
         !passwordRetyping ||
         !fullName ||
         !userType ||
-        (institutionType === "public" && !customInstitutionType)
+        (institutionType === "public" && !customInstitutionType) ||
+        (industryType === 'Other' && !customIndustryType)
     ) {
-      setError("All fields are required");
       toast.error("All fields are required")
       setLoading(false);
       return;
     }
 
-
     try {
-      await signup(formData);
-      setUserEmail(trimmedEmail);
-      setShowOtpModal(true);
-      localStorage.setItem("pendingOtpVerification", "true");
-      localStorage.setItem("pendingEmail", trimmedEmail);
-      setStep(2);
+      const { message } = await signup(formData);
+      if (message) {
+        setUserEmail(trimmedEmail);
+        setShowOtpModal(true);
+        localStorage.setItem("pendingOtpVerification", "true");
+        localStorage.setItem("pendingEmail", trimmedEmail);
+        setStep(2);
+      }
     } catch (error) {
-      setError("Signup failed.");
+      const message = error?.response?.data?.detail || "Signup failed. Please try again.";
+      toast.error(message);
     } finally {
       setLoading(false)
       recaptchaRef?.current?.reset?.();
@@ -127,12 +128,9 @@ const Signup = () => {
         setShowOtpModal(false);
         navigate('/sign-in');
         return true;
-      } else {
-        setOtpError("OTP verification failed.");
-        return false;
       }
     } catch (error) {
-      setOtpError("An error occurred during OTP verification.");
+      toast.error(error?.response?.data?.detail);
     } finally {
       setOtpLoading(false);
     }
@@ -144,7 +142,7 @@ const Signup = () => {
       await resendOtp(userEmail);
       toast.success("A new OTP has been sent to your email.");
     } catch (error) {
-      toast.error(`Error retry to resend`);
+      toast.error(error?.response?.data?.detail);
     } finally {
       setResendLoading(false);
     }
@@ -267,6 +265,7 @@ const Signup = () => {
                 </ScrollAnimate>
 
                 {userType === "locum" && (
+                    <>
                     <ScrollAnimate delay={620}>
                       <div className="form-group">
                         <label>Industry Type</label>
@@ -285,6 +284,21 @@ const Signup = () => {
                       </div>
                     </ScrollAnimate>
 
+                    {industryType === 'Other' && (
+                        <ScrollAnimate delay={620}>
+                          <div className="form-group">
+                            <label>Specific Industry</label>
+                            <input
+                                type="text"
+                                value={customIndustryType}
+                                onChange={(e) => setCustomIndustryType(e.target.value)}
+                                placeholder="Enter institution type"
+                                required
+                            />
+                          </div>
+                        </ScrollAnimate>
+                   )}
+                    </>
                 )}
 
                 {userType === "client" && (
@@ -390,6 +404,7 @@ const Signup = () => {
                 onClose={handleCloseOtpModal}
                 onVerify={handleOtpVerification}
                 onResend={handleResendOtp}
+                resendLoading={resendLoading}
             />
         )}
       </>
