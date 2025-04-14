@@ -3,7 +3,6 @@ import { useState } from "react";
 const useLoginHook = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [userType, setUserType] = useState("");
 
@@ -12,8 +11,6 @@ const useLoginHook = () => {
         setEmail,
         password,
         setPassword,
-        error,
-        setError,
         loading,
         setLoading,
         userType,
