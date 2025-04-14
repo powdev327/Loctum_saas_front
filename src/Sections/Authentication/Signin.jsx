@@ -17,9 +17,6 @@ const Signin = () => {
     setEmail,
     password,
     setPassword,
-    error,
-    setError,
-    loading,
     setLoading,
     userType,
     setUserType,
@@ -27,9 +24,7 @@ const Signin = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError("");
     setLoading(true);
-
     try {
       const data = await login({ email, password, user_type: userType });
 
@@ -38,8 +33,7 @@ const Signin = () => {
 
       navigate(data.user_type === "client" ? "/client-dashboard" : "/locum-dashboard");
     } catch (err) {
-      setError("Login failed");
-      toast.error("Incorrect email or password", {
+      toast.error(err?.response?.data?.detail, {
         duration: 4000,
       });
     } finally {
@@ -107,15 +101,7 @@ const Signin = () => {
             </div>
           </ScrollAnimate>
 
-          {error && (
-              <ScrollAnimate delay={300}>
-                <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4">
-                  {error}
-                </div>
-              </ScrollAnimate>
-          )}
 
-          {/* Rest of the form elements */}
           <ScrollAnimate delay={350}>
             <button
               type="submit"
