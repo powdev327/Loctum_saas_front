@@ -1,55 +1,41 @@
 import AuthenticationStyleWrapper from "./Authentication.style";
 import AuthRightSection from "./AuthRightSection";
 import AuthFormWrapper from "./AuthFormWrapper";
-
 import GoogleIcon from "../../assets/images/auth-and-utility/google.svg";
 import FacebookIcon from "../../assets/images/auth-and-utility/facebook.svg";
-import { NavLink } from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import ScrollAnimate from "../../Components/ScrollAnimate";
-import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import login from "../../services/auth/loginService.js";
+import useLoginHook from "../../hooks/auth/useLoginHook.js";
+import toast from "react-hot-toast";
 
 const Signin = () => {
-
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [userType, setUserType] = useState("");
+
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    setLoading,
+    userType,
+    setUserType,
+  } = useLoginHook();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError("");
     setLoading(true);
-    const formData = {
-      user_type: userType, // Payload remains 'client' for Owner/Manager
-      email: email.trim(),
-      password: password.trim(),
-    };
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/login/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.detail || "Login failed");
-      }
+      const data = await login({ email, password, user_type: userType });
 
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("user_type", data.user_type || "");
 
-      if (data.user_type === "client") {
-        navigate("/client-dashboard");
-      } else if (data.user_type === "locum") {
-        navigate("/locum-dashboard");
-      }
+      navigate(data.user_type === "client" ? "/client-dashboard" : "/locum-dashboard");
     } catch (err) {
-      setError(err.message);
+      toast.error(err?.response?.data?.detail, {
+        duration: 4000,
+      });
     } finally {
       setLoading(false);
     }
@@ -115,7 +101,7 @@ const Signin = () => {
             </div>
           </ScrollAnimate>
 
-          {/* Rest of the form elements */}
+
           <ScrollAnimate delay={350}>
             <button
               type="submit"

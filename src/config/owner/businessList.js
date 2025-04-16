@@ -1,0 +1,1 @@
+export const businessList = ["pharmacy", "clinic", "agency", "cabinet"]

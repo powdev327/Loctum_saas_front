@@ -1,0 +1,98 @@
+.otp-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.otp-modal {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+.otp-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.otp-subtitle {
+    color: #555;
+    margin-bottom: 1.5rem;
+}
+
+.highlight {
+    font-weight: 600;
+    color: #000;
+}
+
+.otp-input-group {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    gap: 6px;
+}
+
+.otp-input {
+    width: 40px;
+    height: 50px;
+    font-size: 1.25rem;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.otp-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.otp-link {
+    font-size: 0.85rem;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.otp-link:hover {
+    text-decoration: underline;
+}
+
+.otp-button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 16px;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.otp-button:hover {
+    background-color: #0056b3;
+}
+
+.otp-button:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.otp-input-error {
+    border-color: red;
+    background-color: #ffe6e6;
+}
+
+.otp-error-message {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}

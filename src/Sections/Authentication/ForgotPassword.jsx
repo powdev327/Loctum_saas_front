@@ -3,44 +3,37 @@ import AuthenticationStyleWrapper from "./Authentication.style";
 import AuthFormWrapper from "./AuthFormWrapper";
 import AuthRightSection from "./AuthRightSection";
 import ScrollAnimate from "../../Components/ScrollAnimate";
-import React, { useState } from "react";
+import useForgotPassword from "../../hooks/auth/useForgotPasswordHook.js";
+import {requestReset} from "../../services/auth/forgotPasswordService.js";
+import toast from "react-hot-toast";
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState("");
-  const [forgotPasswordError, setForgotPasswordError] = useState("");
-  const [showMessage, setShowMessage] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false); // Tracks button state
+  const {
+    email,
+    setEmail,
+    showMessage,
+    setShowMessage,
+    isSubmitting,
+    setIsSubmitting,
+    resetState,
+  } = useForgotPassword();
   const navigate = useNavigate();
 
   const handleForgotPasswordSubmit = async (event) => {
     event.preventDefault();
-    setForgotPasswordError("");
     setShowMessage(false);
-    setIsSubmitting(true); // Disable button
+    setIsSubmitting(true);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/request-password-reset/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim() }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.detail || "Failed to send reset email");
-      }
-
-      setShowMessage(true); // Show success message
-      setEmail(""); // Clear input field
-
-      // Redirect after 5 seconds
-      setTimeout(() => {
-        navigate("/sign-in");
-      }, 5000);
+      await requestReset(email);
+      toast.success('Email sent! Please check your inbox ...', {
+        duration: 4000,
+      })
+      setIsSubmitting(false);
+      setEmail("");
     } catch (err) {
-      setForgotPasswordError(err.message);
-      setIsSubmitting(false); // Re-enable button on error
+      toast.error(err?.response?.data?.detail);
+      setIsSubmitting(false);
     }
   };
 
@@ -67,12 +60,6 @@ const ForgotPassword = () => {
             </div>
           </ScrollAnimate>
 
-          {/* 🔴 Error Message (if request fails) */}
-          {forgotPasswordError && (
-            <ScrollAnimate>
-              <p className="text-red-500 text-sm">{forgotPasswordError}</p>
-            </ScrollAnimate>
-          )}
 
           <ScrollAnimate>
             <button
@@ -90,7 +77,7 @@ const ForgotPassword = () => {
           {showMessage && (
             <ScrollAnimate>
               <p className="text-green-600 text-sm mt-3">
-                ✅ Email sent! Please check your inbox. Redirecting to login...
+                ✅ Email sent! Please check your inbox ...
               </p>
             </ScrollAnimate>
           )}

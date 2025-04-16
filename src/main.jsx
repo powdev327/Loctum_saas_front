@@ -19,10 +19,12 @@ import GlobalStyles from "./assets/styles/GlobalStyles";
 //custom css
 import "./assets/styles/common-style.css";
 import "./assets/styles/buttons-style.css";
+import {Toaster} from "react-hot-toast";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <TemplateProvider theme={TemplateStyles}>
+      <Toaster position="top-center" reverseOrder={false} />
+      <TemplateProvider theme={TemplateStyles}>
       <GlobalStyles />
       <App />
     </TemplateProvider>
