@@ -18,7 +18,7 @@ const AboutUs = () => {
       <ParallaxComponent />
       <AboutUsContent />
       <TestimonialsOne />
-      <Team />
+      {/*<Team />*/}
       <StartBuildingComponent />
       <FooterTwo />
     </Layout>
