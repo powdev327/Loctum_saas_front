@@ -77,15 +77,7 @@ const SayHello = () => {
                           placeholder="e.g. +55 695 6965"
                         />
                       </div>
-                      <div className="form-input mb-20">
-                        <label htmlFor="website">Website</label>
-                        <input
-                          type="text"
-                          name="website"
-                          id="website"
-                          placeholder="e.g. website.com"
-                        />
-                      </div>
+
                     </div>
                     <div className="form-input mb-30">
                       <label htmlFor="message">Message *</label>
