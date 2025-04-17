@@ -8,7 +8,7 @@ const TermsAndPrivacy = ({ title, data, children }) => {
     <TermsAndPrivacyStyleWrapper>
       <div className="container">
         <ScrollAnimate delay={200}>
-          <p className="uppercase">Last updated: 28 March 2023</p>
+          <p className="uppercase">Last updated: 7 Avril 2025</p>
           {title && <h1>{title}</h1>}
         </ScrollAnimate>
 
@@ -18,7 +18,7 @@ const TermsAndPrivacy = ({ title, data, children }) => {
               <StickyBox offsetTop={20} offsetBottom={20}>
                 <ScrollAnimate delay={200}>
                   <h6 className="content-table-title dm-sans">
-                    <img src={AlignIcon} alt="icon" /> TABLE OF CONTENTS
+                    <img src={AlignIcon} alt="icon" /> TABLEAU DE CONTENU
                   </h6>
                   <ol className="terms-list">
                     {data?.map((item, i) => (
