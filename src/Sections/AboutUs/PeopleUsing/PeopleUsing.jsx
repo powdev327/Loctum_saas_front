@@ -44,20 +44,15 @@ const PeopleUsing = () => {
                     </div>
                   </TitleStyleWrapper>
                   <p>
-                    We use as filler text for layouts, non-readability is of great
-                    importancebut because those who do not know how to pursue
-                    pleasure.
+                    QuickLocum Inc. est une plateforme digitale innovante dédiée à la mise en relation des professionnels de santé avec des établissements de santé, agences de recrutement et autres organisations ayant des besoins en placement, remplacement ou missions ponctuelles.
                   </p>
                   <p>
-                    Consequences that are extremely painful. Nor again is there
-                    anyone who loves or pursues or desires to obtain. know how to
-                    pursue pleasure rationally encounter consequences that are
-                    extremely painful. Nor again is there anyone who loves.
+                    Contrairement aux agences de placement traditionnelles, QuickLocum offre une solution technologique moderne pour faciliter et optimiser les processus de recrutement dans les secteurs des soins dentaires, pharmaceutiques et infirmiers
                   </p>
-                  <a href="#" className="text-link">
-                    <span>View Case Studies</span>
-                    <GoArrowRight />
-                  </a>
+                  {/*<a href="#" className="text-link">*/}
+                  {/*  <span>View Case Studies</span>*/}
+                  {/*  <GoArrowRight />*/}
+                  {/*</a>*/}
                 </div>
               </div>
             </ScrollAnimate>
