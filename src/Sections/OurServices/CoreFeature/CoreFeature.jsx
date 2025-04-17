@@ -39,31 +39,29 @@ const CoreFeature = () => {
             <div className="core-feature-content">
               <ScrollAnimate delay={200}>
                 <TitleStyleWrapper>
-                  <div className="section-title">
-                    <span className="sub-title">Core feature</span>
-                    <h2 className="title xl-mb-40 md-mb-20">
-                      We Provide
-                      <br />
-                      Our Best Service
-                    </h2>
-                    <p>
-                      It is a long established fact that a reader will be
-                      distracted by the readable content of a page when looking
-                      at its layout. but also the leap into electronic
-                      typesetting.
-                    </p>
-                  </div>
+                  <span className="sub-title">Fonctionnalités Clés</span>
+                  <h2 className="title xl-mb-40 md-mb-20">
+                    Nos Services
+                    <br />
+                    Notre meilleur service
+                  </h2>
+                  <p>
+                    QuickLocum facilite la mise en relation entre professionnels de santé
+                    et établissements médicaux à travers des outils intuitifs, performants
+                    et sécurisés.
+                  </p>
+
                 </TitleStyleWrapper>
               </ScrollAnimate>
               <ScrollAnimate delay={250}>
                 <div className="core-feature-actions">
-                  <a href="#" className="text-link">
-                    <span>View Case Studies</span>
-                    <span
-                      className="iconify"
-                      data-icon="akar-icons:arrow-right"
-                    />
-                  </a>
+                  {/*<a href="#" className="text-link">*/}
+                  {/*  <span>View Case Studies</span>*/}
+                  {/*  <span*/}
+                  {/*    className="iconify"*/}
+                  {/*    data-icon="akar-icons:arrow-right"*/}
+                  {/*  />*/}
+                  {/*</a>*/}
                   <a href="#" className="rotate-icon-btn">
                     <img
                       className="rotate-icon"
