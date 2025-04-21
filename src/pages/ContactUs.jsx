@@ -12,7 +12,7 @@ const ContactUs = () => {
       <Header variant="main-header" />
       <Breadcumbs title="Contact Us" />
       <SayHello />
-      {/*<ContactLocation />*/}
+      <ContactLocation />
       <StartBuildingComponent />
       <FooterTwo />
     </Layout>

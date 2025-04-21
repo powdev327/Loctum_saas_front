@@ -1,5 +1,5 @@
 const Data = [
-  {
+/*  {
     title: "Products 🔥",
     menuList: [
       {
@@ -83,7 +83,7 @@ const Data = [
         badgeTitle: "Hiring",
       },
     ],
-  },
+  },*/
 ];
 
 export default Data;
