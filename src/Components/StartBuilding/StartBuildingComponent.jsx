@@ -12,8 +12,9 @@ const StartBuildingComponent = () => {
               <ScrollAnimate delay={200}>
                 <div className="section-title">
                   <h2 className="title">
-                    Start building a<br />
-                    high-performing Website
+                    QuickLocum Smart
+                    <br />
+                    Healthcare Staffing
                   </h2>
                 </div>
               </ScrollAnimate>

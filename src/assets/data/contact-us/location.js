@@ -3,20 +3,20 @@ import Icon2 from "../../images/icons/phone.svg";
 import Icon3 from "../../images/icons/sms.svg";
 
 const data = [
-  {
+/*  {
     icon: Icon1,
-    title: "Staco HQ",
-    address: "Stact Inc, 06 Highley St, Victoria, New York",
-  },
+    title: "QuickLocum",
+    description: "Bienvenue sur QuickLocum. En accédant à notre plateforme ou en l'utilisant, vous acceptez de vous conformer aux présentes Conditions d’Utilisation. ",
+  },*/
   {
     icon: Icon2,
     title: "Call Us",
-    phoneNumbers: ["Mobile: (+61) - 1990 - 6886", "Hotline: 1800 - 1102"],
+    phoneNumbers: ["Mobile: (+212) 587-882-6180"],
   },
   {
     icon: Icon3,
     title: "Mail Us",
-    emails: ["Info: ask@domain.com", "Support: hello@domain.com"],
+    emails: ["Contact: contact@quicklocum.ca"],
   },
 ];
 

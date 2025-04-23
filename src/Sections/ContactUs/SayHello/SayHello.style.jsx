@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const SayHelloStyle = styled.section`
-  padding: 130px 0 65px 0;
+  padding: 130px 0 0;
 
   .contact-img {
     margin-right: 50px;

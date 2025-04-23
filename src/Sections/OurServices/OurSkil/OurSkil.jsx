@@ -18,19 +18,18 @@ const OurSkil = () => {
             <div className="skills-content">
               <ScrollAnimate delay={200}>
                 <TitleStyleWrapper>
-                  <div className="section-title">
-                    <span className="sub-title">Our Skills</span>
-                    <h2 className="title">
-                      We’re Innovators <br />
-                      &amp; Marketing Experts
-                    </h2>
-                    <p>
-                      It is a long established fact that a reader will be
-                      distracted by the readable content of a page when looking
-                      at its layout. but also the leap into electronic
-                      typesetting.
-                    </p>
-                  </div>
+                  <span className="sub-title">Nos Compétences</span>
+                  <h2 className="title">
+                    Experts en Recrutement <br />
+                    &amp; Technologie Médicale
+                  </h2>
+                  <p>
+                    QuickLocum combine expertise médicale et innovation digitale pour offrir une
+                    plateforme fluide, intuitive et centrée sur les besoins des professionnels de
+                    santé et des établissements. Notre mission est de simplifier chaque étape du
+                    processus de mise en relation.
+                  </p>
+
                 </TitleStyleWrapper>
               </ScrollAnimate>
               <ScrollAnimate delay={250}>

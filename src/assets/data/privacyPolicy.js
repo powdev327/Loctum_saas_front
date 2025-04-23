@@ -1,51 +1,51 @@
 const data = [
   {
     contentId: "one",
-    title: "Our privacy",
+    title: "Notre politique de confidentialité",
     description:
-      "<p>At staco, we are committed to protecting your privacy and personal information. This privacy policy explains how we collect, use, and share your information when you use our services. By using our services, you agree to the terms of this privacy policy.</p> <p>We take your privacy seriously and are committed to protecting your personal information. This privacy policy explains how we collect, use, and share your information when you use our services.</p>",
+        "<p>Chez QuickLocum, nous nous engageons à protéger votre vie privée et vos informations personnelles. Cette politique de confidentialité explique comment nous collectons, utilisons et partageons vos données lorsque vous utilisez nos services. En accédant à nos services, vous acceptez les termes de cette politique.</p> <p>Nous prenons votre confidentialité au sérieux et nous nous efforçons de sécuriser vos informations personnelles au mieux de nos capacités.</p>",
   },
   {
     contentId: "two",
-    title: "Information we collect",
+    title: "Informations que nous collectons",
     description:
-      "<p>We may collect information about you when you use our services, such as your name, email address, postal address, phone number, and payment information. We may also collect information about your device and how you use our services, including your IP address, browser type, and operating system.</p> <p><strong>3.1</strong> We collect this information in several ways, including when you provide it to us directly, when you use our services, and when we obtain it from third-party sources. We may also use cookies and similar technologies to collect information about your browsing behavior and preferences.</p> <p><strong>3.2</strong> When you use our services, and when we obtain it from third-party sources. We may also use cookies and similar technologies to collect information about your browsing behavior.</p> <p><strong>3.3</strong> Including when you provide it to us directly, when you use our services, and when we obtain it from third-party sources. We may also use cookies and similar technologies to collect information about your browsing behavior and preferences.</p>",
+        "<p>Nous pouvons collecter des informations telles que votre nom, votre adresse e-mail, votre adresse postale, votre numéro de téléphone et vos informations de paiement. Nous collectons également des informations sur votre appareil (adresse IP, type de navigateur, système d’exploitation) et votre comportement d’utilisation.</p> <p><strong>2.1</strong> Ces informations peuvent être fournies directement par vous, collectées lors de l'utilisation du service, ou obtenues via des sources tierces. Nous utilisons aussi des cookies et technologies similaires.</p> <p><strong>2.2</strong> Ces technologies nous aident à comprendre vos préférences et à améliorer votre expérience sur la plateforme.</p>",
   },
   {
     contentId: "three",
-    title: "How we use your information",
+    title: "Comment nous utilisons vos informations",
     description:
-      "<p>We use your information to provide and improve our services, to communicate with you, and to personalize your experience. Specifically, we may use your information for the following purposes:</p><ul><li>To process your transactions and provide customer support</li><li>To send you newsletters, promotions, and other marketing communications</li><li>To personalize your experience and recommend products and services based on your interests and preferences</li><li> To conduct research and analysis to improve our services and offerings</li> <li>To comply with legal and regulatory requirements</li></ul>",
+        "<p>Nous utilisons vos données pour :</p><ul><li>Fournir et améliorer nos services</li><li>Communiquer avec vous</li><li>Personnaliser votre expérience</li><li>Vous envoyer des offres et communications marketing</li><li>Effectuer des recherches internes pour améliorer nos produits</li><li>Respecter les exigences légales</li></ul>",
   },
   {
     contentId: "four",
-    title: "How we share your information",
+    title: "Partage de vos informations",
     description:
-      "<p>We may share your information with third-party service providers who help us provide our services, such as payment processors and customer support providers. We may also share your information with our partners and affiliates for marketing purposes. In some cases, we may share your information with government authorities or law enforcement agencies to comply with legal requirements or protect our rights and property.<br />We will never sell your information to third parties.</p>",
+        "<p>Nous pouvons partager vos données avec des prestataires tiers qui nous aident à offrir nos services (paiement, support client, etc.). Elles peuvent aussi être partagées avec nos partenaires à des fins marketing. En aucun cas vos données ne seront vendues.</p> <p>Dans certaines situations, nous pouvons également divulguer vos informations si requis par la loi ou pour protéger nos droits.</p>",
   },
   {
     contentId: "five",
-    title: "How we protect your information",
+    title: "Sécurité des informations",
     description:
-      "<p>We take reasonable measures to protect your information from unauthorized access, disclosure, alteration, and destruction. Specifically, we implement physical, technical, and administrative safeguards to protect your information. However, no method of transmission over the internet or electronic storage is 100% secure, and we cannot guarantee the security of your information.</p> <p> <strong>To identify:</strong> We collect this information in several ways, including when you provide it to us directly, when you use our services, and when we obtain it from third-party sources.</p><p><strong>To stay connected:</strong> When you use our services, and when we obtain it from third-party sources. We may also use cookies and similar technologies to collect information about your browsing behavior.</p> <p><strong>To get feedback:</strong> Including when you provide it to us directly, when you use our services, and when we obtain it from third-party sources. We may also use cookies and similar technologies to collect information about your browsing behavior and preferences.</p>",
+        "<p>Nous mettons en œuvre des mesures techniques, physiques et administratives pour protéger vos informations. Bien que nous nous efforcions de garantir un haut niveau de sécurité, aucun système n'est totalement invulnérable.</p> <p><strong>Identification :</strong> Les données sont collectées via plusieurs canaux (formulaires, cookies, partenaires tiers, etc.).</p> <p><strong>Connexion :</strong> Les cookies nous aident à suivre votre activité pour améliorer l’expérience utilisateur.</p> <p><strong>Amélioration :</strong> Nous utilisons également les données à des fins d’analyse et d’optimisation de nos services.</p>",
   },
   {
     contentId: "six",
-    title: "Your rights",
+    title: "Vos droits",
     description:
-      "<p>You have certain rights regarding your personal information, including the right to access and correct your information, the right to request that we delete your information, and the right to opt-out of receiving marketing communications from us. If you wish to exercise any of these rights, please contact us at [<b>contact email</b>].</p>",
+        "<p>Vous disposez de droits concernant vos données personnelles : accès, rectification, suppression, opposition à leur traitement à des fins commerciales. Pour exercer vos droits, veuillez nous contacter à <b>support@quicklocum.com</b></p>",
   },
   {
     contentId: "seven",
-    title: "Updates to this policy",
+    title: "Mises à jour de la politique",
     description:
-      "<p>We may update this privacy policy from time to time. We will notify you of any material changes by posting the updated policy on our website. We encourage you to review this policy periodically to stay informed about how we are protecting your information.</p>",
+        "<p>Cette politique de confidentialité peut être mise à jour occasionnellement. Nous vous informerons des changements importants via notre site. Nous vous encourageons à consulter régulièrement cette page.</p>",
   },
   {
     contentId: "eight",
-    title: "Contact us",
+    title: "Contactez-nous",
     description:
-      '<p>If you have any questions about these Terms, please contact us at [<a href="/contact-us">Contact page</a>].</p>',
+        '<p>Si vous avez des questions concernant cette politique de confidentialité, veuillez nous contacter via notre <a href="/contact-us">page de contact</a>.</p>',
   },
 ];
 

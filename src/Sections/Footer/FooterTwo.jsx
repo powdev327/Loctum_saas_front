@@ -5,7 +5,7 @@ import FooterSocialLinks from "../../assets/data/footer/footerSocialLinks";
 import Venobox from "venobox/dist/venobox";
 
 import FooterImg from "../../assets/images/footer/footer-2.png";
-import FooterLogo from "../../assets/images/logo/logo-dark.svg";
+import LogoImg1 from "../../assets/images/logo/q-logo-dark.svg";
 
 const FooterTwo = () => {
   useEffect(() => {
@@ -70,7 +70,7 @@ const FooterTwo = () => {
           <div className="row align-items-center">
             <div className="col-lg-4 col-md-3 col-sm-6">
               <a href="/" className="footer-logo">
-                <img src={FooterLogo} alt="footer-logo" />
+                <img src={LogoImg1} alt="footer-img" />
               </a>
             </div>
             <div className="col-lg-4 col-md-4 col-sm-6">
@@ -89,7 +89,7 @@ const FooterTwo = () => {
             </div>
             <div className="col-lg-4 col-md-5">
               <div className="footer-copyright">
-                <p className="mb-0">2025 <a href="#">Staco</a>. All rights reserved.</p>
+                <p className="mb-0">2025 <a href="#">QuickLocum</a>. All rights reserved.</p>
               </div>
             </div>
           </div>

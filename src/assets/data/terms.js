@@ -2,72 +2,72 @@ const data = [
   {
     contentId: "one",
     delay: 200,
-    title: "Use of Service",
+    title: "Utilisation du service",
     description:
-      "<p>You are granted a non-exclusive, non-transferable, revocable license to use the Service for your personal or commercial use. You agree to use the Service only for lawful purposes and in a way that does not infringe on the rights of others. looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of de Finibus</p>",
+        "<p>QuickLocum vous accorde une licence non exclusive, non transférable et révocable pour utiliser ses services à des fins personnelles ou professionnelles. Vous vous engagez à utiliser le service de manière légale et à ne pas porter atteinte aux droits d'autrui.</p>",
   },
   {
     contentId: "two",
     delay: 250,
-    title: "Your account",
+    title: "Votre compte",
     description:
-      '<p>Our Service allows you to post, link, store, share and otherwise make available certain information, text, graphics, videos, or other material ("Content"). You are responsible for the Content that you post on or through the Service, including its legality, reliability, and appropriatenes.</p> <p>Some parts of the Service are billed on a subscription basis. You will be billed in advance on a recurring subscription that you choose. </p>',
+        '<p>Vous êtes responsable de toute information, contenu ou média que vous publiez sur la plateforme. Certaines fonctionnalités peuvent être proposées sous forme d’abonnement et facturées de manière récurrente selon le plan choisi.</p>',
   },
   {
     contentId: "three",
     delay: 300,
-    title: "Payment and Subscription",
+    title: "Paiement et abonnement",
     description:
-      '<p>Some parts of the Service may require payment before access is granted. If you choose to subscribe to any of our paid services, you agree to pay all fees associated with the subscription. Payment may be made through a third-party      payment processor, and you agree to provide accurate payment information.</p> <p><strong>Taxes:</strong> If you wish to purchase any product or service made available through the Service ("<b>Purchase</b>"), you may be asked to supply certain information relevant to your Purchase including, without limitation, your name, address, and payment information.</p> <p><strong>Charges:</strong> Our Service allows you to post, link, store, share and otherwise make available certain information, text, graphics, videos, or other material.</p>',
+        '<p>Certains services de QuickLocum nécessitent un abonnement payant. Vous acceptez de fournir des informations de paiement exactes. Le paiement est géré via un prestataire tiers sécurisé.</p> <p><strong>Taxes :</strong> Des taxes peuvent s’appliquer à vos achats selon votre juridiction.</p>',
   },
   {
     contentId: "four",
     delay: 350,
-    title: "Intellectual Property",
+    title: "Propriété intellectuelle",
     description:
-      '<p>All content on the Service, including but not limited to text, graphics, logos, images, and software, is the property of [<b>Your Company</b>] or its licensors and is protected by copyright and other intellectual property laws. You may not copy, reproduce, distribute, or create derivative works based on the content without our prior written consent. </p> <p>(i) Our Service allows you to post, link, store, share and otherwise make available certain information, text, graphics, videos, or other material ("<b>Content</b>"). <br /> (ii) You are responsible for the Content that you post on or through the Service, including its legality, reliability, and appropriateness. <br /> (iii) For any damage or loss caused or alleged to be caused by or in connection with use of or reliance on any such content, goods or services available on or through any such web sites or services. </p>',
+        '<p>Tous les contenus (textes, visuels, logiciels) de QuickLocum sont protégés par les lois sur la propriété intellectuelle. Vous n’êtes pas autorisé à les reproduire ou les redistribuer sans accord préalable.</p>',
   },
   {
     contentId: "five",
     delay: 400,
-    title: "User Content",
+    title: "Contenu utilisateur",
     description:
-      '<p>You are solely responsible for any content you upload, submit, or otherwise make available on the Service ("User Content"). You agree not to post User Content that is illegal, defamatory, or infringes on the rights of others. We reserve the right to remove any User Content that violates these Terms.</p>',
+        '<p>Vous êtes seul responsable du contenu que vous publiez sur QuickLocum. Tout contenu jugé illégal, diffamatoire ou portant atteinte à des droits sera supprimé sans préavis.</p>',
   },
   {
     contentId: "six",
     delay: 450,
-    title: "Limitation of Liability",
+    title: "Limitation de responsabilité",
     description:
-      "<p>In no event shall [Your Company] be liable for any direct, indirect, incidental, special, or consequential damages arising out of or in connection with the use of the Service, including but not limited to lost profits, loss of data, or any other damages, whether based on contract, tort, strict liability, or any other theory of liability.</p>",
+        "<p>QuickLocum ne pourra être tenue responsable de dommages directs ou indirects liés à l’utilisation de ses services, y compris la perte de données ou de revenus.</p>",
   },
   {
     contentId: "seven",
     delay: 500,
-    title: "Termination",
+    title: "Résiliation",
     description:
-      "<p>We reserve the right to terminate or suspend your access to the Service at any time, with or without cause, without prior notice or liability.</p>",
+        "<p>Nous nous réservons le droit de suspendre ou de résilier votre accès aux services QuickLocum à tout moment, sans préavis, en cas de non-respect des présentes conditions.</p>",
   },
   {
     contentId: "eight",
     delay: 550,
-    title: "Governing Law",
+    title: "Droit applicable",
     description:
-      "<p>These Terms shall be governed by and construed in accordance with the laws of [Your Country/State], without regard to its conflict of law provisions. the content, privacy policies, or practices of any third-party web sites or services. You further acknowledge and agree that [Your Company] shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with use of or reliance on any such content, goods or services available on or through any such web sites or services </p>",
+        "<p>Les présentes conditions sont régies par les lois du Maroc. Tout litige sera soumis à la juridiction compétente.</p>",
   },
   {
     contentId: "nine",
     delay: 600,
-    title: "Changes to Terms",
+    title: "Modification des conditions",
     description:
-      "<p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material we will try to provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.</p>",
+        "<p>QuickLocum se réserve le droit de modifier les présentes conditions à tout moment. En cas de modification importante, vous en serez informé au moins 30 jours avant leur entrée en vigueur.</p>",
   },
   {
     contentId: "ten",
     delay: 650,
-    title: "Contact Us",
+    title: "Nous contacter",
     description:
-      '<p>If you have any questions about these Terms, please contact us at [<a href="/contact-us">Contact page</a>].</p>',
+        '<p>Pour toute question concernant ces conditions, veuillez nous contacter via la <a href="/contact-us">page de contact</a>.</p>',
   },
 ];
 

@@ -24,9 +24,7 @@ const AboutUsContent = () => {
                 <div className="section-title md-mb-40">
                   <span className="sub-title">About us</span>
                   <h2 className="title">
-                    Most useful <span className="marketing-badge">features</span>
-                    <br />
-                    You must need
+                    À propos de <span className="marketing-badge">nous</span>
                   </h2>
                 </div>
               </TitleStyleWrapper>
@@ -47,7 +45,7 @@ const AboutUsContent = () => {
                   {Data?.map((item, i) => (
                     <TabPanel key={i} className="about-feature-tab-content">
                       <h4>{item.subtitle}</h4>
-                      <p>{item.description}</p>
+                      <p style={{ whiteSpace: 'pre-line' }}>{item.description}</p>
 
                       <ul className="list">
                         {item.featerList?.map((feature, index) => (

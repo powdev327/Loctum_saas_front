@@ -3,28 +3,22 @@ import Data from "../../assets/data/terms";
 import ScrollAnimate from "../../Components/ScrollAnimate";
 
 const Terms = () => {
-  return (
-    <TermsAndPrivacy title="Terms of Service" data={Data}>
-      <ScrollAnimate delay={200}>
-      <p>
-        Welcome to [Your Company] ("<b>us</b>", "<b>we</b>", or "<b>our</b>").
-        These Terms of Service ("<b>Terms</b>") govern your use of our website
-        (the "<b>Service</b>") and any related products or services provided by
-        us. By using the Service, you agree to be bound by these Terms. Some
-        parts of the Service are billed on a subscription basis ("
-        <b>Subscription(s)</b>"). You will be billed in advance on a recurring
-        subscription that you choose.
-      </p>
-      </ScrollAnimate>
-      <ScrollAnimate delay={250}>
-      <p>
-        By accessing or using the Service you agree to be bound by these Terms.
-        If you disagree with any part of the terms then you may not access the
-        Service.
-      </p>
-      </ScrollAnimate>
-    </TermsAndPrivacy>
-  );
+    return (
+        <TermsAndPrivacy title="Terms of Service" data={Data}>
+            <ScrollAnimate delay={200}>
+                <p>
+                    Bienvenue sur <strong>QuickLocum</strong>. En accédant à notre plateforme ou en l'utilisant, vous acceptez de vous conformer aux présentes Conditions d’Utilisation. Ces conditions s'appliquent à tous les utilisateurs, visiteurs et autres personnes qui accèdent au service ou l’utilisent.
+                </p>
+            </ScrollAnimate>
+
+            <ScrollAnimate delay={250}>
+                <p>
+                    Si vous n'acceptez pas une partie de ces conditions, vous ne pouvez pas utiliser nos services. Veuillez les lire attentivement avant de continuer. Certaines fonctionnalités peuvent nécessiter un abonnement payant, facturé à l’avance sur une base récurrente.
+                </p>
+            </ScrollAnimate>
+
+        </TermsAndPrivacy>
+    );
 };
 
 export default Terms;
