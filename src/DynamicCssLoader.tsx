@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import GlobalStyles from "./assets/styles/GlobalStyles";
+import {MoonLoader} from "react-spinners";
 
 const dashboardPaths = [
     "/dashboard",
@@ -52,15 +53,13 @@ const dashboardPaths = [
     "/pie-chart",
 ];
 
-const DynamicCssLoader = () => {
+const DynamicCssLoader = ({ children }) => {
     const location = useLocation();
-    const [isDashboard, setIsDashboard] = useState(
-        dashboardPaths.includes(location.pathname)
-    );
+    const [isCssLoaded, setIsCssLoaded] = useState(false);
+    const [isDashboard, setIsDashboard] = useState(false);
 
     useEffect(() => {
-        const currentPath = location.pathname;
-        const isDashPage = dashboardPaths.includes(currentPath);
+        const isDashPage = dashboardPaths.includes(location.pathname);
         setIsDashboard(isDashPage);
 
         const head = document.head;
@@ -71,14 +70,32 @@ const DynamicCssLoader = () => {
         link.id = "dynamic-style";
         link.rel = "stylesheet";
         link.href = isDashPage ? "/src/input.css" : "/css/bootstrap.min.css";
+
+        link.onload = () => setIsCssLoaded(true);
         head.appendChild(link);
 
         return () => {
+            setIsCssLoaded(false);
             link.remove();
         };
     }, [location.pathname]);
 
-    return <>{!isDashboard && <GlobalStyles />}</>;
+    return isCssLoaded ? (
+        <>
+            {!isDashboard && <GlobalStyles />}
+            {children}
+        </>
+    ) : (
+        <div style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+            width: "100vw",
+        }}>
+            <MoonLoader color="#0095FF" />
+        </div>
+    );
 };
 
 export default DynamicCssLoader;
