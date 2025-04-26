@@ -18,12 +18,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <BrowserRouter>
         <Toaster position="top-center" reverseOrder={false} />
         <TemplateProvider theme={TemplateStyles}>
-            <DynamicCssLoader/>
+            <DynamicCssLoader>
             <ThemeProvider>
                 <AppWrapper>
                     <App />
                 </AppWrapper>
             </ThemeProvider>
+            </DynamicCssLoader>
         </TemplateProvider>
     </BrowserRouter>
 );
