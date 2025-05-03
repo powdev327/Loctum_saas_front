@@ -82,6 +82,7 @@ import Tabs from "./pages/UiElements/Tabs";
 import Tooltips from "./pages/UiElements/Tooltips";
 import Modals from "./pages/UiElements/Modals";
 import TaskList from "./pages/Task/TaskList";
+import {ProtectedRoute} from "./helpers/ProtectedRouter.tsx";
 
 const App = () => {
   return (
@@ -89,7 +90,15 @@ const App = () => {
         <ScrollToTop />
         <Routes>
           <Route element={<AppLayout />}>
-            <Route index path="/dashboard" element={<Ecommerce />} />
+            <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute role="client">
+                    <Ecommerce />
+                  </ProtectedRoute>
+                }
+            />
+            {/*<Route index path="/dashboard" element={<Ecommerce />} />*/}
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/marketing" element={<Marketing />} />
             <Route path="/crm" element={<Crm />} />
@@ -97,7 +106,11 @@ const App = () => {
             <Route path="/saas" element={<Saas />} />
 
             {/* Others Page */}
-            <Route path="/profile" element={<UserProfiles />} />
+            <Route path="/profile" element={
+              <ProtectedRoute role="client">
+                <UserProfiles />
+              </ProtectedRoute>
+            } />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/invoice" element={<Invoices />} />
             <Route path="/faq" element={<Faqs />} />

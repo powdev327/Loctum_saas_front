@@ -7,7 +7,7 @@ import axios from "axios";
 
 const Api = () => {
     const instance = axios.create({
-        baseURL: "http://127.0.0.1:8000/api/",
+        baseURL: "http://192.168.1.163:8000/api/",
         headers: {
             "Content-Type": "application/json",
         },
@@ -19,16 +19,12 @@ const Api = () => {
      */
 
     instance.interceptors.request.use(
-        async (axiosConfig) => {
-            try {
-                const token = localStorage.getItem("token");
-                if (token) {
-                    axiosConfig.headers.Authorization = `Bearer ${token}`;
-                } else {
-                    console.log("No token found in localstorage");
-                }
-            } catch (error) {
-                console.error("Error fetching token from localstorage:", error);
+        (axiosConfig) => {
+            const token = localStorage.getItem("token");
+            if (token) {
+                axiosConfig.headers.Authorization = `Bearer ${token}`;
+            } else {
+                console.log("No token found in localstorage");
             }
             return axiosConfig;
         },
@@ -36,6 +32,7 @@ const Api = () => {
             return Promise.reject(error);
         }
     );
+
 
     /**
      Response interceptor
