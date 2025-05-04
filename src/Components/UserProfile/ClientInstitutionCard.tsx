@@ -1,4 +1,21 @@
+import {TrashBinIcon} from "../../icons";
+import Button from "../ui/button/Button.tsx";
+import {Modal} from "../ui/modal";
+import {useModal} from "../../hooks/useModal.ts";
+import {useState} from "react";
+import {useClient} from "../../context/owner/ClientContext.tsx";
+
 export default function ClientInstitutionCard({ institutions }) {
+    const { isOpen, openModal, closeModal } = useModal();
+    const {deleteInstitution} = useClient()
+    const [selectedInstitution, setSelectedInstitution] = useState({ id: null, name: "" });
+
+    const handleOpenDeleteModal = (id, name) => {
+        setSelectedInstitution({ id, name });
+        openModal();
+    };
+
+    console.log('yeaaaaaaah', selectedInstitution);
     const renderSpecificFieldsDisplay = (institution) => {
         if (!institution?.specific_fields) return null;
         const { specific_fields, institution_type } = institution;
@@ -130,7 +147,17 @@ export default function ClientInstitutionCard({ institutions }) {
                     <div className="grid gap-6">
                         {institutions?.map((institution, index) => (
                             <div key={index} className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800">
-                                <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 mb-4">Institution {index + 1}</h4>
+                                <div className={'flex justify-between'}>
+                                    <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 mb-4">Institution {index + 1}</h4>
+
+                                    <button
+                                        onClick={() =>
+                                            handleOpenDeleteModal(institution?.institution_id, institution?.institution_name)
+                                        }
+                                    >
+                                        <TrashBinIcon className="text-gray-700 cursor-pointer size-5 hover:text-error-500 dark:text-gray-400 dark:hover:text-error-500" />
+                                    </button>
+                                </div>
 
                                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                     <div>
@@ -209,6 +236,34 @@ export default function ClientInstitutionCard({ institutions }) {
                     </div>
                 </div>
             </div>
+
+
+            <Modal
+                isOpen={isOpen}
+                onClose={closeModal}
+                showCloseButton={false}
+                className="max-w-[507px] p-6 lg:p-10"
+            >
+                <div className="text-center">
+                    <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90 sm:text-title-sm">
+                        Delete institution
+                    </h4>
+                    <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
+                        Are you sure you want to delete             <span className="font-semibold ">{selectedInstitution.name}</span>?
+
+                    </p>
+
+                    <div className="flex items-center justify-center w-full gap-3 mt-8">
+                        <Button size="sm" variant="outline" onClick={closeModal}>
+                            Close
+                        </Button>
+                        <Button size="sm" onClick={() => deleteInstitution(selectedInstitution.id)}>
+                            Delete
+                        </Button>
+
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 }

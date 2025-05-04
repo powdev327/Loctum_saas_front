@@ -1,4 +1,3 @@
-// src/hooks/owner/useInstitutionHook.ts
 import { useState } from "react";
 
 const useInstitutionForm = () => {

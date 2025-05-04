@@ -178,7 +178,8 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
     };
 
     setInstitutionsList((prev) => [...prev, { id: Date.now(), data: institutionData }]);
-    resetForm(); // Reset all form fields
+    toast.success('new institutions added successfully.');
+    resetForm();
   };
 
   const handleSave = async (event: React.FormEvent) => {
@@ -240,8 +241,8 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
 
       await buildInstitutionPayload(formData);
       toast.success("Institutions saved successfully");
-      setInstitutionsList([{ id: Date.now() }]); // Reset institutionsList after saving
-      resetForm(); // Reset form after saving
+      setInstitutionsList([{ id: Date.now() }]);
+      resetForm();
       closeModal();
     } catch (error) {
       console.error("Error saving institutions", error);
@@ -263,7 +264,7 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
           <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
             <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
               <div className="w-20 h-20 overflow-hidden border border-gray-200 rounded-full dark:border-gray-800">
-                <img src="/images/user/owner.jpg" alt="user" />
+                <img src={`http://127.0.0.1:8000/${clientInfo?.logo_url ?? "/images/user/owner.jpg"}`} alt="user" />
               </div>
               <div className="order-3 xl:order-2">
                 <h4 className="mb-2 text-lg font-semibold text-center text-gray-800 dark:text-white/90 xl:text-left">

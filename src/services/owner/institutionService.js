@@ -16,4 +16,9 @@ const getClientInstitution = async () => {
   return res.data;
 }
 
-export default {storeInstitution, getClientInstitution}
+const destroyInstitution = async (institution_id) => {
+  const res = await http.delete(`/client/delete-institution/${institution_id}`)
+  return res.data;
+}
+
+export default {storeInstitution, getClientInstitution, destroyInstitution}

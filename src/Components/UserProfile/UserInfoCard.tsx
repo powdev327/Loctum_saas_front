@@ -5,11 +5,11 @@ import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import { useClient } from "../../context/owner/ClientContext";
+import {ClientUpdate} from "./ClientUpdate.tsx";
 
 export default function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
   const { client } = useClient();
-
   return (
       <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
@@ -57,6 +57,15 @@ export default function UserInfoCard() {
 
               <div>
                 <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                  Full Address
+                </p>
+                <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                  {client?.full_address || "N/A"}
+                </p>
+              </div>
+
+              <div>
+                <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                   Province
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
@@ -66,7 +75,7 @@ export default function UserInfoCard() {
             </div>
           </div>
 
-         {/* <button
+          <button
               onClick={openModal}
               className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 lg:inline-flex lg:w-auto"
           >
@@ -86,9 +95,9 @@ export default function UserInfoCard() {
               />
             </svg>
             Edit
-          </button>*/}
+          </button>
         </div>
-
+        {isOpen && <ClientUpdate isOpen={isOpen} openModal={openModal} closeModal={closeModal} clientId={client?.client_id} />}
       </div>
   );
 }

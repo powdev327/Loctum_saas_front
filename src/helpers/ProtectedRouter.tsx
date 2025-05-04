@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import {MoonLoader} from "react-spinners";
 
 export const ProtectedRoute = ({ role, children }) => {
     const [userRole, setUserRole] = useState(null);
@@ -40,7 +41,7 @@ export const ProtectedRoute = ({ role, children }) => {
 
 
     if (isLoading) {
-        return null;
+        return <MoonLoader color="#0095FF" />;
     }
 
     if (!isLoggedIn() || userRole !== role) {

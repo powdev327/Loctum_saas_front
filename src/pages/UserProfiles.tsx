@@ -18,7 +18,6 @@ export default function UserProfiles() {
 
         try {
             await institutionService.storeInstitution(data)
-            toast.success("Institution saved successfully")
             await refreshClient()
         } catch (error) {
             toast.error("Failed to save institution. Please try again.")
