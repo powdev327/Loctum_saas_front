@@ -25,8 +25,6 @@ import toast from "react-hot-toast";
 export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
   const { isOpen, openModal, closeModal } = useModal();
   const {
-    institutionType,
-    setInstitutionType,
     businessLegalName,
     setBusinessLegalName,
     pharmacyOrClinicName,
@@ -59,12 +57,6 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
     setWeekendTrafficPatients,
     feesEnabled,
     setFeesEnabled,
-    maxTravelExpense,
-    setMaxTravelExpense,
-    perDiemPerDay,
-    setPerDiemPerDay,
-    accommodationCostPerNight,
-    setAccommodationCostPerNight,
     typeOfClinic,
     setTypeOfClinic,
     clinicPhoneNumber,
@@ -88,6 +80,11 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
     institutionsList,
     setInstitutionsList,
     resetForm,
+    number_of_pharmacists, setNumber_of_pharmacists,
+    number_of_assistants, setNumber_of_assistants,
+    additional_information, setAdditional_information,
+    traffic_in_week, setTraffic_in_week,
+
   } = useInstitutionForm();
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>, type: "pharmacy" | "clinic") => {
@@ -108,7 +105,7 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
 
   const validateForm = () => {
     const errors = [];
-    if (!institutionType) errors.push("Institution type is required");
+    if (!clientInfo?.business_sector) errors.push("Institution type is required");
     if (!businessLegalName) errors.push("Business legal name is required");
     if (!pharmacyOrClinicName) errors.push("Institution name is required");
     if (!address) errors.push("Address is required");
@@ -116,13 +113,13 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
     if (!province) errors.push("Province is required");
     if (!postalCode) errors.push("Postal code is required");
 
-    if (institutionType === "pharmacy") {
+    if (clientInfo?.business_sector === "pharmacy") {
       if (!typeOfPharmacy) errors.push("Type of pharmacy is required");
       const phoneRegex = /^\+\d{1,3}\s\d{3}\s\d{3}\s\d{4}$/;
       if (!pharmacyPhoneNumber || !phoneRegex.test(pharmacyPhoneNumber)) {
         errors.push("Invalid pharmacy phone number format. Use +1 555 555 5555");
       }
-    } else if (institutionType === "dental_clinic") {
+    } else if (clientInfo?.business_sector === "dental_clinic") {
       if (!typeOfClinic) errors.push("Type of clinic is required");
       const phoneRegex = /^\+\d{1,3}\s\d{3}\s\d{3}\s\d{4}$/;
       if (!clinicPhoneNumber || !phoneRegex.test(clinicPhoneNumber)) {
@@ -141,7 +138,7 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
     }
 
     const institutionData = {
-      institution_type: institutionType,
+      institution_type: clientInfo?.business_sector,
       business_legal_name: businessLegalName,
       institution_name: pharmacyOrClinicName,
       type_of_contract: typeOfContract,
@@ -153,16 +150,16 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
       languages: languagesSpoken,
       services: servicesOffered,
       logo,
-      specific_fields: institutionType === "pharmacy"
+      fees_enabled: feesEnabled,
+      specific_fields: clientInfo?.business_sector === "pharmacy"
           ? {
             type_of_pharmacy: typeOfPharmacy,
             pharmacy_phone_number: pharmacyPhoneNumber,
             weekday_traffic_patients: Number(weekdayTrafficPatients) || 0,
             weekend_traffic_patients: Number(weekendTrafficPatients) || 0,
-            fees_enabled: feesEnabled,
-            max_travel_expense: Number(maxTravelExpense) || 0,
-            per_diem_per_day: Number(perDiemPerDay) || 0,
-            accommodation_cost_per_night: Number(accommodationCostPerNight) || 0,
+            number_of_pharmacists : Number(number_of_pharmacists) || 0,
+            number_of_assistants : Number(number_of_assistants) || 0,
+            additional_information : additional_information
           }
           : {
             type_of_clinic: typeOfClinic,
@@ -173,6 +170,7 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
             parking_options: parkingOptions,
             number_of_current_dentists: Number(numberOfCurrentDentists) || 0,
             number_of_current_hygienists: Number(numberOfCurrentHygienists) || 0,
+            traffic_in_week: traffic_in_week,
             additional_info_visible_before: additionalInfoBeforeHiring,
           },
     };
@@ -191,8 +189,9 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
       return;
     }
 
+
     const currentInstitutionData = {
-      institution_type: institutionType,
+      institution_type: clientInfo?.business_sector,
       business_legal_name: businessLegalName,
       institution_name: pharmacyOrClinicName,
       type_of_contract: typeOfContract,
@@ -203,17 +202,16 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
       software,
       languages: languagesSpoken,
       services: servicesOffered,
-      logo,
-      specific_fields: institutionType === "pharmacy"
+      fees_enabled: feesEnabled,
+      specific_fields: clientInfo?.business_sector === "pharmacy"
           ? {
             type_of_pharmacy: typeOfPharmacy,
             pharmacy_phone_number: pharmacyPhoneNumber,
             weekday_traffic_patients: Number(weekdayTrafficPatients) || 0,
             weekend_traffic_patients: Number(weekendTrafficPatients) || 0,
-            fees_enabled: feesEnabled,
-            max_travel_expense: Number(maxTravelExpense) || 0,
-            per_diem_per_day: Number(perDiemPerDay) || 0,
-            accommodation_cost_per_night: Number(accommodationCostPerNight) || 0,
+            number_of_pharmacists: Number(number_of_pharmacists) || 0,
+            number_of_assistants: Number(number_of_assistants) || 0,
+            additional_information: additional_information,
           }
           : {
             type_of_clinic: typeOfClinic,
@@ -224,32 +222,37 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
             parking_options: parkingOptions,
             number_of_current_dentists: Number(numberOfCurrentDentists) || 0,
             number_of_current_hygienists: Number(numberOfCurrentHygienists) || 0,
+            traffic_in_week: traffic_in_week,
             additional_info_visible_before: additionalInfoBeforeHiring,
           },
     };
 
-    const institutionsData = [...institutionsList.map((inst) => inst.data).filter(Boolean), currentInstitutionData];
+    const institutionsData = [
+      ...institutionsList.map((inst) => inst.data).filter(Boolean),
+      currentInstitutionData,
+    ];
 
     try {
       const formData = new FormData();
+
       institutionsData.forEach((inst, index) => {
-        if (inst.logo) {
-          formData.append(`upload_logo_${index}`, inst.logo);
+
+        const institutionLogo = index === institutionsData.length - 1 ? logo : inst.logo;
+        if (institutionLogo) {
+          formData.append(`upload_logo_${index}`, institutionLogo);
         }
       });
       formData.append("institutions", JSON.stringify(institutionsData));
-
       await buildInstitutionPayload(formData);
       toast.success("Institutions saved successfully");
       setInstitutionsList([{ id: Date.now() }]);
       resetForm();
       closeModal();
     } catch (error) {
-      console.error("Error saving institutions", error);
+      console.error("Error saving institutions:", error);
       toast.error(`Failed to save institutions: ${error.response?.data?.detail || "Unknown error"}`);
     }
   };
-
   const removeInstitution = (id) => {
     if (institutionsList.length > 1) {
       setInstitutionsList(institutionsList.filter((item) => item.id !== id));
@@ -264,7 +267,10 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
           <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
             <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
               <div className="w-20 h-20 overflow-hidden border border-gray-200 rounded-full dark:border-gray-800">
-                <img src={`http://127.0.0.1:8000/${clientInfo?.logo_url ?? "/images/user/owner.jpg"}`} alt="user" />
+                <img
+                    src={clientInfo?.logo_url ? `http://192.168.1.101:8000/${clientInfo.logo_url}` : "/images/user/owner.jpg"}
+                    alt="user"
+                />
               </div>
               <div className="order-3 xl:order-2">
                 <h4 className="mb-2 text-lg font-semibold text-center text-gray-800 dark:text-white/90 xl:text-left">
@@ -293,8 +299,12 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
           <div className="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-11">
             <div className="custom-scrollbar h-[500px] overflow-y-auto px-2 pb-3">
               <div key={institutionsList.length} className="mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex justify-between px-4 items-center mb-4">
+
                   <h5 className="text-lg font-medium text-gray-800 dark:text-white/90">Institution</h5>
+
+                  {clientInfo?.business_sector.replace('_', " ")}
+
                   {institutionsList.length > 1 && (
                       <button
                           type="button"
@@ -306,8 +316,10 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
                   )}
                 </div>
 
-                <div>
-                  <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">Institution Type</h5>
+              {/*  <div className='flex justify-between items-center'>
+                  <h5 className="text-lg font-medium text-gray-800 dark:text-white/90">Institution Type</h5>
+
+                  {clientInfo?.business_sector}
                   <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                     <RadioSm
                         id="pharmacy"
@@ -326,10 +338,9 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
                         onChange={(value) => setInstitutionType(value)}
                     />
                   </div>
-                </div>
+                </div>*/}
 
                 <div className="mt-7">
-                  <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">Institution Data</h5>
                   <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                     <div className="col-span-2 lg:col-span-1">
                       <Label>Business Legal Name</Label>
@@ -342,10 +353,10 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
                     </div>
 
                     <div className="col-span-2 lg:col-span-1">
-                      <Label>{institutionType === "pharmacy" ? "Name of Pharmacy" : "Name of Clinic"}</Label>
+                      <Label>{clientInfo?.business_sector === "pharmacy" ? "Name of Pharmacy" : "Name of Clinic"}</Label>
                       <Input
                           type="text"
-                          placeholder={institutionType === "pharmacy" ? "Pharmacy Name..." : "Clinic Name..."}
+                          placeholder={clientInfo?.business_sector === "pharmacy" ? "Pharmacy Name..." : "Clinic Name..."}
                           value={pharmacyOrClinicName}
                           onChange={(e) => setPharmacyOrClinicName(e.target.value)}
                       />
@@ -373,7 +384,7 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
                             if (e.target.files?.[0]) {
                               setLogo(e.target.files[0]);
                             } else {
-                              setLogo(null); // Clear logo if no file is selected
+                              setLogo(null);
                             }
                           }}
                       />
@@ -447,7 +458,37 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
                       />
                     </div>
 
-                    {institutionType === "pharmacy" ? (
+                    <div className="col-span-2 flex justify-between">
+                      <Switch
+                          label="Fees Enabled (Yes/No)"
+                          checked={feesEnabled}
+                          onChange={(value) => setFeesEnabled(value)}
+                      />
+
+                      <div className="relative inline-block group">
+                        <button className="inline-flex px-4 py-3 text-sm font-medium">
+                          <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 50 50">
+                            <path d="M 25 2 C 12.309295 2 2 12.309295 2 25 C 2 37.690705 12.309295 48 25 48 C 37.690705 48 48 37.690705 48 25 C 48 12.309295 37.690705 2 25 2 z M 25 4 C 36.609824 4 46 13.390176 46 25 C 46 36.609824 36.609824 46 25 46 C 13.390176 46 4 36.609824 4 25 C 4 13.390176 13.390176 4 25 4 z M 25 11 A 3 3 0 0 0 22 14 A 3 3 0 0 0 25 17 A 3 3 0 0 0 28 14 A 3 3 0 0 0 25 11 z M 21 21 L 21 23 L 22 23 L 23 23 L 23 36 L 22 36 L 21 36 L 21 38 L 22 38 L 23 38 L 27 38 L 28 38 L 29 38 L 29 36 L 28 36 L 27 36 L 27 21 L 26 21 L 22 21 L 21 21 z"></path>
+                          </svg>
+                        </button>
+                        <div className="invisible absolute z-999999 right-full top-1/2 mr-2.5 -translate-y-1/2 opacity-0 transition-opacity duration-300 group-hover:visible group-hover:opacity-100">
+                          <div className="relative">
+                            <div className="whitespace-nowrap rounded-lg bg-white border shadow-sm px-3 py-2 text-xs font-medium text-black drop-shadow-4xl dark:bg-[#1E2634] dark:text-white">
+                              If fees are enabled
+                              the following contract fields<br />
+                              must be filled:<br />
+                               Max Travel Expense,
+                               Per Diem Per Day, <br />
+                               Accommodation Cost Per Night
+                            </div>
+
+                            <div className="absolute -right-1.5 top-1/2 h-3 w-4 -translate-y-1/2 rotate-45 bg-white dark:bg-[#1E2634]"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {clientInfo?.business_sector === "pharmacy" ? (
                         <>
                           <div className="col-span-2 lg:col-span-1">
                             <Label>Type of Pharmacy</Label>
@@ -469,7 +510,7 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
                                 placeholder="e.g., +1 555 555 5555"
                                 className={phoneError ? "border-red-500" : ""}
                             />
-                            {phoneError && institutionType === "pharmacy" && (
+                            {phoneError && clientInfo?.business_sector === "pharmacy" && (
                                 <p className="text-red-500 text-sm mt-1">{phoneError}</p>
                             )}
                           </div>
@@ -494,41 +535,34 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
                             />
                           </div>
 
-                          <div className="col-span-2 lg:col-span-1">
-                            <Switch
-                                label="Fees Enabled (Yes/No)"
-                                checked={feesEnabled}
-                                onChange={(value) => setFeesEnabled(value)}
-                            />
-                          </div>
 
                           <div className="col-span-2 lg:col-span-1">
-                            <Label>Max Travel Expense</Label>
+                            <Label>Number of Pharmacists</Label>
                             <Input
                                 type="number"
-                                value={maxTravelExpense}
-                                onChange={(e) => setMaxTravelExpense(e.target.value)}
+                                value={number_of_pharmacists}
+                                onChange={(e) => setNumber_of_pharmacists(e.target.value)}
                                 placeholder="e.g., 200"
                             />
                           </div>
 
                           <div className="col-span-2 lg:col-span-1">
-                            <Label>Per Diem Per Day</Label>
+                            <Label>Number of Assistants</Label>
                             <Input
                                 type="number"
-                                value={perDiemPerDay}
-                                onChange={(e) => setPerDiemPerDay(e.target.value)}
+                                value={number_of_assistants}
+                                onChange={(e) => setNumber_of_assistants(e.target.value)}
                                 placeholder="e.g., 50"
                             />
                           </div>
 
-                          <div className="col-span-2 lg:col-span-1">
-                            <Label>Accommodation Cost Per Night</Label>
+                          <div className="col-span-2 ">
+                            <Label>Additional Information (Optional)</Label>
                             <Input
-                                type="number"
-                                value={accommodationCostPerNight}
-                                onChange={(e) => setAccommodationCostPerNight(e.target.value)}
-                                placeholder="e.g., 150"
+                                type="text"
+                                value={additional_information}
+                                onChange={(e) => setAdditional_information(e.target.value)}
+                                placeholder="e.g., Additional Information"
                             />
                           </div>
                         </>
@@ -554,7 +588,7 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
                                 placeholder="e.g., +1 555 555 5555"
                                 className={phoneError ? "border-red-500" : ""}
                             />
-                            {phoneError && institutionType === "dental_clinic" && (
+                            {phoneError && clientInfo?.business_sector === "dental_clinic" && (
                                 <p className="text-red-500 text-sm mt-1">{phoneError}</p>
                             )}
                           </div>
@@ -620,6 +654,16 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
                                 label="Additional Info Visible Before Hiring"
                                 checked={additionalInfoBeforeHiring}
                                 onChange={(value) => setAdditionalInfoBeforeHiring(value)}
+                            />
+                          </div>
+
+                          <div className="col-span-1 lg:col-span-2">
+                            <Label>Traffic in Week</Label>
+                            <Input
+                                type="number"
+                                value={traffic_in_week}
+                                onChange={(e) => setTraffic_in_week(e.target.value)}
+                                placeholder="e.g., 3"
                             />
                           </div>
                         </>

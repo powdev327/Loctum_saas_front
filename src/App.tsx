@@ -89,28 +89,16 @@ const App = () => {
       <>
         <ScrollToTop />
         <Routes>
-          <Route element={<AppLayout />}>
-            <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute role="client">
-                    <Ecommerce />
-                  </ProtectedRoute>
-                }
-            />
-            {/*<Route index path="/dashboard" element={<Ecommerce />} />*/}
+          <Route element={<ProtectedRoute role="client"><AppLayout /></ProtectedRoute>}>
+            <Route path="/dashboard" element={<Ecommerce />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/marketing" element={<Marketing />} />
             <Route path="/crm" element={<Crm />} />
             <Route path="/stocks" element={<Stocks />} />
             <Route path="/saas" element={<Saas />} />
 
-            {/* Others Page */}
-            <Route path="/profile" element={
-              <ProtectedRoute role="client">
-                <UserProfiles />
-              </ProtectedRoute>
-            } />
+            {/* Other Pages */}
+            <Route path="/profile" element={<UserProfiles />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/invoice" element={<Invoices />} />
             <Route path="/faq" element={<Faqs />} />
@@ -123,13 +111,11 @@ const App = () => {
 
             {/* Applications */}
             <Route path="/chat" element={<Chats />} />
-
             <Route path="/task-list" element={<TaskList />} />
             <Route path="/task-kanban" element={<TaskKanban />} />
             <Route path="/file-manager" element={<FileManager />} />
 
             {/* Email */}
-
             <Route path="/inbox" element={<EmailInbox />} />
             <Route path="/inbox-details" element={<EmailDetails />} />
 
@@ -137,7 +123,7 @@ const App = () => {
             <Route path="/basic-tables" element={<BasicTables />} />
             <Route path="/data-tables" element={<DataTables />} />
 
-            {/* Ui Elements */}
+            {/* UI Elements */}
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/avatars" element={<Avatars />} />
             <Route path="/badge" element={<Badges />} />

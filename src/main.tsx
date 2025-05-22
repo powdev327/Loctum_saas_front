@@ -14,6 +14,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { AppWrapper } from './Components/common/PageMeta';
 import DynamicCssLoader from './helpers/DynamicCssLoader.tsx';
 import { ClientProvider } from './context/owner/ClientContext.tsx';
+import {ManagerProvider} from "./context/owner/ManagerContext.tsx";
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -35,6 +36,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         />
         <TemplateProvider theme={TemplateStyles}>
             <ClientProvider>
+                <ManagerProvider>
                 <DynamicCssLoader>
                     <ThemeProvider>
                            <AppWrapper>
@@ -42,6 +44,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                            </AppWrapper>
                     </ThemeProvider>
                 </DynamicCssLoader>
+                </ManagerProvider>
             </ClientProvider>
         </TemplateProvider>
     </BrowserRouter>

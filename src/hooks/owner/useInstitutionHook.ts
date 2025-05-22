@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 const useInstitutionForm = () => {
-    const [institutionType, setInstitutionType] = useState<string>("pharmacy");
     const [businessLegalName, setBusinessLegalName] = useState<string>("");
     const [pharmacyOrClinicName, setPharmacyOrClinicName] = useState<string>("");
     const [typeOfContract, setTypeOfContract] = useState<string[]>([]);
@@ -13,16 +12,18 @@ const useInstitutionForm = () => {
     const [languagesSpoken, setLanguagesSpoken] = useState<string[]>([]);
     const [servicesOffered, setServicesOffered] = useState<string[]>([]);
     const [logo, setLogo] = useState<File | null>(null);
+    const [feesEnabled, setFeesEnabled] = useState<boolean>(false);
+
     const [typeOfPharmacy, setTypeOfPharmacy] = useState<string>("");
     const [pharmacyPhoneNumber, setPharmacyPhoneNumber] = useState<string>("");
     const [weekdayTrafficPatients, setWeekdayTrafficPatients] = useState<string>("");
     const [weekendTrafficPatients, setWeekendTrafficPatients] = useState<string>("");
-    const [feesEnabled, setFeesEnabled] = useState<boolean>(false);
-    const [maxTravelExpense, setMaxTravelExpense] = useState<string>("");
-    const [perDiemPerDay, setPerDiemPerDay] = useState<string>("");
-    const [accommodationCostPerNight, setAccommodationCostPerNight] = useState<string>("");
+    const [number_of_pharmacists, setNumber_of_pharmacists] = useState<string>("");
+    const [number_of_assistants, setNumber_of_assistants] = useState<string>("");
+    const [additional_information, setAdditional_information] = useState<string>("");
     const [typeOfClinic, setTypeOfClinic] = useState<string>("");
     const [clinicPhoneNumber, setClinicPhoneNumber] = useState<string>("");
+    const [traffic_in_week, setTraffic_in_week] = useState<number>(0);
     const [chartingSystems, setChartingSystems] = useState<string[]>([]);
     const [ultrasonicTypes, setUltrasonicTypes] = useState<string[]>([]);
     const [radiographyTypes, setRadiographyTypes] = useState<string[]>([]);
@@ -34,7 +35,6 @@ const useInstitutionForm = () => {
     const [institutionsList, setInstitutionsList] = useState<Array<{ id: number; data?: any }>>([{ id: Date.now() }]);
 
     const resetForm = () => {
-        setInstitutionType("pharmacy");
         setBusinessLegalName("");
         setPharmacyOrClinicName("");
         setTypeOfContract([]);
@@ -46,14 +46,15 @@ const useInstitutionForm = () => {
         setLanguagesSpoken([]);
         setServicesOffered([]);
         setLogo(null);
+        setNumber_of_pharmacists('')
+        setNumber_of_assistants('')
+        setAdditional_information('')
         setTypeOfPharmacy("");
         setPharmacyPhoneNumber("");
         setWeekdayTrafficPatients("");
         setWeekendTrafficPatients("");
         setFeesEnabled(false);
-        setMaxTravelExpense("");
-        setPerDiemPerDay("");
-        setAccommodationCostPerNight("");
+
         setTypeOfClinic("");
         setClinicPhoneNumber("");
         setChartingSystems([]);
@@ -61,14 +62,14 @@ const useInstitutionForm = () => {
         setRadiographyTypes([]);
         setParkingOptions([]);
         setNumberOfCurrentDentists("");
+        setTraffic_in_week(0)
         setNumberOfCurrentHygienists("");
         setAdditionalInfoBeforeHiring(false);
         setPhoneError(null);
     };
 
     return {
-        institutionType,
-        setInstitutionType,
+
         businessLegalName,
         setBusinessLegalName,
         pharmacyOrClinicName,
@@ -91,6 +92,7 @@ const useInstitutionForm = () => {
         setServicesOffered,
         logo,
         setLogo,
+        traffic_in_week, setTraffic_in_week,
         typeOfPharmacy,
         setTypeOfPharmacy,
         pharmacyPhoneNumber,
@@ -101,12 +103,10 @@ const useInstitutionForm = () => {
         setWeekendTrafficPatients,
         feesEnabled,
         setFeesEnabled,
-        maxTravelExpense,
-        setMaxTravelExpense,
-        perDiemPerDay,
-        setPerDiemPerDay,
-        accommodationCostPerNight,
-        setAccommodationCostPerNight,
+
+        number_of_pharmacists, setNumber_of_pharmacists,
+        number_of_assistants, setNumber_of_assistants,
+        additional_information, setAdditional_information,
         typeOfClinic,
         setTypeOfClinic,
         clinicPhoneNumber,

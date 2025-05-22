@@ -7,9 +7,12 @@ import PageMeta from "../components/common/PageMeta"
 import toast from "react-hot-toast"
 import institutionService from "../services/owner/institutionService"
 import { useClient } from "../context/owner/ClientContext"
+import {useManager} from "../context/owner/ManagerContext.tsx";
+import ClientManagers from "../Components/UserProfile/ClientManagers.tsx";
 
 export default function UserProfiles() {
     const {client ,institutions, refreshClient } = useClient()
+    const {managers, refreshManager} = useManager()
     const buildInstitutionPayload = async (data) => {
         if (!(data instanceof FormData)) {
             toast.error("Invalid form data")
@@ -28,6 +31,7 @@ export default function UserProfiles() {
 
     useEffect(() => {
         refreshClient()
+        refreshManager()
     }, [])
 
     return (
@@ -42,6 +46,7 @@ export default function UserProfiles() {
                 <div className="space-y-6">
                     <UserMetaCard clientInfo={client} buildInstitutionPayload={buildInstitutionPayload} />
                     <UserInfoCard />
+                    {managers && managers.length > 0 && <ClientManagers managers={managers}/> }
                     {institutions && institutions.length > 0 && <ClientInstitutionCard institutions={institutions} />}
                 </div>
             </div>
