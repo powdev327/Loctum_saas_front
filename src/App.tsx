@@ -82,21 +82,22 @@ import Tabs from "./pages/UiElements/Tabs";
 import Tooltips from "./pages/UiElements/Tooltips";
 import Modals from "./pages/UiElements/Modals";
 import TaskList from "./pages/Task/TaskList";
+import {ProtectedRoute} from "./helpers/ProtectedRouter.tsx";
 
 const App = () => {
   return (
       <>
         <ScrollToTop />
         <Routes>
-          <Route element={<AppLayout />}>
-            <Route index path="/dashboard" element={<Ecommerce />} />
+          <Route element={<ProtectedRoute role="client"><AppLayout /></ProtectedRoute>}>
+            <Route path="/dashboard" element={<Ecommerce />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/marketing" element={<Marketing />} />
             <Route path="/crm" element={<Crm />} />
             <Route path="/stocks" element={<Stocks />} />
             <Route path="/saas" element={<Saas />} />
 
-            {/* Others Page */}
+            {/* Other Pages */}
             <Route path="/profile" element={<UserProfiles />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/invoice" element={<Invoices />} />
@@ -110,13 +111,11 @@ const App = () => {
 
             {/* Applications */}
             <Route path="/chat" element={<Chats />} />
-
             <Route path="/task-list" element={<TaskList />} />
             <Route path="/task-kanban" element={<TaskKanban />} />
             <Route path="/file-manager" element={<FileManager />} />
 
             {/* Email */}
-
             <Route path="/inbox" element={<EmailInbox />} />
             <Route path="/inbox-details" element={<EmailDetails />} />
 
@@ -124,7 +123,7 @@ const App = () => {
             <Route path="/basic-tables" element={<BasicTables />} />
             <Route path="/data-tables" element={<DataTables />} />
 
-            {/* Ui Elements */}
+            {/* UI Elements */}
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/avatars" element={<Avatars />} />
             <Route path="/badge" element={<Badges />} />
