@@ -10,7 +10,7 @@ import { useClient } from "../context/owner/ClientContext"
 import {useManager} from "../context/owner/ManagerContext.tsx";
 import ClientManagers from "../Components/UserProfile/ClientManagers.tsx";
 
-export default function UserProfiles() {
+export default function ClientUserProfiles() {
     const {client ,institutions, refreshClient } = useClient()
     const {managers, refreshManager} = useManager()
     const buildInstitutionPayload = async (data) => {
