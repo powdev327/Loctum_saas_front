@@ -1,9 +1,9 @@
-import Button from "../ui/button/Button.tsx";
-import {Modal} from "../ui/modal";
-import {useModal} from "../../hooks/useModal.ts";
+import Button from "../../ui/button/Button.tsx";
+import {Modal} from "../../ui/modal";
+import {useModal} from "../../../hooks/useModal.ts";
 import {useState} from "react";
-import {useClient} from "../../context/owner/ClientContext.tsx";
-import {ClientInstitutionUpdate} from "./popups/ClientInstitutionUpdate.tsx";
+import {useClient} from "../../../context/owner/ClientContext.tsx";
+import {ClientInstitutionUpdate} from "../popups/ClientInstitutionUpdate.tsx";
 
 export default function ClientInstitutionCard({ institutions }) {
     const {

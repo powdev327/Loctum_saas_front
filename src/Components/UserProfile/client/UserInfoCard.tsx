@@ -1,7 +1,7 @@
-import { useModal } from "../../hooks/useModal";
-import { useClient } from "../../context/owner/ClientContext";
-import {ClientUpdate} from "./popups/ClientUpdate.tsx";
-import {ClientAddManager} from "./popups/ClientAddManager.tsx";
+import { useModal } from "../../../hooks/useModal.ts";
+import { useClient } from "../../../context/owner/ClientContext.tsx";
+import {ClientUpdate} from "../popups/ClientUpdate.tsx";
+import {ClientAddManager} from "../popups/ClientAddManager.tsx";
 
 export default function UserInfoCard() {
   const { isOpen : isUpdateModal, openModal: isOpenUpdateModal, closeModal: isCloseUpdateModal } = useModal();

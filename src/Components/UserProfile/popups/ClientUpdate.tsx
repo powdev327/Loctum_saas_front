@@ -28,7 +28,7 @@ export function ClientUpdate({ isOpen, openModal, closeModal, clientId, client }
         if (phone_number.trim()) formData.append("phone_number", phone_number);
         if (full_address.trim()) formData.append("full_address", full_address);
         if (logo) formData.append("logo_url", logo);
-        formData.append('is_self_billing', String(is_self_billing ? "true" : "false"));
+        formData.append('is_self_billing', String(is_self_billing));
         try {
             await updateClient(clientId, formData);
             closeModal();

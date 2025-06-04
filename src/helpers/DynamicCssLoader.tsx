@@ -11,6 +11,7 @@ const dashboardPaths = [
     "/stocks",
     "/saas",
     "/profile",
+    "/contract",
     "/calendar",
     "/invoice",
     "/faq",
@@ -51,6 +52,7 @@ const dashboardPaths = [
     "/line-chart",
     "/bar-chart",
     "/pie-chart",
+    "/Locumprofile"
 ];
 
 const DynamicCssLoader = ({ children }) => {
@@ -70,6 +72,8 @@ const DynamicCssLoader = ({ children }) => {
         link.id = "dynamic-style";
         link.rel = "stylesheet";
         link.href = isDashPage ? "/src/input.css" : "/css/bootstrap.min.css";
+
+
 
         link.onload = () => setIsCssLoaded(true);
         head.appendChild(link);

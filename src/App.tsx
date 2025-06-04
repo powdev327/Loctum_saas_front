@@ -37,7 +37,7 @@ import Marketing from "./pages/Dashboard/Marketing";
 import Crm from "./pages/Dashboard/Crm.tsx";
 import Stocks from "./pages/Dashboard/Stocks.tsx";
 import Saas from "./pages/Dashboard/Saas.tsx";
-import UserProfiles from "./pages/UserProfiles.tsx";
+import ClientUserProfile from "./pages/Profiles/ClientUserProfile.tsx";
 import Carousel from "./pages/UiElements/Carousel";
 import Maintenance from "./pages/OtherPage/Maintenance";
 import FiveZeroZero from "./pages/OtherPage/FiveZeroZero";
@@ -83,22 +83,30 @@ import Tooltips from "./pages/UiElements/Tooltips";
 import Modals from "./pages/UiElements/Modals";
 import TaskList from "./pages/Task/TaskList";
 import {ProtectedRoute} from "./helpers/ProtectedRouter.tsx";
+import LocumUserProfile from "./pages/Profiles/LocumUserProfile.tsx";
+import {LocumProvider} from "./context/locum/LocumContext.tsx";
+import Contract from "./pages/Contract/Contract.tsx";
+import {ContractProvider} from "./context/owner/ContractContext.tsx";
 
 const App = () => {
   return (
       <>
         <ScrollToTop />
         <Routes>
-          <Route element={<ProtectedRoute role="client"><AppLayout /></ProtectedRoute>}>
+          <Route element={<ProtectedRoute role="client">
+            <ContractProvider>
+              <AppLayout />
+            </ContractProvider>
+            </ProtectedRoute>}>
             <Route path="/dashboard" element={<Ecommerce />} />
-            <Route path="/analytics" element={<Analytics />} />
             <Route path="/marketing" element={<Marketing />} />
             <Route path="/crm" element={<Crm />} />
             <Route path="/stocks" element={<Stocks />} />
             <Route path="/saas" element={<Saas />} />
 
             {/* Other Pages */}
-            <Route path="/profile" element={<UserProfiles />} />
+            <Route path="/profile" element={<ClientUserProfile />} />
+            <Route path="/contract" element={<Contract />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/invoice" element={<Invoices />} />
             <Route path="/faq" element={<Faqs />} />
@@ -153,6 +161,16 @@ const App = () => {
             <Route path="/pie-chart" element={<PieChart />} />
           </Route>
 
+          <Route element={
+            <ProtectedRoute role="locum">
+              <LocumProvider>
+                <AppLayout />
+              </LocumProvider>
+            </ProtectedRoute>
+          }>
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/Locumprofile" element={<LocumUserProfile />} />
+          </Route>
 
           <Route path="/" element={<Home />} />
           <Route path="/customer-service" element={<CustomerService />} />

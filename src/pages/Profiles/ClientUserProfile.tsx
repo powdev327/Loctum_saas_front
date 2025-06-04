@@ -1,16 +1,16 @@
 import { useEffect } from "react"
-import PageBreadcrumb from "../components/common/PageBreadCrumb"
-import UserMetaCard from "../components/UserProfile/UserMetaCard"
-import UserInfoCard from "../components/UserProfile/UserInfoCard"
-import ClientInstitutionCard from "../components/UserProfile/ClientInstitutionCard"
-import PageMeta from "../components/common/PageMeta"
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb.tsx"
+import UserMetaCard from "../../Components/UserProfile/client/UserMetaCard.tsx"
+import UserInfoCard from "../../Components/UserProfile/client/UserInfoCard.tsx"
+import ClientInstitutionCard from "../../Components/UserProfile/client/ClientInstitutionCard.tsx"
+import PageMeta from "../../Components/common/PageMeta.tsx"
 import toast from "react-hot-toast"
-import institutionService from "../services/owner/institutionService"
-import { useClient } from "../context/owner/ClientContext"
-import {useManager} from "../context/owner/ManagerContext.tsx";
-import ClientManagers from "../Components/UserProfile/ClientManagers.tsx";
+import institutionService from "../../services/owner/institutionService"
+import { useClient } from "../../context/owner/ClientContext.tsx"
+import {useManager} from "../../context/owner/ManagerContext.tsx";
+import ClientManagers from "../../Components/UserProfile/client/ClientManagers.tsx";
 
-export default function ClientUserProfiles() {
+export default function ClientUserProfile() {
     const {client ,institutions, refreshClient } = useClient()
     const {managers, refreshManager} = useManager()
     const buildInstitutionPayload = async (data) => {

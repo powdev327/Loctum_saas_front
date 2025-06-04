@@ -8,6 +8,7 @@ export const useClient = () => useContext(ClientContext);
 
 export const ClientProvider = ({ children }) => {
     const [client, setClient] = useState(null);
+    const [client_id, setClient_id] = useState(null);
     const [institutions, setInstitutions] = useState([]);
     const [institutionObj, setInstitution] = useState(null);
 
@@ -15,6 +16,7 @@ export const ClientProvider = ({ children }) => {
         try {
             const data = await institutionService.getClientInstitution();
             setClient(data.client);
+            setClient_id(data.client.client_id);
             setInstitutions(data.institutions);
         } catch (error) {
             console.error("Error fetching client institution data:", error);
@@ -51,7 +53,7 @@ export const ClientProvider = ({ children }) => {
     }, []);
 
     return (
-        <ClientContext.Provider value={{ client, institutions, refreshClient: getClient, updateClient, deleteInstitution, updateInstitution
+        <ClientContext.Provider value={{ client, client_id, institutions, refreshClient: getClient, updateClient, deleteInstitution, updateInstitution
         }}>
             {children}
         </ClientContext.Provider>
