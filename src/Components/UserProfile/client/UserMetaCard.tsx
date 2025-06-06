@@ -1,24 +1,23 @@
-import { useModal } from "../../hooks/useModal";
-import { Modal } from "../ui/modal";
-import Button from "../ui/button/Button";
-import Input from "../form/input/InputField";
-import Label from "../form/Label";
-import RadioSm from "../form/input/RadioSm";
-import useInstitutionForm from "../../hooks/owner/useInstitutionHook";
-import { typeContractList } from "../../config/owner/typeContractList";
-import MultiSelect from "../form/MultiSelect";
-import { typePharmacyInstitutionList } from "../../config/owner/pharmacyInstitution/typePharmacyInstitutionList";
-import Select from "../form/Select";
-import { provincesList } from "../../config/owner/provincesList";
-import { clinicServicesList } from "../../config/owner/clinicInstitution/clinicServicesList";
-import { typeClinicInstitutionList } from "../../config/owner/clinicInstitution/typeClinicInstitutionList";
-import { typeOfUltrasoundList } from "../../config/owner/clinicInstitution/typeOfUltrasoundList";
-import { systemOdontogramList } from "../../config/owner/clinicInstitution/systemOdontogramList";
-import { typeRadiographicList } from "../../config/owner/clinicInstitution/typeRadiographicList";
-import { parkingList } from "../../config/owner/clinicInstitution/clinicParkingList";
-import Switch from "../form/switch/Switch";
-import { softwareList } from "../../config/owner/softwareList";
-import { languagesList } from "../../config/owner/languagesList";
+import { useModal } from "../../../hooks/useModal.ts";
+import { Modal } from "../../ui/modal";
+import Button from "../../ui/button/Button.tsx";
+import Input from "../../form/input/InputField.tsx";
+import Label from "../../form/Label.tsx";
+import useInstitutionForm from "../../../hooks/owner/useInstitutionHook.ts";
+import { typeContractList } from "../../../config/owner/typeContractList.ts";
+import MultiSelect from "../../form/MultiSelect.tsx";
+import { typePharmacyInstitutionList } from "../../../config/owner/pharmacyInstitution/typePharmacyInstitutionList.ts";
+import Select from "../../form/Select.tsx";
+import { provincesList } from "../../../config/owner/provincesList.ts";
+import { clinicServicesList } from "../../../config/owner/clinicInstitution/clinicServicesList.ts";
+import { typeClinicInstitutionList } from "../../../config/owner/clinicInstitution/typeClinicInstitutionList.ts";
+import { typeOfUltrasoundList } from "../../../config/owner/clinicInstitution/typeOfUltrasoundList.ts";
+import { systemOdontogramList } from "../../../config/owner/clinicInstitution/systemOdontogramList.ts";
+import { typeRadiographicList } from "../../../config/owner/clinicInstitution/typeRadiographicList.ts";
+import { parkingList } from "../../../config/owner/clinicInstitution/clinicParkingList.ts";
+import Switch from "../../form/switch/Switch.tsx";
+import { softwareList } from "../../../config/owner/softwareList.ts";
+import { languagesList } from "../../../config/owner/languagesList.ts";
 import toast from "react-hot-toast";
 
 export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
@@ -251,8 +250,7 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
       console.error("Error saving institutions:", error);
       toast.error(`Failed to save institutions: ${error.response?.data?.detail || "Unknown error"}`);
     }
-  };
-  const removeInstitution = (id) => {
+  };  const removeInstitution = (id) => {
     if (institutionsList.length > 1) {
       setInstitutionsList(institutionsList.filter((item) => item.id !== id));
     } else {
@@ -267,7 +265,7 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
             <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
               <div className="w-20 h-20 overflow-hidden border border-gray-200 rounded-full dark:border-gray-800">
                 <img
-                    src={clientInfo?.logo_url ? `http://192.168.1.101:8000/${clientInfo.logo_url}` : "/images/user/owner.jpg"}
+                    src={clientInfo?.logo_url ? `http://127.0.0.1:8000/${clientInfo.logo_url}` : "/images/user/owner.jpg"}
                     alt="user"
                 />
               </div>
@@ -409,16 +407,14 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
                       />
                     </div>
 
-                    <div className="col-span-2 lg:col-span-1">
-                      <Label>Province</Label>
-                      <Select
-                          options={provincesList}
-                          placeholder="Select Option"
-                          value={province}
-                          onChange={(value) => setProvince(value)}
-                          className="dark:bg-dark-900"
-                      />
-                    </div>
+                    <Select
+                        options={provincesList}
+                        placeholder="Select Option"
+                        value={province}
+                        onChange={(option) => setProvince(option.value)}
+                        className="dark:bg-dark-900"
+                    />
+
 
                     <div className="col-span-2 lg:col-span-1">
                       <Label>Postal Code</Label>
@@ -495,7 +491,7 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
                                 options={typePharmacyInstitutionList}
                                 placeholder="Select Option"
                                 value={typeOfPharmacy}
-                                onChange={(value) => setTypeOfPharmacy(value)}
+                                onChange={(option) => setTypeOfClinic(option.value)}
                                 className="dark:bg-dark-900"
                             />
                           </div>
@@ -573,9 +569,9 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
                                 options={typeClinicInstitutionList}
                                 placeholder="Select Option"
                                 value={typeOfClinic}
-                                onChange={(value) => setTypeOfClinic(value)}
-                                className="dark:bg-dark-900"
+                                onChange={(option) => setTypeOfClinic(option.value)}
                             />
+
                           </div>
 
                           <div className="col-span-2 lg:col-span-1">
