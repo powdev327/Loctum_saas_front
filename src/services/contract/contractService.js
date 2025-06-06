@@ -18,7 +18,7 @@ const get_client_contracts = async () => {
 }
 
 const delete_client_contract = async (contract_id) => {
-    const res = await http.delete(`/contract/delete-contract${contract_id}`)
+    const res = await http.delete(`/contract/delete-contract/${contract_id}`)
     return res.data;
 }
 export default {store_Contract, get_client_contracts, delete_client_contract}

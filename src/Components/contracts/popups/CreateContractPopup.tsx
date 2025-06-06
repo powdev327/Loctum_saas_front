@@ -50,7 +50,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
 
     const handleSubmit = async () => {
         if (!institution?.value || !contract_type) {
-            toast.error("Missing required fields institution_id, or contract_type");
+            toast.error("Missing required fields institution_id or contract_type");
             return;
         }
 
@@ -98,30 +98,38 @@ export function CreateContractPopup({ isOpen, closeModal }) {
             hourly_rate: hourly_rate || 0,
         };
 
-        const specific_industry_fields =
-            industry_type === "PHARMACY"
-                ? pharmacyIndustryFields
-                : industry_type === "DENTAL"
-                    ? dentalIndustryFields
-                    : {};
+        let specific_industry_fields = {};
+
+        if (industry_type === "pharmacy") {
+            if (!pharmacyIndustryFields || Object.keys(pharmacyIndustryFields).length === 0) {
+                throw new Error("Pharmacy industry fields are required but missing.");
+            }
+            specific_industry_fields = pharmacyIndustryFields;
+        } else if (industry_type === "dental_clinic") {
+            if (!dentalIndustryFields || Object.keys(dentalIndustryFields).length === 0) {
+                throw new Error("Dental industry fields are required but missing.");
+            }
+            specific_industry_fields = dentalIndustryFields;
+        }
+
 
         let contractData;
         if (contract_type === "placement") {
             contractData = {
                 ...baseContract,
                 specific_contract_fields: {
-                    desired_position: placementFields.desired_position,
+                    desired_position: placementFields.desired_position || "",
                     specialties: placementFields.specialties || [],
                     contract_location: placementFields.contract_location || "",
-                    start_date: placementFields.start_date || start_date,
-                    experience_level: placementFields.experience_level,
-                    compensation: placementFields.compensation,
+                    start_date: placementFields.start_date || start_date || "",
+                    experience_level: placementFields.experience_level || "",
+                    compensation: placementFields.compensation || "",
                     other_compensation: placementFields.other_compensation || "",
                     benefits: placementFields.benefits || [],
                     task_description: placementFields.task_description || "",
-                    urgent_need: placementFields.urgent_need || false,
-                    bonus_or_incentives: placementFields.bonus_or_incentives || false,
-                    fees: feesEnabled ? placementFields.fees : null,
+                    urgent_need: placementFields.urgent_need ?? false,
+                    bonus_or_incentives: placementFields.bonus_or_incentives ?? false,
+                    fees: feesEnabled ? placementFields.fees || "" : "",
                     parking: placementFields.parking || "",
                     languages: placementFields.languages || [],
                     softwares: placementFields.softwares || [],
@@ -133,7 +141,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
         } else if (contract_type === "affiliation") {
             contractData = {
                 ...baseContract,
-                specific_fields: {
+                specific_contract_fields: {
                     establishment_name: affiliationFields.establishment_name || "",
                     position_sought: affiliationFields.position_sought || "",
                     affiliation_location: affiliationFields.affiliation_location || "",
@@ -153,7 +161,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
         } else if (contract_type === "remplacement") {
             contractData = {
                 ...baseContract,
-                specific_fields: {
+                specific_contract_fields: {
                     mission_type: remplacementFields.mission_type || "",
                     required_specialty: remplacementFields.required_specialty || "",
                     mission_objective: remplacementFields.mission_objective || "",
@@ -168,20 +176,24 @@ export function CreateContractPopup({ isOpen, closeModal }) {
         } else {
             contractData = {
                 ...baseContract,
-                specific_fields: {
+                specific_contract_fields: {
                     attached_documents: [],
                 },
                 specific_industry_fields,
             };
         }
 
-        console.log("Contract data:", JSON.stringify(contractData, null, 2));
         formData.append("contract_data", JSON.stringify(contractData));
+        console.log("contractData:", JSON.stringify(contractData, null, 2));
 
         const files =
             contract_type === "placement"
                 ? placementFields.attached_documents
-                : affiliationFields.attached_documents;
+                : contract_type === "affiliation"
+                    ? affiliationFields.attached_documents
+                    : contract_type === "remplacement"
+                        ? remplacementFields.attached_documents
+                        : [];
 
         if (files) {
             files.forEach((file) => {
@@ -191,10 +203,9 @@ export function CreateContractPopup({ isOpen, closeModal }) {
 
         try {
             await storeContract(formData);
-            console.log("Contract submitted!");
             closeModal();
         } catch (error) {
-            console.error("Submission error:", error);
+            toast.error("Failed to submit contract.");
         }
     };
     const contractOptions = [
@@ -204,16 +215,14 @@ export function CreateContractPopup({ isOpen, closeModal }) {
     ];
 
     const institutionToIndustryMap = {
-        DENTAL: "Dental Clinic",
-        PHARMACY: "Pharmacy",
+        dental_clinic: "dental_clinic",
+        pharmacy: "pharmacy",
     };
 
     const options = Object.entries(institutionToIndustryMap).map(([key, label]) => ({
         value: key,
         label,
     }));
-
-
 
 
     return (
@@ -243,11 +252,17 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                 placeholder="Select institution"
                                 value={institution}
                                 onChange={(selectedOption) => {
+                                    console.log("Selected institution_type:", selectedOption.institution_type);
+
                                     setInstitution(selectedOption);
                                     if (selectedOption.type_of_contract) {
                                         setContractType(selectedOption.type_of_contract);
                                     }
                                     setFeesEnabled(selectedOption.fees_enabled);
+
+                                    if (selectedOption.institution_type) {
+                                        setIndustryType(selectedOption.institution_type);
+                                    }
                                 }}
                             />
                         </div>
@@ -307,7 +322,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                 <Select
                                     options={options}
                                     placeholder="Select industry"
-                                    value={options.find(opt => opt.value === industry_type) || null}
+                                    value={options.find(opt => opt.value === industry_type)}
                                     onChange={(option) => setIndustryType(option?.value || "")}
                                 />
                             </div>
@@ -317,7 +332,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                         </div>
 
 
-                        {industry_type === "PHARMACY" && (
+                        {industry_type === "pharmacy" && (
                             <div className="space-y-4 mt-4">
                                 <div>
                                     <Label>Daily Work Hours</Label>
@@ -393,7 +408,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                             </div>
                         )}
 
-                        {industry_type === "DENTAL" && (
+                        {industry_type === "dental_clinic" && (
                             <div className="space-y-4 mt-4">
                                 <div>
                                     <Label>Work Hours</Label>
@@ -411,14 +426,13 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                 </div>
 
                                 <div>
-                                    <Label>Break Included</Label>
-                                    <input
-                                        type="checkbox"
+                                    <Switch
+                                        label="Break Included"
                                         checked={dentalIndustryFields.break_included ?? false}
                                         onChange={(e) =>
                                             setDentalIndustryFields({
                                                 ...dentalIndustryFields,
-                                                break_included: e.target.checked,
+                                                break_included: e,
                                             })
                                         }
                                     />
@@ -439,14 +453,13 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                 </div>
 
                                 <div>
-                                    <Label>Bonus or Premium</Label>
-                                    <input
-                                        type="checkbox"
+                                    <Switch
+                                        label="Bonus or Premium"
                                         checked={dentalIndustryFields.bonus_or_premium ?? false}
                                         onChange={(e) =>
                                             setDentalIndustryFields({
                                                 ...dentalIndustryFields,
-                                                bonus_or_premium: e.target.checked,
+                                                bonus_or_premium: e,
                                             })
                                         }
                                     />
@@ -968,6 +981,26 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                             onChange={(e) =>
                                                 setRemplacementFields({ ...remplacementFields, equipment_or_operating_room: e.target.value })
                                             }
+                                        />
+                                    </div>
+
+                                    <div className="col-span-2">
+                                        <Label>Attached Documents</Label>
+                                        <input
+                                            type="file"
+                                            multiple
+                                            accept=".pdf,.doc,.docx,.txt,.rtf,.xls,.xlsx,.ppt,.pptx"
+                                            onChange={(e) => {
+                                                const files = e.target.files;
+                                                if (files) {
+                                                    const fileArray = Array.from(files);
+                                                    setRemplacementFields((prev) => ({
+                                                        ...prev,
+                                                        attached_documents: fileArray,
+                                                    }));
+                                                }
+                                            }}
+                                            className="block w-full text-sm text-gray-900 dark:text-white/90 file:mr-4 file:rounded file:border-0 file:bg-brand-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-brand-700 hover:file:bg-brand-100 dark:file:bg-brand-800 dark:file:text-white"
                                         />
                                     </div>
                                 </div>

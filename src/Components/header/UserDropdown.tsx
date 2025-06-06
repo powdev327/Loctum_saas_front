@@ -14,8 +14,8 @@ export default function UserDropdown() {
 
   const displayImage =
       userType === 'locum'
-          ? `http://192.168.1.101:8000/uploads/${locum?.logo_url || 'images/user/owner.jpg'}`
-          : `http://192.168.1.101:8000/uploads/${client?.logo_url || 'images/user/owner.jpg'}`;
+          ? `http://127.0.0.1:8000/${locum?.logo_url || 'images/user/owner.jpg'}`
+          : `http://127.0.0.1:8000/${client?.logo_url}`;
   useEffect(() => {
     refreshClient()
   }, []);

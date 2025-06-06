@@ -18,9 +18,10 @@ export const ContractProvider = ({ children }) => {
         await get_client_contracts()
     }
 
-    const delete_client_contract = async (contract_id) => {
+    const delete_client_contract = async (contract_id,closeModal) => {
         await contractService.delete_client_contract(contract_id)
         await get_client_contracts()
+        await closeModal();
     }
     useEffect(() => {
         get_client_contracts()

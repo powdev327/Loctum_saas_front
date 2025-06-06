@@ -59,6 +59,7 @@ type RemplacementContract = {
     preferred_date: string;
     proposed_rate: string;
     equipment_or_operating_room?: string;
+    attached_documents: File[];
 };
 
 type PharmacyIndustryFields = {
@@ -135,6 +136,7 @@ const useContractForm = () => {
         preferred_date: "",
         proposed_rate: "",
         equipment_or_operating_room: "",
+        attached_documents: []
     });
 
     const [pharmacyIndustryFields, setPharmacyIndustryFields] = useState<PharmacyIndustryFields>({

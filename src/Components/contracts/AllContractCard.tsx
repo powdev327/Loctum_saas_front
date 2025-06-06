@@ -1,48 +1,42 @@
-
 import ContractCard from "./ContractCard.tsx";
-import {useModal} from "../../hooks/useModal.ts";
-import {CreateContractPopup} from "./popups/CreateContractPopup.tsx";
-import {useContract} from "../../context/owner/ContractContext.tsx";
-
-const contractData = [
-    {
-        position_title: "Image Analyst",
-        description: "Responsible for reviewing, organizing, and optimizing digital images for quality assurance and content standards. Works closely with media teams to ensure visual consistency across projects.",
-        contract_type: "Placement",
-    },
-    {
-        position_title: "Video Editor",
-        description: "Edits raw video footage into polished content for films, marketing campaigns, and social platforms. Collaborates with directors and producers to achieve visual storytelling goals.",
-        contract_type: "Affiliation",
-    },
-    {
-        position_title: "Audio Technician",
-        description: "Handles sound recording, mixing, and mastering for music tracks, podcasts, and video productions. Ensures audio clarity and consistency across all deliverables.",
-        contract_type: "Affiliation",
-    },
-    {
-        position_title: "App Developer",
-        description: "Designs and builds mobile and web applications with a focus on performance, usability, and scalability. Works within agile teams to deliver high-quality software products.",
-        contract_type: "Remplacement",
-    },
-    {
-        position_title: "Document Specialist",
-        description: "Manages the creation, formatting, and review of official documentation. Ensures compliance with legal and organizational standards in archiving and data handling.",
-        contract_type: "Placement",
-    },
-    {
-        position_title: "Download Coordinator",
-        description: "Oversees and optimizes internal file distribution processes. Coordinates between departments to ensure secure and efficient data access across systems.",
-        contract_type: "Placement",
-    },
-];
-
+import { useModal } from "../../hooks/useModal.ts";
+import { CreateContractPopup } from "./popups/CreateContractPopup.tsx";
+import { useContract } from "../../context/owner/ContractContext.tsx";
+import { useState } from "react";
+import { DeleteContractPopup } from "./popups/DeleteContractPopup.tsx";
+import { ReadContractPopup } from "./popups/ReadContractPopup.tsx";
 
 export default function AllContractCard() {
-    const {contracts} = useContract();
-    console.log('contrccc', contracts);
-    const { isOpen : isUpdateModal, openModal: isOpenUpdateModal, closeModal: isCloseUpdateModal } = useModal();
-    const { isOpen : isCreateModal, openModal: isOpenCreateModal, closeModal: isCloseCreateModal } = useModal();
+    const { contracts } = useContract();
+    console.log("contrccc", contracts);
+    const [readModalOpen, setReadModalOpen] = useState(false);
+    const [selectedContractForRead, setSelectedContractForRead] = useState(null);
+
+    const handleReadContract = (contract) => {
+        setSelectedContractForRead(contract);
+        setReadModalOpen(true);
+    };
+
+    const {
+        isOpen: isUpdateModal,
+        openModal: isOpenUpdateModal,
+        closeModal: isCloseUpdateModal,
+    } = useModal();
+    const {
+        isOpen: isDelete,
+        openModal: isOpenDeleteModal,
+        closeModal: isCloseDeleteModal,
+    } = useModal();
+    const [selectedContract, setSelectedContract] = useState({ id: null, name: "" });
+    const {
+        isOpen: isCreateModal,
+        openModal: isOpenCreateModal,
+        closeModal: isCloseCreateModal,
+    } = useModal();
+    const handleDelete = (id, name) => {
+        setSelectedContract({ id, name });
+        isOpenDeleteModal();
+    };
 
     return (
         <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
@@ -79,7 +73,10 @@ export default function AllContractCard() {
                             />
                         </div>
 
-                        <button className="flex items-center justify-center w-full gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600 sm:w-auto" onClick={isOpenCreateModal}>
+                        <button
+                            className="flex items-center justify-center w-full gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600 sm:w-auto"
+                            onClick={isOpenCreateModal}
+                        >
                             <svg
                                 className="fill-current"
                                 width="20"
@@ -102,18 +99,52 @@ export default function AllContractCard() {
             </div>
             <div className="p-4 border-t border-gray-100 dark:border-gray-800 sm:p-6">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3">
-                    {contracts.map((item, i) => (
-                        <ContractCard
-                            key={i}
-                            position_title={item.position_title}
-                            description={item.description}
-                            contract_type={item.contract_type}
-                        />
-                    ))}
-
+                    {contracts.length === 0 ? (
+                        <div>
+                            <span>No Contract Found</span>
+                        </div>
+                    ) : (
+                        contracts.map((item, i) => (
+                            <ContractCard
+                                key={i}
+                                id={item.contract_id}
+                                name={item.position_title}
+                                position_title={item.position_title}
+                                description={item.description}
+                                contract_type={item.contract_type}
+                                status={item.status}
+                                hourly_rate={item.hourly_rate}
+                                start_date={item.start_date}
+                                specific_contract_fields={item.specific_contract_fields}
+                                specific_industry_fields={item.specific_industry_fields}
+                                industry_type={item.industry_type}
+                                handleDeleteClick={handleDelete}
+                                onReadClick={() => handleReadContract(item)}
+                            />
+                        ))
+                    )}
                 </div>
             </div>
-            {isCreateModal && <CreateContractPopup isOpen={isCreateModal} closeModal={isCloseCreateModal}/>}
+            {isCreateModal && (
+                <CreateContractPopup
+                    isOpen={isCreateModal}
+                    closeModal={isCloseCreateModal}
+                />
+            )}
+            {isDelete && (
+                <DeleteContractPopup
+                    isOpen={isDelete}
+                    closeModal={isCloseDeleteModal}
+                    selectedContract={selectedContract}
+                />
+            )}
+            {readModalOpen && selectedContractForRead && (
+                <ReadContractPopup
+                    isOpen={readModalOpen}
+                    closeModal={() => setReadModalOpen(false)}
+                    selectedContract={selectedContractForRead}
+                />
+            )}
         </div>
     );
 }

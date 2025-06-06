@@ -4,10 +4,11 @@ import Input from "../../form/input/InputField.tsx";
 import Button from "../../ui/button/Button.tsx";
 import { useClient } from "../../../context/owner/ClientContext.tsx";
 import useClientUpdateFom from "../../../hooks/owner/useClientUpdateHook.ts";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import Switch from "../../form/switch/Switch.tsx";
 
 export function ClientUpdate({ isOpen, openModal, closeModal, clientId, client }) {
+    const [active, setActive] = useState(false);
     const {
         institution_name, setInstitution_name,
         province, setProvince,
@@ -46,6 +47,10 @@ export function ClientUpdate({ isOpen, openModal, closeModal, clientId, client }
             setFull_address(client.full_address || "");
             setLogo(null);
             setIs_self_billing(client?.is_self_billing);
+
+            if (client?.is_self_billing === true) {
+                setActive(true);
+            }
         }
     }, [isOpen, client]);
 
@@ -101,9 +106,15 @@ export function ClientUpdate({ isOpen, openModal, closeModal, clientId, client }
                             <div className="col-span-2 flex justify-between">
                                 <Switch
                                     label="I'll handle the billing myself (Yes/No)"
-                                    checked={is_self_billing}
-                                    onChange={(value) => setIs_self_billing(value)}
+                                    checked={is_self_billing === true}
+                                    onChange={(value) => {
+                                        setIs_self_billing(value);
+                                        setActive(value);
+                                    }}
                                 />
+
+
+
 
                                 <div className="relative inline-block group">
                                     <button className="inline-flex px-4 py-3 text-sm font-medium">

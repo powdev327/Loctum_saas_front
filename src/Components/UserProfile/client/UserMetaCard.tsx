@@ -265,7 +265,7 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
             <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
               <div className="w-20 h-20 overflow-hidden border border-gray-200 rounded-full dark:border-gray-800">
                 <img
-                    src={clientInfo?.logo_url ? `http://192.168.1.101:8000/${clientInfo.logo_url}` : "/images/user/owner.jpg"}
+                    src={clientInfo?.logo_url ? `http://127.0.0.1:8000/${clientInfo.logo_url}` : "/images/user/owner.jpg"}
                     alt="user"
                 />
               </div>
