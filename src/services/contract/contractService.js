@@ -21,4 +21,13 @@ const delete_client_contract = async (contract_id) => {
     const res = await http.delete(`/contract/delete-contract/${contract_id}`)
     return res.data;
 }
-export default {store_Contract, get_client_contracts, delete_client_contract}
+
+const update_contract = async (contract_id, data) => {
+    const res = await http.put(`/contract/update-contract/${contract_id}`, data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        }
+    })
+    return res.data;
+}
+export default {store_Contract, get_client_contracts, delete_client_contract, update_contract}

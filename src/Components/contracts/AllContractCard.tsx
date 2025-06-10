@@ -5,10 +5,11 @@ import { useContract } from "../../context/owner/ContractContext.tsx";
 import { useState } from "react";
 import { DeleteContractPopup } from "./popups/DeleteContractPopup.tsx";
 import { ReadContractPopup } from "./popups/ReadContractPopup.tsx";
+import {ConfirmationDuplicatePopup} from "./popups/ConfirmationDuplicatePopup.tsx";
+import {UpdateContractPopup} from "./popups/UpdateContractPopup.tsx";
 
 export default function AllContractCard() {
     const { contracts } = useContract();
-    console.log("contrccc", contracts);
     const [readModalOpen, setReadModalOpen] = useState(false);
     const [selectedContractForRead, setSelectedContractForRead] = useState(null);
 
@@ -21,6 +22,11 @@ export default function AllContractCard() {
         isOpen: isUpdateModal,
         openModal: isOpenUpdateModal,
         closeModal: isCloseUpdateModal,
+    } = useModal();
+    const {
+        isOpen: isDuplicateModal,
+        openModal: isOpenDuplicateModal,
+        closeModal: isCloseDuplicateModal,
     } = useModal();
     const {
         isOpen: isDelete,
@@ -37,6 +43,16 @@ export default function AllContractCard() {
         setSelectedContract({ id, name });
         isOpenDeleteModal();
     };
+
+    const handleDuplicate = (contract) => {
+        setSelectedContractForRead(contract);
+        isOpenDuplicateModal();
+    };
+
+    const handleUpdate = (contract) => {
+        setSelectedContractForRead(contract);
+        isOpenUpdateModal()
+    }
 
     return (
         <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
@@ -120,6 +136,8 @@ export default function AllContractCard() {
                                 industry_type={item.industry_type}
                                 handleDeleteClick={handleDelete}
                                 onReadClick={() => handleReadContract(item)}
+                                onDuplicateClick={() => handleDuplicate(item)}
+                                onUpdateClick={() => handleUpdate(item)}
                             />
                         ))
                     )}
@@ -142,6 +160,21 @@ export default function AllContractCard() {
                 <ReadContractPopup
                     isOpen={readModalOpen}
                     closeModal={() => setReadModalOpen(false)}
+                    selectedContract={selectedContractForRead}
+                />
+            )}
+            {isDuplicateModal && selectedContractForRead &&(
+                <ConfirmationDuplicatePopup
+                    isOpen={isDuplicateModal}
+                    closeModal={isCloseDuplicateModal}
+                    selectedContract={selectedContractForRead}
+                />
+            )}
+
+            {isUpdateModal && selectedContractForRead &&(
+                <UpdateContractPopup
+                    isOpen={isUpdateModal}
+                    closeModal={isCloseUpdateModal}
                     selectedContract={selectedContractForRead}
                 />
             )}

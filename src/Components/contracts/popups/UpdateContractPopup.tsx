@@ -1,22 +1,23 @@
-import Button from "../../ui/button/Button.tsx";
-import {AffiliationFieldsComponent} from "./ContractFieldsPopup/AffiliationFields.tsx";
-import {RemplacementFieldsComponent} from "./ContractFieldsPopup/RemplacementFields.tsx";
-import {PlacementFieldsComponent} from "./ContractFieldsPopup/PlacementFields.tsx";
-import {PharmacyFields} from "./ContractFieldsPopup/PharmacyFields.tsx";
-import {BaseFields} from "./ContractFieldsPopup/BaseFields.tsx";
-import Radio from "../../form/input/Radio.tsx";
-import Label from "../../form/Label.tsx";
-import Select from "../../form/Select.tsx";
-import {Modal} from "../../ui/modal";
-import toast from "react-hot-toast";
+import React from "react";
+import { Modal } from "../../ui/modal";
+import Label from "../../form/Label";
 import useContractForm from "../../../hooks/owner/contract/useContractHook.ts";
-import {useClient} from "../../../context/owner/ClientContext.tsx";
-import {useContract} from "../../../context/owner/ContractContext.tsx";
-import {DentalFields} from "./ContractFieldsPopup/DentalFields.tsx";
+import Button from "../../ui/button/Button.tsx";
+import Radio from "../../form/input/Radio.tsx";
+import Select from "../../form/Select.tsx";
+import { useClient } from "../../../context/owner/ClientContext.tsx";
+import { useContract } from "../../../context/owner/ContractContext.tsx";
+import toast from "react-hot-toast";
+import { BaseFields } from "./ContractFieldsPopup/BaseFields.tsx";
+import { PharmacyFields } from "./ContractFieldsPopup/PharmacyFields.tsx";
+import { DentalFields } from "./ContractFieldsPopup/DentalFields.tsx";
+import { PlacementFieldsComponent } from "./ContractFieldsPopup/PlacementFields.tsx";
+import { AffiliationFieldsComponent } from "./ContractFieldsPopup/AffiliationFields.tsx";
+import { RemplacementFieldsComponent } from "./ContractFieldsPopup/RemplacementFields.tsx";
 
-export function CreateContractPopup({ isOpen, closeModal }) {
+export function UpdateContractPopup({ isOpen, closeModal, selectedContract }) {
     const { institutions, client_id } = useClient();
-    const { storeContract } = useContract();
+    const { updateContract } = useContract();
     const {
         contract_type, setContractType,
         status, setStatus,
@@ -34,11 +35,11 @@ export function CreateContractPopup({ isOpen, closeModal }) {
         pharmacyIndustryFields, setPharmacyIndustryFields,
         dentalIndustryFields, setDentalIndustryFields,
         generateDateRange,
-    } = useContractForm();
+    } = useContractForm(selectedContract);
 
     const handleSubmit = async () => {
-        if (!institution?.value || !contract_type) {
-            toast.error("Missing required fields institution_id or contract_type");
+        if (!contract_type) {
+            toast.error("Missing required field: contract_type");
             return;
         }
         if (
@@ -71,7 +72,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
         const formData = new FormData();
         const baseContract = {
             client_id,
-            institution_id: institution.value,
+            institution_id: institution,
             contract_type: contract_type.toUpperCase(),
             industry: industry_type,
             status: status || "PENDING",
@@ -183,10 +184,10 @@ export function CreateContractPopup({ isOpen, closeModal }) {
         }
 
         try {
-            await storeContract(formData);
+            await updateContract(selectedContract?.contract_id, formData);
             closeModal();
         } catch (error) {
-            toast.error("Failed to submit contract.");
+            toast.error("Failed to update contract.");
         }
     };
 
@@ -194,6 +195,13 @@ export function CreateContractPopup({ isOpen, closeModal }) {
         { value: "placement", label: "Placement" },
         { value: "affiliation", label: "Affiliation" },
         { value: "remplacement", label: "Remplacement" },
+    ];
+
+    const statusOptions = [
+        { value: "PENDING", label: "Pending" },
+        { value: "ACTIVE", label: "Active" },
+        { value: "COMPLETED", label: "Completed" },
+        { value: "CANCELLED", label: "Cancelled" },
     ];
 
     const institutionToIndustryMap = {
@@ -207,7 +215,17 @@ export function CreateContractPopup({ isOpen, closeModal }) {
     }));
 
     const dateRange = generateDateRange(start_date, end_date);
-    const showPerDayWorkHours = contract_type === "remplacement" && dateRange.length < 10;
+
+    const calculateDaysDifference = (start: string, end: string) => {
+        if (!start || !end) return 0;
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        const diffTime = endDate.getTime() - startDate.getTime();
+        return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    };
+
+    const daysDifference = calculateDaysDifference(start_date, end_date);
+    const showPerDayWorkHours = contract_type === "remplacement" && daysDifference < 10;
 
     const hourOptions = Array.from({ length: 48 }, (_, i) => {
         const hours24 = Math.floor(i / 2);
@@ -226,10 +244,10 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                 <div className="custom-scrollbar h-[500px] overflow-y-auto px-2 pb-3">
                     <div className="px-2 pr-14">
                         <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-                            Add Contract Details
+                            Update Contract Details
                         </h4>
                         <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-                            Add details of Contract to keep your profile up-to-date.
+                            Modify contract details to update the existing contract.
                         </p>
                     </div>
                     <div className="flex flex-col">
@@ -244,17 +262,36 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                     fees_enabled: inst.fees_enabled,
                                 }))}
                                 placeholder="Select institution"
-                                value={institution}
+                                value={institutions
+                                    .map((inst) => ({
+                                        label: inst.institution_name,
+                                        value: inst.institution_id,
+                                        type_of_contract: inst.type_of_contract?.replace(/[{}]/g, ""),
+                                        institution_type: inst.institution_type,
+                                        fees_enabled: inst.fees_enabled,
+                                    }))
+                                    .find((opt) => opt.value === institution)}
                                 onChange={(selectedOption) => {
-                                    setInstitution(selectedOption);
-                                    if (selectedOption.type_of_contract) {
+                                    console.log("Selected institution_type:", selectedOption.institution_type);
+                                    setInstitution(selectedOption?.value || "");
+                                    if (selectedOption?.type_of_contract) {
                                         setContractType(selectedOption.type_of_contract);
                                     }
-                                    setFeesEnabled(selectedOption.fees_enabled);
-                                    if (selectedOption.institution_type) {
-                                        setIndustryType(selectedOption.institution_type);
+                                    setFeesEnabled(selectedOption?.fees_enabled || false);
+                                    if (selectedOption?.institution_type) {
+                                        setIndustryType(institutionToIndustryMap[selectedOption.institution_type] || "");
                                     }
                                 }}
+                            />
+                        </div>
+                        <div className="col-span-2 mb-5">
+                            <Label>Status</Label>
+                            <Select
+                                options={statusOptions}
+                                placeholder="Select status"
+                                value={statusOptions.find((opt) => opt.value === status) || null}
+                                onChange={(selectedOption) => setStatus(selectedOption.value)}
+                                required
                             />
                         </div>
                         <div className="mb-5">
@@ -292,7 +329,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                             setIndustryType={setIndustryType}
                             options={options}
                         />
-                        {industry_type === "pharmacy" && (
+                        {industry_type === "pharmacy" && contract_type !== "affiliation" && (
                             <PharmacyFields
                                 contract_type={contract_type}
                                 pharmacyIndustryFields={pharmacyIndustryFields}
@@ -302,7 +339,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                 hourOptions={hourOptions}
                             />
                         )}
-                        {industry_type === "dental_clinic" && (
+                        {industry_type === "dental_clinic" && contract_type !== "affiliation" && (
                             <DentalFields
                                 contract_type={contract_type}
                                 dentalIndustryFields={dentalIndustryFields}

@@ -12,6 +12,8 @@ interface SelectProps<T extends Option> {
     onChange: (option: T) => void;
     className?: string;
     value?: T | string; // Accepts full option or just the value
+    disabled?: boolean; // Added to control interactivity
+    required?: boolean; // Added to enforce selection
 }
 
 const Select = <T extends Option>({
@@ -20,6 +22,8 @@ const Select = <T extends Option>({
                                       onChange,
                                       className = "",
                                       value,
+                                      disabled = false, // Default to false (enabled)
+                                      required = false, // Default to false (not required)
                                   }: SelectProps<T>) => {
     const getInitialValue = () => {
         if (typeof value === "string") {
@@ -48,9 +52,11 @@ const Select = <T extends Option>({
                 selectedOption
                     ? "text-gray-800 dark:text-white/90"
                     : "text-gray-400 dark:text-gray-400"
-            } ${className}`}
+            } ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${className}`}
             value={selectedOption?.value || ""}
             onChange={handleChange}
+            disabled={disabled}
+            required={required}
         >
             <option
                 value=""

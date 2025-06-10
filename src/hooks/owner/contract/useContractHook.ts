@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-type ContractType = "placement" | "affiliation" | "remplacement";
+type ContractType = "PLACEMENT" | "AFFILIATION" | "REMPLACEMENT";
 type IndustryType = "Dental" | "Pharmacy";
 type ContractStatus = "pending" | "active" | "completed" | "cancelled";
 
@@ -62,12 +62,15 @@ type RemplacementContract = {
     attached_documents: File[];
 };
 
+type DailyWorkHours = { [date: string]: string };
+
 type PharmacyIndustryFields = {
     daily_work_hours: string[];
     break_included: boolean;
     break_duration?: number;
     bonus_or_additional_compensation: boolean;
     software?: string[];
+    per_day_work_hours: DailyWorkHours;
 };
 
 type DentalIndustryFields = {
@@ -76,85 +79,159 @@ type DentalIndustryFields = {
     break_duration?: number;
     bonus_or_premium?: boolean;
     software?: string[];
+    per_day_work_hours: DailyWorkHours;
 };
 
+const useContractForm = (initialContract: any = null) => {
+    const [contract_type, setContractType] = useState<ContractType | string>(
+        initialContract?.contract_type?.toLowerCase() || ""
+    );
+    const [industry_type, setIndustryType] = useState<IndustryType | string>(
+        initialContract?.industry_type === "dental_clinic" ? "dental_clinic" : initialContract?.industry_type || ""
+    );
+    const [status, setStatus] = useState<ContractStatus>(
+        initialContract?.status || "pending"
+    );
 
-const useContractForm = () => {
-    const [contract_type, setContractType] = useState<ContractType | string>("");
-    const [industry_type, setIndustryType] = useState<IndustryType | string>("");
-    const [status, setStatus] = useState<ContractStatus>("pending");
-
-    const [position_title, setPositionTitle] = useState<string>("");
-    const [description, setDescription] = useState<string>("");
-    const [start_date, setStartDate] = useState<string>("");
-    const [end_date, setEndDate] = useState<string>("");
-    const [hourly_rate, setHourlyRate] = useState<number>(0);
-    const [institution, setInstitution] = useState<string>("");
+    const [position_title, setPositionTitle] = useState<string>(
+        initialContract?.position_title || ""
+    );
+    const [description, setDescription] = useState<string>(
+        initialContract?.description || ""
+    );
+    const [start_date, setStartDate] = useState<string>(
+        initialContract?.start_date || ""
+    );
+    const [end_date, setEndDate] = useState<string>(
+        initialContract?.end_date || ""
+    );
+    const [hourly_rate, setHourlyRate] = useState<number>(
+        initialContract?.hourly_rate || 0
+    );
+    const [institution, setInstitution] = useState<string>(
+        initialContract?.institution_id || ""
+    );
     const [feesEnabled, setFeesEnabled] = useState<boolean | null>(null);
 
     const [placementFields, setPlacementFields] = useState<PlacementContract>({
-        desired_position: "",
-        specialties: [],
-        contract_location: "",
-        start_date: "",
-        experience_level: "",
-        compensation: "",
-        other_compensation: "",
-        benefits: [],
-        task_description: "",
-        urgent_need: false,
-        bonus_or_incentives: false,
-        fees: "",
-        parking: "",
-        languages: [],
-        softwares: [],
-        additional_information: "",
+        desired_position: initialContract?.specific_contract_fields?.desired_position || "",
+        specialties: initialContract?.specific_contract_fields?.specialties || [],
+        contract_location: initialContract?.specific_contract_fields?.contract_location || "",
+        start_date: initialContract?.specific_contract_fields?.start_date || initialContract?.start_date || "",
+        experience_level: initialContract?.specific_contract_fields?.experience_level || "",
+        compensation: initialContract?.specific_contract_fields?.compensation || "",
+        other_compensation: initialContract?.specific_contract_fields?.other_compensation || "",
+        benefits: initialContract?.specific_contract_fields?.benefits || [],
+        task_description: initialContract?.specific_contract_fields?.task_description || "",
+        urgent_need: initialContract?.specific_contract_fields?.urgent_need || false,
+        bonus_or_incentives: initialContract?.specific_contract_fields?.bonus_or_incentives || false,
+        fees: initialContract?.specific_contract_fields?.fees || "",
+        parking: initialContract?.specific_contract_fields?.parking || "",
+        languages: initialContract?.specific_contract_fields?.languages || [],
+        softwares: initialContract?.specific_contract_fields?.softwares || [],
+        additional_information: initialContract?.specific_contract_fields?.additional_information || "",
         attached_documents: [],
     });
 
     const [affiliationFields, setAffiliationFields] = useState<AffiliationContract>({
-        establishment_name: "",
-        position_sought: "",
-        specialties: [],
-        affiliation_location: "",
-        revenue_percentage: "",
-        payment_conditions: "",
-        software_used: "",
-        required_languages: "",
-        advantages: "",
-        engagement_duration: "",
-        objectives_or_quotas: "",
-        attached_documents: [],
-        specific_clauses: "",
+        establishment_name: initialContract?.specific_contract_fields?.establishment_name|| "",
+        position_sought: initialContract?.specific_contract_fields?.position_sought || "",
+        specialties: initialContract?.specific_contract_fields?.specialties || [],
+        affiliation_location: initialContract?.specific_contract_fields?.affiliation_location || "",
+        revenue_percentage: initialContract?.specific_contract_fields?.revenue_percentage || "",
+        payment_conditions: initialContract?.specific_contract_fields?.payment_conditions || "",
+        software_used: initialContract?.specific_contract_fields?.software_used || "",
+        required_languages: initialContract?.specific_contract_fields?.required_languages || "",
+        advantages: initialContract?.specific_contract_fields?.advantages || "",
+        engagement_duration: initialContract?.specific_contract_fields?.engagement_duration || "",
+        objectives_or_quotas: initialContract?.specific_contract_fields?.objectives_or_quotas || "",
+        attached_documents: initialContract?.specific_contract_fields?.attached_documents || "",
+        specific_clauses: initialContract?.specific_contract_fields?.specific_clauses || "",
     });
 
     const [remplacementFields, setRemplacementFields] = useState<RemplacementContract>({
-        mission_type: "",
-        required_specialty: "",
-        mission_objective: "",
-        estimated_duration: "",
-        preferred_date: "",
-        proposed_rate: "",
-        equipment_or_operating_room: "",
-        attached_documents: []
+        mission_type: initialContract?.specific_contract_fields?.mission_type || "",
+        required_specialty: initialContract?.specific_contract_fields?.required_specialty || "",
+        mission_objective: initialContract?.specific_contract_fields?.mission_objective || "",
+        estimated_duration: initialContract?.specific_contract_fields?.estimated_duration || "",
+        preferred_date: initialContract?.specific_contract_fields?.preferred_date || "",
+        proposed_rate: initialContract?.specific_contract_fields?.proposed_rate || "",
+        equipment_or_operating_room:initialContract?.specific_contract_fields?.equipment_or_operating_room || "",
+        attached_documents: initialContract?.specific_contract_fields?.attached_documents || [],
     });
 
     const [pharmacyIndustryFields, setPharmacyIndustryFields] = useState<PharmacyIndustryFields>({
-        daily_work_hours: [],
-        break_included: false,
-        break_duration: undefined,
-        bonus_or_additional_compensation: false,
-        software: [],
+        daily_work_hours: initialContract?.specific_industry_fields?.daily_work_hours || [],
+        break_included: initialContract?.specific_industry_fields?.break_included || false,
+        break_duration: initialContract?.specific_industry_fields?.break_duration || undefined,
+        bonus_or_additional_compensation: initialContract?.specific_industry_fields?.bonus_or_premium || false,
+        software: initialContract?.specific_industry_fields?.software || [],
+        per_day_work_hours: initialContract?.specific_industry_fields?.per_day_work_hours || {},
     });
 
     const [dentalIndustryFields, setDentalIndustryFields] = useState<DentalIndustryFields>({
-        work_hours: [],
-        break_included: undefined,
-        break_duration: undefined,
-        bonus_or_premium: undefined,
-        software: [],
+        work_hours: initialContract?.specific_industry_fields?.work_hours || [],
+        break_included: initialContract?.specific_industry_fields?.break_included || undefined,
+        break_duration: initialContract?.specific_industry_fields?.break_duration || undefined,
+        bonus_or_premium: initialContract?.specific_industry_fields?.bonus_or_premium || undefined,
+        software: initialContract?.specific_industry_fields?.software || [],
+        per_day_work_hours: initialContract?.specific_industry_fields?.per_day_work_hours || {},
     });
 
+
+    const generateDateRange = (start: string, end: string): string[] => {
+        if (!start || !end) return [];
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || startDate > endDate) return [];
+
+        const dates = [];
+        let currentDate = new Date(startDate);
+        while (currentDate <= endDate) {
+            dates.push(currentDate.toISOString().split("T")[0]);
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        return dates;
+    };
+
+
+    const initializeWorkHours = (dates: string[], defaultHours: string = "08:00-16:00") => {
+        const newWorkHours: DailyWorkHours = {};
+        dates.forEach((date) => {
+            newWorkHours[date] = defaultHours;
+        });
+        return newWorkHours;
+    };
+
+
+    const updateWorkHours = (newStart: string, newEnd: string) => {
+        const dates = generateDateRange(newStart, newEnd);
+        const defaultHours = industry_type === "pharmacy"
+            ? pharmacyIndustryFields.daily_work_hours[0] || "09:00-17:00"
+            : dentalIndustryFields.work_hours[0] || "08:00-16:00";
+
+        if (industry_type === "pharmacy") {
+            setPharmacyIndustryFields((prev) => ({
+                ...prev,
+                per_day_work_hours: initializeWorkHours(dates, defaultHours),
+            }));
+        } else if (industry_type === "dental_clinic") {
+            setDentalIndustryFields((prev) => ({
+                ...prev,
+                per_day_work_hours: initializeWorkHours(dates, defaultHours),
+            }));
+        }
+    };
+
+  const handleStartDateChange = (value: string) => {
+        setStartDate(value);
+        updateWorkHours(value, end_date);
+    };
+
+    const handleEndDateChange = (value: string) => {
+        setEndDate(value);
+        updateWorkHours(start_date, value);
+    };
 
     return {
         contract_type,
@@ -168,9 +245,9 @@ const useContractForm = () => {
         description,
         setDescription,
         start_date,
-        setStartDate,
+        setStartDate: handleStartDateChange,
         end_date,
-        setEndDate,
+        setEndDate: handleEndDateChange,
         hourly_rate,
         setHourlyRate,
         institution,
@@ -187,8 +264,8 @@ const useContractForm = () => {
         setPharmacyIndustryFields,
         dentalIndustryFields,
         setDentalIndustryFields,
+        generateDateRange,
     };
-
 };
 
 export default useContractForm;

@@ -1,25 +1,26 @@
+import React from "react";
+import { Modal } from "../../ui/modal";
+import Label from "../../form/Label";
+import useContractForm from "../../../hooks/owner/contract/useContractHook.ts";
 import Button from "../../ui/button/Button.tsx";
+import Radio from "../../form/input/Radio.tsx";
+import Select from "../../form/Select.tsx";
+import { useClient } from "../../../context/owner/ClientContext.tsx";
+import { useContract } from "../../../context/owner/ContractContext.tsx";
+import toast from "react-hot-toast";
+import {BaseFields} from "./ContractFieldsPopup/BaseFields.tsx";
+import {PharmacyFields} from "./ContractFieldsPopup/PharmacyFields.tsx";
+import {DentalFields} from "./ContractFieldsPopup/DentalFields.tsx";
+import {PlacementFieldsComponent} from "./ContractFieldsPopup/PlacementFields.tsx";
 import {AffiliationFieldsComponent} from "./ContractFieldsPopup/AffiliationFields.tsx";
 import {RemplacementFieldsComponent} from "./ContractFieldsPopup/RemplacementFields.tsx";
-import {PlacementFieldsComponent} from "./ContractFieldsPopup/PlacementFields.tsx";
-import {PharmacyFields} from "./ContractFieldsPopup/PharmacyFields.tsx";
-import {BaseFields} from "./ContractFieldsPopup/BaseFields.tsx";
-import Radio from "../../form/input/Radio.tsx";
-import Label from "../../form/Label.tsx";
-import Select from "../../form/Select.tsx";
-import {Modal} from "../../ui/modal";
-import toast from "react-hot-toast";
-import useContractForm from "../../../hooks/owner/contract/useContractHook.ts";
-import {useClient} from "../../../context/owner/ClientContext.tsx";
-import {useContract} from "../../../context/owner/ContractContext.tsx";
-import {DentalFields} from "./ContractFieldsPopup/DentalFields.tsx";
 
-export function CreateContractPopup({ isOpen, closeModal }) {
+export function DuplicateContractPopup({ isOpen, closeModal, selectedContract, closeConfirmation }) {
     const { institutions, client_id } = useClient();
     const { storeContract } = useContract();
     const {
         contract_type, setContractType,
-        status, setStatus,
+        status,
         position_title, setPositionTitle,
         description, setDescription,
         start_date, setStartDate,
@@ -34,11 +35,11 @@ export function CreateContractPopup({ isOpen, closeModal }) {
         pharmacyIndustryFields, setPharmacyIndustryFields,
         dentalIndustryFields, setDentalIndustryFields,
         generateDateRange,
-    } = useContractForm();
+    } = useContractForm(selectedContract);
 
     const handleSubmit = async () => {
-        if (!institution?.value || !contract_type) {
-            toast.error("Missing required fields institution_id or contract_type");
+        if (!contract_type) {
+            toast.error("Missing required fields contract_type");
             return;
         }
         if (
@@ -71,7 +72,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
         const formData = new FormData();
         const baseContract = {
             client_id,
-            institution_id: institution.value,
+            institution_id: institution,
             contract_type: contract_type.toUpperCase(),
             industry: industry_type,
             status: status || "PENDING",
@@ -185,6 +186,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
         try {
             await storeContract(formData);
             closeModal();
+            closeConfirmation()
         } catch (error) {
             toast.error("Failed to submit contract.");
         }
@@ -226,10 +228,10 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                 <div className="custom-scrollbar h-[500px] overflow-y-auto px-2 pb-3">
                     <div className="px-2 pr-14">
                         <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-                            Add Contract Details
+                            Duplicate Contract Details
                         </h4>
                         <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-                            Add details of Contract to keep your profile up-to-date.
+                            Duplicate and modify contract details to create a new contract.
                         </p>
                     </div>
                     <div className="flex flex-col">
@@ -244,15 +246,24 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                     fees_enabled: inst.fees_enabled,
                                 }))}
                                 placeholder="Select institution"
-                                value={institution}
+                                value={institutions
+                                    .map((inst) => ({
+                                        label: inst.institution_name,
+                                        value: inst.institution_id,
+                                        type_of_contract: inst.type_of_contract?.replace(/[{}]/g, ""),
+                                        institution_type: inst.institution_type,
+                                        fees_enabled: inst.fees_enabled,
+                                    }))
+                                    .find((opt) => opt.value === institution)}
                                 onChange={(selectedOption) => {
-                                    setInstitution(selectedOption);
-                                    if (selectedOption.type_of_contract) {
+                                    console.log("Selected institution_type:", selectedOption.institution_type);
+                                    setInstitution(selectedOption?.value || "");
+                                    if (selectedOption?.type_of_contract) {
                                         setContractType(selectedOption.type_of_contract);
                                     }
-                                    setFeesEnabled(selectedOption.fees_enabled);
-                                    if (selectedOption.institution_type) {
-                                        setIndustryType(selectedOption.institution_type);
+                                    setFeesEnabled(selectedOption?.fees_enabled || false);
+                                    if (selectedOption?.institution_type) {
+                                        setIndustryType(institutionToIndustryMap[selectedOption.institution_type] || "");
                                     }
                                 }}
                             />
@@ -292,7 +303,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                             setIndustryType={setIndustryType}
                             options={options}
                         />
-                        {industry_type === "pharmacy" && (
+                        {industry_type === "pharmacy" && contract_type !== "affiliation" && (
                             <PharmacyFields
                                 contract_type={contract_type}
                                 pharmacyIndustryFields={pharmacyIndustryFields}
@@ -302,7 +313,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                 hourOptions={hourOptions}
                             />
                         )}
-                        {industry_type === "dental_clinic" && (
+                        {industry_type === "dental_clinic" && contract_type !== "affiliation" && (
                             <DentalFields
                                 contract_type={contract_type}
                                 dentalIndustryFields={dentalIndustryFields}
