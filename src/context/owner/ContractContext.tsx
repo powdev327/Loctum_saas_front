@@ -23,11 +23,17 @@ export const ContractProvider = ({ children }) => {
         await get_client_contracts()
         await closeModal();
     }
+
+    const updateContract = async (contract_id, data) => {
+        await contractService.update_contract(contract_id, data)
+        await get_client_contracts()
+    }
+
     useEffect(() => {
         get_client_contracts()
     }, []);
     return(
-        <ContractContext.Provider value={{storeContract, contracts, delete_client_contract}}>
+        <ContractContext.Provider value={{storeContract, contracts, delete_client_contract, updateContract}}>
             {children}
         </ContractContext.Provider>
     )
