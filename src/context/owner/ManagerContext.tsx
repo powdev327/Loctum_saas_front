@@ -10,6 +10,8 @@ export const ManagerProvider = ({ children }) => {
 
     const getManagers = async () => {
       const data = await managerService.getManagers();
+    
+      
       setManagers(data)
     }
 

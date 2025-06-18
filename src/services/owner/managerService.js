@@ -19,6 +19,8 @@ const deleteManager = async (manager_id) => {
 
 const getManagers = async () => {
     const res = await http.get('/client/managers');
+    
+    
     return res.data;
 }
 export default {storeManager, getManagers, deleteManager, updateManager};
