@@ -7,10 +7,10 @@ export default function Chats() {
   return (
     <>
       <PageMeta
-        title="React.js Chat Dashboard | TailAdmin - React.js Admin Dashboard Template"
+        title="Messaging"
         description="This is React.js Chat Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
       />
-      <PageBreadcrumb pageTitle="Chats" />
+      {/*<PageBreadcrumb pageTitle="Chats" />*/}
       <div className="h-[calc(100vh-150px)] overflow-hidden sm:h-[calc(100vh-174px)]">
         <div className="flex flex-col h-full gap-6 xl:flex-row xl:gap-5">
           {/* <!-- Chat Sidebar Start --> */}

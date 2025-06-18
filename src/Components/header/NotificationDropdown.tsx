@@ -2,8 +2,11 @@ import { useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Link } from "react-router";
+import {useClientNotification} from "../../context/owner/ClientNotificationContext.tsx";
 
 export default function NotificationDropdown() {
+  // const {clientNotification} = useClientNotification();
+  // console.log('clientNotification', clientNotification);
   const [isOpen, setIsOpen] = useState(false);
   const [notifying, setNotifying] = useState(true);
 

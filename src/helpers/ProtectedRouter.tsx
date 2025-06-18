@@ -6,8 +6,8 @@ import { toast } from "react-hot-toast";
 
 let toastShown = false;
 
-export const ProtectedRoute = ({ role, children }) => {
-    const [isValid, setIsValid] = useState(false);
+export const ProtectedRoute = ({ children }) => {
+    const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -15,7 +15,7 @@ export const ProtectedRoute = ({ role, children }) => {
 
         if (!token) {
             if (!toastShown) {
-                toast.error("Unauthorized You must log in first.");
+                toast.error("Unauthorized. Please log in first.");
                 toastShown = true;
             }
             setIsLoading(false);
@@ -29,22 +29,15 @@ export const ProtectedRoute = ({ role, children }) => {
             const remainingTime = 60 * 60 * 1000 - (now - issuedAt);
 
             if (remainingTime <= 0) {
-                toast.error("Session expired. Please log in again.");
+                toast.error("Session expired.");
                 localStorage.removeItem("token");
                 window.location.href = "/";
                 return;
             }
 
-            if (decoded.user_type !== role) {
-                toast.error("Unauthorized: Incorrect role.");
-                setIsLoading(false);
-                return;
-            }
-
-            setIsValid(true);
-
+            setUser(decoded);
             const timer = setTimeout(() => {
-                toast.error("Session expired. Please log in again.");
+                toast.error("Session expired.");
                 localStorage.removeItem("token");
                 window.location.href = "/";
             }, remainingTime);
@@ -57,11 +50,10 @@ export const ProtectedRoute = ({ role, children }) => {
         } finally {
             setIsLoading(false);
         }
-    }, [role]);
+    }, []);
 
     if (isLoading) return <MoonLoader color="#0095FF" />;
+    if (!user) return <Navigate to="/" replace />;
 
-    if (!isValid) return <Navigate to="/" replace />;
-
-    return children;
+    return React.cloneElement(children, { user });
 };
