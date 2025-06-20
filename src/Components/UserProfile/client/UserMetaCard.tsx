@@ -269,6 +269,9 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
     }
   };
 
+  
+  
+
   return (
       <>
         <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
@@ -468,15 +471,16 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
                       />
                     </div>
 
-                    <div className="col-span-2 z-999">
-                      <DropdownWithCheckbox
-                        label="Services Offered"
-                        options={clinicServicesList}
-                        selectedValues={servicesOffered}
-                        onChange={setServicesOffered}
-                      />
-                    </div>
-
+ {clientInfo?.business_sector === "DentalClinic" && (
+        <div className="col-span-2 z-999">
+          <DropdownWithCheckbox
+            label="Services Offered"
+            options={clinicServicesList}
+            selectedValues={servicesOffered}
+            onChange={setServicesOffered}
+          />
+        </div>
+      )}
 
                     <div className="col-span-2 flex justify-between">
                       <Switch

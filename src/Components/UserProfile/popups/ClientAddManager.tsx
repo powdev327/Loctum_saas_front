@@ -7,22 +7,39 @@ import { useClient } from "../../../context/owner/ClientContext.tsx";
 import Switch from "../../form/switch/Switch.tsx";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useEffect } from "react";
+
+const canadianPhoneRegex = /^(\+?1[-\s]?)?\(?\d{3}\)?[-\s]?\d{3}[-\s]?\d{4}$/;
+
+
+const formatPhoneNumber = (value: string): string => {
+  if (!value) return value;
+  
+
+  const phoneNumber = value.replace(/[^\d]/g, '');
+  if (phoneNumber.length <= 3) {
+    return phoneNumber;
+  }
+  if (phoneNumber.length <= 6) {
+    return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
+  }
+  return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
+};
 
 export function ClientAddManager({ isOpen, openModal, closeModal }) {
   const { storeManager } = useManager();
   const { refreshClient, institutions } = useClient();
-console.log(institutions);
-
 
   const validationSchema = Yup.object().shape({
-    manager_name: Yup.string().required("Manager name is required"),
+    manager_name: Yup.string()
+      .required("Manager name is required")
+      .min(2, "Must be at least 2 characters"),
     email: Yup.string()
       .email("Invalid email format")
       .required("Email is required"),
     phone_number: Yup.string()
       .required("Phone number is required")
-      .matches(/^[0-9]+$/, "Must be only digits")
-      .min(10, "Must be at least 10 digits"),
+      .matches(canadianPhoneRegex, "Invalid Canadian phone number"),
     is_self_billing: Yup.boolean(),
     institution_id: Yup.string().required("Institution is required"),
   });
@@ -40,7 +57,11 @@ console.log(institutions);
       const formData = new FormData();
       formData.append("manager_name", values.manager_name);
       formData.append("email", values.email);
-      formData.append("phone_number", values.phone_number);
+      
+    
+      const cleanPhone = values.phone_number.replace(/[^\d]/g, '');
+      formData.append("phone_number", cleanPhone);
+      
       formData.append("is_self_billing", String(values.is_self_billing));
       formData.append("institution_id", values.institution_id);
 
@@ -48,11 +69,24 @@ console.log(institutions);
         await storeManager(formData);
         refreshClient();
         closeModal();
+        formik.resetForm();
       } catch (e) {
         console.error("Error storing manager:", e);
       }
     },
   });
+
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedValue = formatPhoneNumber(e.target.value);
+    formik.setFieldValue("phone_number", formattedValue);
+  };
+
+  useEffect(() => {
+    if (!isOpen) {
+      formik.resetForm();
+    }
+  }, [isOpen]);
 
   return (
     <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
@@ -69,8 +103,9 @@ console.log(institutions);
           <div className="px-2 overflow-y-auto custom-scrollbar">
             <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
               <div>
-                <Label>Manager Name</Label>
+                <Label htmlFor="manager_name">Manager Name*</Label>
                 <Input
+                  id="manager_name"
                   type="text"
                   name="manager_name"
                   value={formik.values.manager_name}
@@ -79,38 +114,48 @@ console.log(institutions);
                   error={
                     formik.touched.manager_name && formik.errors.manager_name
                   }
+                  placeholder="John Doe"
                 />
               </div>
 
               <div>
-                <Label>Email</Label>
+                <Label htmlFor="email">Email*</Label>
                 <Input
+                  id="email"
                   type="email"
                   name="email"
                   value={formik.values.email}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   error={formik.touched.email && formik.errors.email}
+                  placeholder="manager@example.com"
                 />
               </div>
 
               <div className="col-span-2">
-                <Label>Phone Number</Label>
+                <Label htmlFor="phone_number">Phone Number*</Label>
                 <Input
-                  type="text"
+                  id="phone_number"
+                  type="tel"
                   name="phone_number"
                   value={formik.values.phone_number}
-                  onChange={formik.handleChange}
+                  onChange={handlePhoneChange}
                   onBlur={formik.handleBlur}
                   error={
                     formik.touched.phone_number && formik.errors.phone_number
                   }
+                  placeholder="(123) 456-7890"
+                  maxLength={14}
                 />
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  Canadian format: (123) 456-7890 or 123-456-7890
+                </p>
               </div>
 
               <div className="col-span-2">
-                <Label>Institution</Label>
+                <Label htmlFor="institution_id">Institution*</Label>
                 <select
+                  id="institution_id"
                   name="institution_id"
                   value={formik.values.institution_id}
                   onChange={formik.handleChange}
@@ -123,7 +168,10 @@ console.log(institutions);
                 >
                   <option value="">Select Institution</option>
                   {institutions.map((institution) => (
-                    <option key={institution.institution_id} value={institution.institution_id}>
+                    <option 
+                      key={institution.institution_id} 
+                      value={institution.institution_id}
+                    >
                       {institution.institution_name}
                     </option>
                   ))}
@@ -135,10 +183,9 @@ console.log(institutions);
                 )}
               </div>
 
-              {/* Self-billing switch */}
-              <div className="col-span-2 flex justify-between">
+              <div className="col-span-2 flex justify-between items-center">
                 <Switch
-                  label="I'll handle the billing myself (Yes/No)"
+                  label="I'll handle the billing myself"
                   checked={formik.values.is_self_billing}
                   onChange={(value) => {
                     formik.setFieldValue("is_self_billing", value);
@@ -148,29 +195,32 @@ console.log(institutions);
                 <div className="relative inline-block group">
                   <button
                     type="button"
-                    className="inline-flex px-4 py-3 text-sm font-medium"
+                    className="inline-flex p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    aria-label="Self-billing information"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      x="0px"
-                      y="0px"
                       width="20"
                       height="20"
-                      viewBox="0 0 50 50"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
-                      <path d="M 25 2 C 12.309295 2 2 12.309295 2 25 C 2 37.690705 12.309295 48 25 48 C 37.690705 48 48 37.690705 48 25 C 48 12.309295 37.690705 2 25 2 z M 25 4 C 36.609824 4 46 13.390176 46 25 C 46 36.609824 36.609824 46 25 46 C 13.390176 46 4 36.609824 4 25 C 4 13.390176 13.390176 4 25 4 z M 25 11 A 3 3 0 0 0 22 14 A 3 3 0 0 0 25 17 A 3 3 0 0 0 28 14 A 3 3 0 0 0 25 11 z M 21 21 L 21 23 L 22 23 L 23 23 L 23 36 L 22 36 L 21 36 L 21 38 L 22 38 L 23 38 L 27 38 L 28 38 L 29 38 L 29 36 L 28 36 L 27 36 L 27 21 L 26 21 L 22 21 L 21 21 z"></path>
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
                     </svg>
                   </button>
-                  <div className="invisible absolute z-999999 right-full top-1/2 mr-2.5 -translate-y-1/2 opacity-0 transition-opacity duration-300 group-hover:visible group-hover:opacity-100">
-                    <div className="relative">
-                      <div className="whitespace-nowrap rounded-lg bg-white border shadow-sm px-3 py-2 text-xs font-medium text-black drop-shadow-4xl dark:bg-[#1E2634] dark:text-white">
-                        If Self Billing is enabled,
-                        <br />
-                        a new Super Client will be created under <br /> the same
-                        Client ID managing the account.
-                      </div>
-
-                      <div className="absolute -right-1.5 top-1/2 h-3 w-4 -translate-y-1/2 rotate-45 bg-white dark:bg-[#1E2634]"></div>
+                  <div className="invisible absolute z-10 right-full top-1/2 mr-2 w-64 -translate-y-1/2 opacity-0 transition-opacity duration-300 group-hover:visible group-hover:opacity-100">
+                    <div className="relative bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+                      <p className="text-sm text-gray-700 dark:text-gray-300">
+                        If Self Billing is enabled, a new Super Client will be 
+                        created under the same Client ID managing the account.
+                      </p>
+                      <div className="absolute -right-1.5 top-1/2 h-3 w-3 -translate-y-1/2 rotate-45 bg-white dark:bg-gray-800 border-r border-t border-gray-200 dark:border-gray-700"></div>
                     </div>
                   </div>
                 </div>
@@ -184,14 +234,15 @@ console.log(institutions);
               onClick={closeModal}
               type="button"
             >
-              Close
+              Cancel
             </Button>
             <Button
               size="sm"
               type="submit"
               disabled={!formik.isValid || formik.isSubmitting}
+              loading={formik.isSubmitting}
             >
-              Save Changes
+              {formik.isSubmitting ? "Saving..." : "Save Manager"}
             </Button>
           </div>
         </form>
