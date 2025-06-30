@@ -19,9 +19,13 @@ import Switch from "../../form/switch/Switch.tsx";
 import { softwareList } from "../../../config/owner/softwareList.ts";
 import { languagesList } from "../../../config/owner/languagesList.ts";
 import toast from "react-hot-toast";
+import DropdownWithCheckbox from "../../form/DropdownWithCheckbox.tsx";
+import provincesData from "@/data/canada-provinces-cities.json";
+import { useState } from "react";
 
 export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
   const { isOpen, openModal, closeModal } = useModal();
+  const [filteredCities, setFilteredCities] = useState([]);
   const {
     businessLegalName,
     setBusinessLegalName,
@@ -84,6 +88,13 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
     traffic_in_week, setTraffic_in_week,
 
   } = useInstitutionForm();
+
+   const handleProvinceChange = (selectedProvince) => {
+    setProvince(selectedProvince);
+    const citiesForProvince = provincesData[selectedProvince] || [];
+    setFilteredCities(citiesForProvince);
+    setCity("");
+  };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>, type: "pharmacy" | "clinic") => {
     const value = e.target.value;
@@ -258,6 +269,9 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
     }
   };
 
+  
+  
+
   return (
       <>
         <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
@@ -265,7 +279,7 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
             <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
               <div className="w-20 h-20 overflow-hidden border border-gray-200 rounded-full dark:border-gray-800">
                 <img
-                    src={clientInfo?.logo_url ? `http://127.0.0.1:8000/${clientInfo.logo_url}` : "/images/user/owner.jpg"}
+                    src={clientInfo?.logo_url ? `http://127.0.0.1:8000/${clientInfo.logo_url}` : "/images/user/owner.png"}
                     alt="user"
                 />
               </div>
@@ -361,12 +375,14 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
 
                     <div className="col-span-2 lg:col-span-1">
                       <div className="flex flex-col gap-2">
-                        <MultiSelect
-                            label="Select Contract Types"
-                            options={typeContractList}
-                            defaultSelected={typeOfContract}
-                            onChange={(values) => setTypeOfContract(values)}
-                        />
+                       
+              <DropdownWithCheckbox
+                label="Select Contract Types"
+                options={typeContractList}
+                selectedValues={typeOfContract}
+                onChange={setTypeOfContract}
+              />
+     
                       </div>
                     </div>
 
@@ -397,25 +413,34 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
                       />
                     </div>
 
-                    <div className="col-span-2 lg:col-span-1">
-                      <Label>City</Label>
-                      <Input
-                          type="text"
-                          value={city}
-                          onChange={(e) => setCity(e.target.value)}
-                          placeholder="City..."
-                      />
-                    </div>
+              <div className="col-span-2 lg:col-span-1">
+  <Label>Province</Label>
+  <Select
+    options={Object.keys(provincesData).map(province => ({
+      value: province,
+      label: province
+    }))}
+    placeholder="Select Province"
+    value={province}
+    onChange={(option) => handleProvinceChange(option.value)}
+    className="dark:bg-dark-900"
+  />
+</div>
 
-                    <Select
-                        options={provincesList}
-                        placeholder="Select Option"
-                        value={province}
-                        onChange={(option) => setProvince(option.value)}
-                        className="dark:bg-dark-900"
-                    />
-
-
+<div className="col-span-2 lg:col-span-1">
+  <Label>City</Label>
+  <Select
+    options={filteredCities.map(city => ({
+      value: city,
+      label: city
+    }))}
+    placeholder={province ? "Select City" : "Select Province First"}
+    value={city}
+    onChange={(option) => setCity(option.value)}
+    isDisabled={!province}
+    className="dark:bg-dark-900"
+  />
+</div>
                     <div className="col-span-2 lg:col-span-1">
                       <Label>Postal Code</Label>
                       <Input
@@ -426,32 +451,36 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
                       />
                     </div>
 
-                    <div className="col-span-2 lg:col-span-1 z-99999">
-                      <MultiSelect
-                          label="Software (Optional)"
-                          options={softwareList}
-                          defaultSelected={software}
-                          onChange={(values) => setSoftware(values)}
+                           <div className="col-span-2 lg:col-span-1">
+              <DropdownWithCheckbox
+                label="Software (Optional)"
+                options={softwareList}
+                selectedValues={software}
+                onChange={setSoftware}
+                className="z-[99999]"
+              />
+            </div>
+
+
+                          <div className="col-span-2 z-9999">
+                      <DropdownWithCheckbox
+                        label="Languages Spoken (Optional)"
+                        options={languagesList}
+                        selectedValues={languagesSpoken}
+                        onChange={setLanguagesSpoken}
                       />
                     </div>
 
-                    <div className="col-span-2 z-9999">
-                      <MultiSelect
-                          label="Languages Spoken (Optional)"
-                          options={languagesList}
-                          defaultSelected={languagesSpoken}
-                          onChange={(values) => setLanguagesSpoken(values)}
-                      />
-                    </div>
-
-                    <div className="col-span-2 z-999">
-                      <MultiSelect
-                          label="Services Offered"
-                          options={clinicServicesList}
-                          defaultSelected={servicesOffered}
-                          onChange={(values) => setServicesOffered(values)}
-                      />
-                    </div>
+ {clientInfo?.business_sector === "DentalClinic" && (
+        <div className="col-span-2 z-999">
+          <DropdownWithCheckbox
+            label="Services Offered"
+            options={clinicServicesList}
+            selectedValues={servicesOffered}
+            onChange={setServicesOffered}
+          />
+        </div>
+      )}
 
                     <div className="col-span-2 flex justify-between">
                       <Switch
@@ -491,7 +520,7 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
                                 options={typePharmacyInstitutionList}
                                 placeholder="Select Option"
                                 value={typeOfPharmacy}
-                                onChange={(option) => setTypeOfClinic(option.value)}
+                                onChange={(option) => setTypeOfPharmacy(option.value)}
                                 className="dark:bg-dark-900"
                             />
                           </div>
@@ -588,42 +617,42 @@ export default function UserMetaCard({ clientInfo, buildInstitutionPayload }) {
                             )}
                           </div>
 
-                          <div className="col-span-2 z-99 lg:col-span-1">
-                            <MultiSelect
-                                label="Charting Systems"
-                                options={systemOdontogramList}
-                                defaultSelected={chartingSystems}
-                                onChange={(values) => setChartingSystems(values)}
-                            />
-                          </div>
+                         <div className="col-span-2 z-99 lg:col-span-1">
+  <DropdownWithCheckbox
+    label="Charting Systems"
+    options={systemOdontogramList}
+    selectedValues={chartingSystems}
+    onChange={setChartingSystems}
+  />
+</div>
 
-                          <div className="col-span-2 lg:col-span-1">
-                            <MultiSelect
-                                label="Ultrasonic Types"
-                                options={typeOfUltrasoundList}
-                                defaultSelected={ultrasonicTypes}
-                                onChange={(values) => setUltrasonicTypes(values)}
-                            />
-                          </div>
+<div className="col-span-2 lg:col-span-1">
+  <DropdownWithCheckbox
+    label="Ultrasonic Types"
+    options={typeOfUltrasoundList}
+    selectedValues={ultrasonicTypes}
+    onChange={setUltrasonicTypes}
+  />
+</div>
 
-                          <div className="col-span-2 lg:col-span-1">
-                            <MultiSelect
-                                label="Radiography Types"
-                                options={typeRadiographicList}
-                                defaultSelected={radiographyTypes}
-                                onChange={(values) => setRadiographyTypes(values)}
-                            />
-                          </div>
+                      <div className="col-span-2 lg:col-span-1">
+                  <DropdownWithCheckbox
+                    label="Radiography Types"
+                    options={typeRadiographicList}
+                    selectedValues={radiographyTypes}
+                    onChange={setRadiographyTypes}
+                  />
+                </div>
 
-                          <div className="col-span-2 z-9 lg:col-span-1">
-                            <MultiSelect
-                                label="Parking Options"
-                                options={parkingList}
-                                defaultSelected={parkingOptions}
-                                onChange={(values) => setParkingOptions(values)}
-                            />
-                          </div>
-
+                <div className="col-span-2 lg:col-span-1">
+                  <DropdownWithCheckbox
+                    label="Parking Options"
+                    options={parkingList}
+                    selectedValues={parkingOptions}
+                    onChange={setParkingOptions}
+                    className="z-[9]"
+                  />
+                </div>
                           <div className="col-span-2 lg:col-span-1">
                             <Label>Number of Current Dentists</Label>
                             <Input
