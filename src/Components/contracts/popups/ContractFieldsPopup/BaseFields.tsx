@@ -30,6 +30,22 @@ export const BaseFields = ({
             <Label>End Date</Label>
             <Input type="date" value={end_date} onChange={(e) => setEndDate(e.target.value)} />
         </div>
+        
+        {/* Add Per-Day Work Hours button right after date inputs - support both industry types */}
+        {(industry_type === "pharmacy" || industry_type === "dentalClinic") && 
+         contract_type === "remplacement" && 
+         showPerDayWorkHours && start_date && end_date && (
+            <div className="lg:col-span-2 mt-0 mb-3">
+                <Button 
+                    onClick={() => setIsWorkHoursPopupOpen(true)}
+                    variant="outline"
+                    className="w-full"
+                >
+                    Configure Per-Day Work Hours
+                </Button>
+            </div>
+        )}
+        
         <div>
             <Label>Hourly Rate</Label>
             <Input
