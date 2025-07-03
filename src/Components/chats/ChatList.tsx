@@ -21,8 +21,8 @@ export default function ChatList({ isOpen, onToggle }: ChatListProps) {
     setIsSidebarOpen(false);
   };
 
-  const getDisplayEmail = (conversation) => {
-    return conversation.user_type === "client" ? conversation.locum_email : conversation.client_email;
+  const getDisplayNames = (conversation) => {
+    return conversation.user_type === "client" ? conversation.locum_name : conversation.institution_name;
   };
 
   const getLastMessageTime = (messages) => {
@@ -108,10 +108,10 @@ export default function ChatList({ isOpen, onToggle }: ChatListProps) {
                       <div className="relative h-12 w-12 rounded-full">
                         <img
                             src={
-                              selectedConversation.user_type === "locum"
-                                  ? `http://127.0.0.1:8000/${selectedConversation.client_image}`
-                                  : selectedConversation.user_type === "client" && selectedConversation.locum_image
-                                      ? `http://127.0.0.1:8000${selectedConversation.locum_image}`
+                              conversation.user_type === "locum"
+                                  ? `http://127.0.0.1:8000/${conversation.client_image}`
+                                  : conversation.user_type === "client" && conversation.locum_image
+                                      ? `http://127.0.0.1:8000${conversation.locum_image}`
                                       : "/default.png"
                             }
                             alt="profile"
@@ -133,7 +133,7 @@ export default function ChatList({ isOpen, onToggle }: ChatListProps) {
                         <div className="flex items-start justify-between">
                           <div>
                             <h5 className="text-sm font-medium text-gray-800 dark:text-white/90">
-                              {getDisplayEmail(conversation)}
+                              {getDisplayNames(conversation)}
                             </h5>
                             <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
                               {conversation.user_type === "client" ? "Locum" : "Client"}

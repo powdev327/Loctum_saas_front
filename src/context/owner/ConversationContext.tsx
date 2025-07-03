@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, useRef } from "react";
 import conversationService from "../../services/chat/conversationService.js";
 import messagingService from "../../services/chat/messagingService.js";
+import { toast } from "react-hot-toast";
 
 const ConversationContext = createContext<ConversationContextType | undefined>(undefined);
 
@@ -40,6 +41,7 @@ interface Message {
     is_read: boolean;
     sent_at: string;
     temp?: boolean;
+    file_path?: string | null;
 }
 
 interface ConversationContextType {
@@ -47,7 +49,7 @@ interface ConversationContextType {
     selectedConversation: Conversation | null;
     getConversations: () => Promise<void>;
     selectConversation: (conversation: Conversation) => Promise<void>;
-    sendMessage: (recipientEmail: string, content: string) => Promise<void>;
+    sendMessage: (recipientEmail: string, content: string, file?: File) => Promise<void>;
 }
 
 export const ConversationProvider = ({ children }: { children: React.ReactNode }) => {
@@ -60,14 +62,12 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
         senderType: string | null;
     }>({ senderId: null, senderType: null });
 
-    // Sort messages by sent_at in ascending order
     const sortMessages = (messages: Message[]): Message[] => {
         return [...messages].sort(
             (a, b) => new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime()
         );
     };
 
-    // Sort conversations by last message or creation date
     const sortConversations = (conversations: Conversation[]): Conversation[] => {
         return [...conversations].sort((a, b) => {
             const aTime = a.messages[a.messages.length - 1]?.sent_at || a.created_at;
@@ -88,6 +88,7 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
                 }
             } catch (error) {
                 console.error("Error fetching sender info:", error);
+                toast.error("Failed to load user information");
             }
         };
         fetchSenderInfo();
@@ -101,40 +102,53 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
                 messages: sortMessages(conv.messages || []),
             }));
 
-            setConversations(sortConversations(conversationsWithMessages));
+            const sortedConversations = sortConversations(conversationsWithMessages);
+            setConversations(sortedConversations);
 
-            if (conversationsWithMessages.length > 0) {
-                const found = conversationsWithMessages.find(
-                    (conv: Conversation) =>
-                        selectedConversation?.conversation_id === conv.conversation_id
-                );
-                const newSelected = found || conversationsWithMessages[0];
-                setSelectedConversation(newSelected);
-                setupWebSocket(newSelected.conversation_id);
+            const currentId = selectedConversation?.conversation_id;
+            const found = sortedConversations.find(
+                (conv: Conversation) => conv.conversation_id === currentId
+            );
+            if (found) {
+                setSelectedConversation({
+                    ...found,
+                    messages: sortMessages(found.messages),
+                });
+            } else if (sortedConversations.length > 0) {
+                setSelectedConversation(sortedConversations[0]);
+            } else {
+                setSelectedConversation(null);
+            }
+
+            if (sortedConversations.length > 0 && !currentId) {
+                setupWebSocket(sortedConversations[0].conversation_id);
+            } else if (found) {
+                setupWebSocket(found.conversation_id);
             }
         } catch (error) {
             console.error("Error fetching conversations:", error);
+            toast.error("Failed to load conversations");
         }
     };
 
     const selectConversation = async (conversation: Conversation) => {
         try {
             console.log("Selecting conversation:", conversation.conversation_id);
-            const messages = await conversationService.get_messages(
-                conversation.conversation_id
-            );
             setSelectedConversation({
                 ...conversation,
-                messages: sortMessages(messages),
+                messages: sortMessages(conversation.messages || []),
             });
-            setupWebSocket(conversation.conversation_id);
+
+            if (wsRef.current?.conversationId !== conversation.conversation_id) {
+                setupWebSocket(conversation.conversation_id);
+            }
         } catch (error) {
             console.error("Error selecting conversation:", error);
+            toast.error("Failed to select conversation");
         }
     };
 
     const setupWebSocket = async (conversationId: string) => {
-        // Close existing connection if different
         if (
             wsRef.current?.conversationId !== conversationId &&
             wsRef.current?.ws
@@ -143,7 +157,6 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
             wsRef.current = null;
         }
 
-        // Skip if already connected to this conversation
         if (wsRef.current?.conversationId === conversationId) return;
 
         try {
@@ -163,7 +176,7 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
             };
         } catch (error) {
             console.error("WebSocket setup failed:", error);
-
+            toast.error("Failed to connect to chat service");
             const retryDelay = Math.min(
                 1000 * Math.pow(2, wsRef.current?.retryCount || 0),
                 30000
@@ -177,29 +190,20 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
     };
 
     const handleIncomingMessage = (message: Message) => {
-        const isOwnMessage =
-            sentMessages.current.has(message.message_id) ||
-            (message.sender_id === senderInfo.senderId &&
-                message.sender_type === senderInfo.senderType);
+        const isOwnMessage = sentMessages.current.has(message.message_id) ||
+            (message.sender_id === senderInfo.senderId && message.sender_type === senderInfo.senderType);
 
-        // Update selected conversation
         if (selectedConversation?.conversation_id === message.conversation_id) {
             setSelectedConversation((prev) => {
                 if (!prev) return prev;
                 const existingIndex = prev.messages?.findIndex(
-                    (m) =>
-                        m.message_id === message.message_id ||
-                        (m.temp &&
-                            m.sender_id === message.sender_id &&
-                            m.content === message.content)
+                    (m) => m.message_id === message.message_id ||
+                        (m.temp && m.sender_id === message.sender_id && m.content === message.content)
                 );
 
-                const newMessages =
-                    existingIndex >= 0
-                        ? prev.messages.map((m, i) =>
-                            i === existingIndex ? message : m
-                        )
-                        : [...(prev.messages || []), message];
+                const newMessages = existingIndex >= 0
+                    ? prev.messages.map((m, i) => i === existingIndex ? { ...message, file_path: message.file_path || null } : m)
+                    : [...(prev.messages || []), { ...message, file_path: message.file_path || null }];
 
                 return {
                     ...prev,
@@ -208,18 +212,13 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
             });
         }
 
-        // Update conversations list
         setConversations((prev) => {
             const updated = prev.map((conv) => {
                 if (conv.conversation_id === message.conversation_id) {
-                    const existing = conv.messages.some(
-                        (m) => m.message_id === message.message_id
-                    );
+                    const existing = conv.messages.some((m) => m.message_id === message.message_id);
                     const updatedMessages = existing
-                        ? conv.messages.map((m) =>
-                            m.message_id === message.message_id ? message : m
-                        )
-                        : [...conv.messages, message];
+                        ? conv.messages.map((m) => m.message_id === message.message_id ? { ...message, file_path: message.file_path || null } : m)
+                        : [...conv.messages, { ...message, file_path: message.file_path || null }];
 
                     return {
                         ...conv,
@@ -238,19 +237,20 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
         }
     };
 
-    const sendMessage = async (recipientEmail: string, content: string) => {
+    const sendMessage = async (recipientEmail: string, content: string, file?: File) => {
         if (!selectedConversation) throw new Error("No conversation selected");
-        if (!senderInfo.senderId || !senderInfo.senderType)
-            throw new Error("Sender info missing");
-        if (!recipientEmail) throw new Error("Recipient email is required");
+        if (!senderInfo.senderId || !senderInfo.senderType) throw new Error("Sender info missing");
+
 
         const tempMessageId = crypto.randomUUID();
+        const tempContent = file ? `uploads/chats/temp/${file.name}` : content.trim();
+
         const tempMessage: Message = {
             message_id: tempMessageId,
             conversation_id: selectedConversation.conversation_id,
             sender_id: senderInfo.senderId,
             sender_type: senderInfo.senderType,
-            content,
+            content: tempContent,
             is_read: false,
             sent_at: new Date().toISOString(),
             temp: true,
@@ -267,36 +267,30 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
         sentMessages.current.set(tempMessageId, Date.now());
 
         try {
-            const messageData = {
-                recipient_email: recipientEmail,
-                content,
-                sender_id: senderInfo.senderId,
-                sender_type: senderInfo.senderType,
-            };
+            const formData = new FormData();
+            formData.append("recipient_email", recipientEmail);
+            formData.append("content", content.trim() || "");
+            if (file) formData.append("file", file);
 
-            console.log("Sending message:", messageData);
+            const response = await messagingService.send_message(formData);
 
-            if (wsRef.current?.ws?.readyState === WebSocket.OPEN) {
-                wsRef.current.ws.send(JSON.stringify(messageData));
-            } else {
-                console.warn("WebSocket not open, falling back to HTTP");
-                const response = await messagingService.send_message(messageData);
-                handleIncomingMessage(response);
-                getConversations()
-            }
-        } catch (error) {
-            console.error("Error sending message:", error);
+            handleIncomingMessage({
+                ...response,
+                content: response.content,
+            });
 
+            await getConversations();
+            toast.success("Message sent successfully");
+        } catch (error: any) {
             setSelectedConversation((prev) => {
                 if (!prev) return prev;
                 return {
                     ...prev,
-                    messages: (prev.messages || []).filter(
-                        (m) => m.message_id !== tempMessageId
-                    ),
+                    messages: (prev.messages || []).filter((m) => m.message_id !== tempMessageId),
                 };
             });
             sentMessages.current.delete(tempMessageId);
+            toast.error(`Failed to send message: ${error.message || "Unknown error"}`);
             throw error;
         }
     };

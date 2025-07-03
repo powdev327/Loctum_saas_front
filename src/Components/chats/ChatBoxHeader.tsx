@@ -16,9 +16,9 @@ export default function ChatBoxHeader() {
     setIsOpen(false);
   }
 
-  const getDisplayEmail = (conversation) => {
+  const getDisplayNames = (conversation) => {
     if (!conversation) return "No conversation selected";
-    return conversation.user_type === "client" ? conversation.locum_email : conversation.client_email;
+    return conversation.user_type === "client" ? conversation.locum_name : conversation.institution_name;
   };
 
   const getProfileImage = (conversation) => {
@@ -56,7 +56,7 @@ export default function ChatBoxHeader() {
           </div>
 
           <h5 className="text-sm font-medium text-gray-500 dark:text-gray-400">
-            {getDisplayEmail(selectedConversation)}
+            {getDisplayNames(selectedConversation)}
           </h5>
         </div>
 

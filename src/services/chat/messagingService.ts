@@ -2,10 +2,9 @@ import Api from "../../api/AxiosClient.js";
 
 const http = Api();
 
-const validateToken = (token) => {
+const validateToken = (token: string) => {
     try {
         const payload = JSON.parse(atob(token.split('.')[1]));
-        console.log("Token payload:", payload);
         if (!payload.sub || !payload.user_type) {
             throw new Error("Invalid token payload");
         }
@@ -19,22 +18,21 @@ const validateToken = (token) => {
     }
 };
 
-const send_message = async (data) => {
+const send_message = async (data: FormData) => {
     try {
-        console.log("Sending message:", data);
-        const res = await http.post('/messaging/send-message/', data);
-        console.log("Message sent:", res.data);
+        const res = await http.post('/messaging/send-message/', data, {
+            headers: { "Content-Type": "multipart/form-data" }
+        });
         return res.data;
     } catch (error) {
         console.error("Error sending message via HTTP:", error);
-        throw error;
+        throw new Error(`Failed to send message: ${error.message || "Unknown error"}`);
     }
 };
 
 const get_user_info = async () => {
     try {
         const res = await http.get('/user/');
-        console.log('get_user_info:', res.data);
         return res.data;
     } catch (error) {
         console.error("Error fetching user info:", error);
@@ -42,7 +40,7 @@ const get_user_info = async () => {
     }
 };
 
-const create_websocket = async (conversationId, messageHandler) => {
+const create_websocket = async (conversationId: string, messageHandler: (message: any) => void) => {
     const token = localStorage.getItem("token");
     if (!token) {
         console.error("No authentication token available");
@@ -53,27 +51,27 @@ const create_websocket = async (conversationId, messageHandler) => {
 
     const tokenPayload = validateToken(token);
     if (!tokenPayload) {
-        console.error("Invalid or expired token");
+        console.error("Invalid or expired token:", token);
         return null;
     }
 
     const userInfo = await get_user_info();
     if (!userInfo?.id || !userInfo?.user_type) {
-        console.error("Missing user info");
+        console.error("Missing user info:", userInfo);
         return null;
     }
 
     if (tokenPayload.sub !== userInfo.email || tokenPayload.user_type !== userInfo.user_type) {
-        console.error("Token and user info mismatch");
+        console.error("Token and user info mismatch:", { tokenPayload, userInfo });
         return null;
     }
 
     const wsUrl = `ws://127.0.0.1:8000/api/messaging/ws/${conversationId}?token=${encodeURIComponent(token)}`;
     let ws = null;
     let reconnectAttempts = 0;
-    const maxReconnectAttempts = 5;
+    const maxReconnectAttempts = 2;
 
-    const connect = async () => {
+    const connect = () => {
         try {
             ws = new WebSocket(wsUrl);
             ws.onopen = () => {
@@ -87,8 +85,8 @@ const create_websocket = async (conversationId, messageHandler) => {
             ws.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
+                    console.log("WebSocket message received:", data);
                     if (data.event_type === "new_message") {
-                        console.log("New message:", data);
                         messageHandler(data);
                     } else if (data.error) {
                         console.error("WebSocket server error:", data.error);
@@ -98,13 +96,19 @@ const create_websocket = async (conversationId, messageHandler) => {
                 }
             };
             ws.onerror = (error) => {
-                console.error("WebSocket error:", error);
+                console.error("WebSocket error:", error, "URL:", wsUrl);
             };
             ws.onclose = (event) => {
-                console.log("WebSocket disconnected:", event.code, event.reason);
+                console.error("WebSocket closed:", { code: event.code, reason: event.reason, url: wsUrl });
+                if (event.code === 1008) {
+                    console.error("WebSocket closed due to access denied (403). Possible causes: incorrect conversation_id or user not authorized for this conversation.");
+                }
                 if (reconnectAttempts < maxReconnectAttempts) {
                     reconnectAttempts++;
+                    console.log(`Reconnecting attempt ${reconnectAttempts}/${maxReconnectAttempts}`);
                     setTimeout(connect, 3000);
+                } else {
+                    console.error("Max reconnect attempts reached");
                 }
             };
         } catch (error) {
@@ -112,7 +116,7 @@ const create_websocket = async (conversationId, messageHandler) => {
         }
     };
 
-    await connect();
+    connect();
     return ws;
 };
 
