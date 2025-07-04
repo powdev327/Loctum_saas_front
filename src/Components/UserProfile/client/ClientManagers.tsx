@@ -19,6 +19,9 @@ export default function ClientManagers({managers}) {
     isOpenDeleteModal();
   };
 
+  console.log(managers);
+  
+
   return (
     <>
       <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
@@ -44,6 +47,12 @@ export default function ClientManagers({managers}) {
                     className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                 >
                   Phone Number
+                </TableCell>
+                <TableCell
+                    isHeader
+                    className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                >
+                  Institution
                 </TableCell>
                 <TableCell
                     isHeader
@@ -73,6 +82,10 @@ export default function ClientManagers({managers}) {
                     </TableCell>
                     <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                       {manager.phone_number}
+                    </TableCell>
+                    <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                      {manager.institution.institution_name
+}
                     </TableCell>
                     <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                       <div className='justify-center flex items-center gap-3'>
