@@ -1,8 +1,8 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import ComponentCard from "../../components/common/ComponentCard";
-import BarChartOne from "../../components/charts/bar/BarChartOne";
-import BarChartTwo from "../../components/charts/bar/BarChartTwo";
-import PageMeta from "../../components/common/PageMeta";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import ComponentCard from "../../Components/common/ComponentCard";
+import BarChartOne from "../../Components/charts/bar/BarChartOne";
+import BarChartTwo from "../../Components/charts/bar/BarChartTwo";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function BarChart() {
   return (

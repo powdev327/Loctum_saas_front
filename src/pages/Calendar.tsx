@@ -4,9 +4,9 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { EventInput, DateSelectArg, EventClickArg } from "@fullcalendar/core";
-import { Modal } from "../components/ui/modal";
+import { Modal } from "../Components/ui/modal";
 import { useModal } from "../hooks/useModal";
-import PageMeta from "../components/common/PageMeta";
+import PageMeta from "../Components/common/PageMeta";
 
 interface CalendarEvent extends EventInput {
   extendedProps: {

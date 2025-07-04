@@ -1,6 +1,6 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import LinksExample from "../../components/links";
-import PageMeta from "../../components/common/PageMeta";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import LinksExample from "../../Components/links";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function Links() {
   return (

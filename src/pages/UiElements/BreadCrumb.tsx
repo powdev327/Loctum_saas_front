@@ -1,9 +1,9 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import DefaultBreadCrumbExample from "../../components/ui/breadcrumb/DefaultBreadCrumbExample";
-import BreadCrumbWithIcon from "../../components/ui/breadcrumb/BreadCrumbWithIcon";
-import AngleDividerBreadCrumb from "../../components/ui/breadcrumb/AngleDividerBreadCrumb";
-import DottedDividerBreadcrumb from "../../components/ui/breadcrumb/DottedDividerBreadcrumb";
-import PageMeta from "../../components/common/PageMeta";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import DefaultBreadCrumbExample from "../../Components/ui/breadcrumb/DefaultBreadCrumbExample";
+import BreadCrumbWithIcon from "../../Components/ui/breadcrumb/BreadCrumbWithIcon";
+import AngleDividerBreadCrumb from "../../Components/ui/breadcrumb/AngleDividerBreadCrumb";
+import DottedDividerBreadcrumb from "../../Components/ui/breadcrumb/DottedDividerBreadcrumb";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function BreadCrumb() {
   return (

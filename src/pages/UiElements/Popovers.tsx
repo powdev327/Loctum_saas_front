@@ -1,6 +1,6 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import PageMeta from "../../components/common/PageMeta";
-import PopoverExample from "../../components/ui/popover";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import PageMeta from "../../Components/common/PageMeta";
+import PopoverExample from "../../Components/ui/popover";
 
 export default function Popovers() {
   return (
