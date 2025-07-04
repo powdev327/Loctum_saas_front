@@ -1,6 +1,6 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import SpinnerExample from "../../components/ui/spinner";
-import PageMeta from "../../components/common/PageMeta";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import SpinnerExample from "../../Components/ui/spinner";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function Spinners() {
   return (

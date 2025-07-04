@@ -1,6 +1,6 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import ButtonGroupExample from "../../components/ui/buttons-group";
-import PageMeta from "../../components/common/PageMeta";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import ButtonGroupExample from "../../Components/ui/buttons-group";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function ButtonsGroup() {
   return (

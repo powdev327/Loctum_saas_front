@@ -1,13 +1,13 @@
-import RecentOrderAnalytics from "../../components/analytics/RecentOrderAnalytics";
-import DemographicCard from "../../components/ecommerce/DemographicCard";
-import TopPages from "../../components/analytics/TopPages";
-import TopChannel from "../../components/analytics/TopChannel";
-import AnalyticsMetrics from "../../components/analytics/AnalyticsMetrics";
-import ActiveUsersChart from "../../components/analytics/ActiveUsersChart";
-import AnalyticsBarChart from "../../components/analytics/AnalyticsBarChart";
-import AcquisitionChannelChart from "../../components/analytics/AcquisitionChannelChart";
-import SessionChart from "../../components/analytics/SessionChart";
-import PageMeta from "../../components/common/PageMeta";
+import RecentOrderAnalytics from "../../Components/analytics/RecentOrderAnalytics";
+import DemographicCard from "../../Components/ecommerce/DemographicCard";
+import TopPages from "../../Components/analytics/TopPages";
+import TopChannel from "../../Components/analytics/TopChannel";
+import AnalyticsMetrics from "../../Components/analytics/AnalyticsMetrics";
+import ActiveUsersChart from "../../Components/analytics/ActiveUsersChart";
+import AnalyticsBarChart from "../../Components/analytics/AnalyticsBarChart";
+import AcquisitionChannelChart from "../../Components/analytics/AcquisitionChannelChart";
+import SessionChart from "../../Components/analytics/SessionChart";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function Analytics() {
   return (

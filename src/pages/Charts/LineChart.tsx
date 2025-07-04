@@ -1,9 +1,9 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import ComponentCard from "../../components/common/ComponentCard";
-import LineChartOne from "../../components/charts/line/LineChartOne";
-import LineChartTwo from "../../components/charts/line/LineChartTwo";
-import LineChartThree from "../../components/charts/line/LineChartThree";
-import PageMeta from "../../components/common/PageMeta";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import ComponentCard from "../../Components/common/ComponentCard";
+import LineChartOne from "../../Components/charts/line/LineChartOne";
+import LineChartTwo from "../../Components/charts/line/LineChartTwo";
+import LineChartThree from "../../Components/charts/line/LineChartThree";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function LineChart() {
   return (

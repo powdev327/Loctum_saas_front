@@ -1,8 +1,8 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import ComponentCard from "../../components/common/ComponentCard";
-import PieChartOne from "../../components/charts/pie/PieChartOne";
-import PieChartTwo from "../../components/charts/pie/PieChartTwo";
-import PageMeta from "../../components/common/PageMeta";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import ComponentCard from "../../Components/common/ComponentCard";
+import PieChartOne from "../../Components/charts/pie/PieChartOne";
+import PieChartTwo from "../../Components/charts/pie/PieChartTwo";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function PieChart() {
   return (

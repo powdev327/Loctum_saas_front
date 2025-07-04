@@ -1,6 +1,6 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import RibbonExample from "../../components/ui/ribbons";
-import PageMeta from "../../components/common/PageMeta";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import RibbonExample from "../../Components/ui/ribbons";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function Ribbons() {
   return (

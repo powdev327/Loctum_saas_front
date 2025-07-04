@@ -32,6 +32,21 @@ const generateDateRange = (startDate: string, endDate: string): string[] => {
   return dateArray;
 };
 
+// Update this function to handle non-array inputs
+const processContractTypes = (contractTypes) => {
+  // Handle case when contractTypes is not an array
+  if (!contractTypes || !Array.isArray(contractTypes)) {
+    console.warn("Expected array for contractTypes but got:", contractTypes);
+    return [];
+  }
+  
+  // Process the contract types as needed when it is an array
+  return contractTypes.map(type => ({
+    value: type.id || type.value,
+    label: type.name || type.label
+  }));
+};
+
 export function CreateContractPopup({ isOpen, closeModal }) {
     const { institutions, client_id } = useClient();
     const { storeContract } = useContract();
@@ -1687,7 +1702,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                     showPerDayWorkHours={generateDateRange(start_date, end_date).length <= 10}
                                     hourOptions={hourOptions}
                                     isWorkHoursPopupOpen={isWorkHoursPopupOpen}
-                                    setIsWorkHoursPopupOpen={setIsWorkHoursPopupOpen}
+                                    setIsWorkHoursPopup={setIsWorkHoursPopupOpen}
                                 />
                             )}
                             {contract_type === "placement" && placementFields && 

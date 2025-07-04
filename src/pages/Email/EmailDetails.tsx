@@ -1,6 +1,6 @@
-import PageMeta from "../../components/common/PageMeta";
-import EmailWrapper from "../../components/email/EmailDetails/EmailWrapper";
-import EmailSidebar from "../../components/email/EmailSidebar/EmailSidebar";
+import PageMeta from "../../Components/common/PageMeta";
+import EmailWrapper from "../../Components/email/EmailDetails/EmailWrapper";
+import EmailSidebar from "../../Components/email/EmailSidebar/EmailSidebar";
 
 export default function EmailDetails() {
   return (

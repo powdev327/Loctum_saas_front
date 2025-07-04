@@ -1,4 +1,3 @@
-
 import Input from "../../../form/input/InputField";
 import Label from "../../../form/Label.tsx";
 import Select from "../../../form/Select.tsx";
@@ -11,8 +10,19 @@ export const BaseFields = ({
                         end_date, setEndDate,
                         hourly_rate, setHourlyRate,
                         industry_type, setIndustryType,
-                        options
-                    }) => (
+                        options,
+                        // Make sure to destructure contract_type here
+                        contract_type,
+                        setIsWorkHoursPopupOpen,
+                        showPerDayWorkHours,
+                        pharmacyIndustryFields,
+                        setPharmacyIndustryFields,
+                        dentalIndustryFields,
+                        setDentalIndustryFields
+                    }) => {
+  // Now you can use contract_type here
+  
+  return (
     <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2 px-2">
         <div>
             <Label>Position Title</Label>
@@ -64,4 +74,5 @@ export const BaseFields = ({
             />
         </div>
     </div>
-);
+  );
+};

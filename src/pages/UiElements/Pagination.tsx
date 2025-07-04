@@ -1,6 +1,6 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import PaginationExample from "../../components/ui/pagination";
-import PageMeta from "../../components/common/PageMeta";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import PaginationExample from "../../Components/ui/pagination";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function Pagination() {
   return (

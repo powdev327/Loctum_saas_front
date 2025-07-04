@@ -1,9 +1,9 @@
-import ComponentCard from "../../components/common/ComponentCard";
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import UpdateNotification from "../../components/ui/notification/UpdateNotification";
-import Notification from "../../components/ui/notification/Notfication";
-import CookieConsent from "../../components/ui/notification/CookieConsent";
-import PageMeta from "../../components/common/PageMeta";
+import ComponentCard from "../../Components/common/ComponentCard";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import UpdateNotification from "../../Components/ui/notification/UpdateNotification";
+import Notification from "../../Components/ui/notification/Notfication";
+import CookieConsent from "../../Components/ui/notification/CookieConsent";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function Notifications() {
   const handleLater = () => {

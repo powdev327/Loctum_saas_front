@@ -1,9 +1,9 @@
-import PageBreadcrumb from "../components/common/PageBreadCrumb";
-import AllMediaCard from "../components/file-manager/AllMediaCard";
-import AllFolders from "../components/file-manager/AllFolders";
-import RecentFileTable from "../components/file-manager/RecentFileTable";
-import StorageDetailsChart from "../components/file-manager/StorageDetailsChart";
-import PageMeta from "../components/common/PageMeta";
+import PageBreadcrumb from "../Components/common/PageBreadCrumb";
+import AllMediaCard from "../Components/file-manager/AllMediaCard";
+import AllFolders from "../Components/file-manager/AllFolders";
+import RecentFileTable from "../Components/file-manager/RecentFileTable";
+import StorageDetailsChart from "../Components/file-manager/StorageDetailsChart";
+import PageMeta from "../Components/common/PageMeta";
 
 export default function FileManager() {
   return (

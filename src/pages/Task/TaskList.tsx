@@ -1,6 +1,6 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import PageMeta from "../../components/common/PageMeta";
-import TaskListPage from "../../components/task/task-list/TaskListPage";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import PageMeta from "../../Components/common/PageMeta";
+import TaskListPage from "../../Components/task/task-list/TaskListPage";
 
 export default function TaskList() {
   return (

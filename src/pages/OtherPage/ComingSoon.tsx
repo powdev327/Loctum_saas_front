@@ -1,7 +1,7 @@
-import GridShape from "../../components/common/GridShape";
+import GridShape from "../../Components/common/GridShape";
 import { Link } from "react-router";
-import CountdownTimer from "../../components/common/CountdownTimer";
-import PageMeta from "../../components/common/PageMeta";
+import CountdownTimer from "../../Components/common/CountdownTimer";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function ComingSoon() {
   // Set the target date to 7 days from now

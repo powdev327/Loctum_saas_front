@@ -1,9 +1,9 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import CardWithImage from "../../components/cards/card-with-image/CardWithImage";
-import HorizontalCardWithImage from "../../components/cards/horizontal-card/HorizontalCardWithImage";
-import CardWithLinkExample from "../../components/cards/card-with-link/CardWithLinkExample";
-import CardWithIconExample from "../../components/cards/card-with-icon/CardWithIconExample";
-import PageMeta from "../../components/common/PageMeta";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import CardWithImage from "../../Components/cards/card-with-image/CardWithImage";
+import HorizontalCardWithImage from "../../Components/cards/horizontal-card/HorizontalCardWithImage";
+import CardWithLinkExample from "../../Components/cards/card-with-link/CardWithLinkExample";
+import CardWithIconExample from "../../Components/cards/card-with-icon/CardWithIconExample";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function Cards() {
   return (
