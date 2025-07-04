@@ -32,12 +32,19 @@ export function UpdateCvSummary({
     const handleApplyOrSave = async () => {
         setIsLoading(true);
         let toastId = toast.loading(hasChanges ? "Saving CV summary and applying..." : "Applying...");
+
         try {
-            
-            if (hasChanges) {
-                const isValid = Object.values(localCvSummary).every(
-                    (section) => section.every((item) => item.trim() !== "")
+
+            const isValid = ["education", "experience", "skills"].every((sectionKey) => {
+                const section = localCvSummary[sectionKey];
+                return (
+                    Array.isArray(section) &&
+                    section.length > 0 &&
+                    section.every((item) => typeof item === "string" && item.trim() !== "")
                 );
+            });
+
+            if (hasChanges) {
                 if (!isValid) {
                     toast.dismiss(toastId);
                     toast.error("Please fill in all CV summary fields.");
@@ -45,14 +52,12 @@ export function UpdateCvSummary({
                     return;
                 }
 
-                // Save CV summary
                 const dataToUpdate = new FormData();
                 dataToUpdate.append("cv_summary", JSON.stringify(localCvSummary));
                 await updateUser(dataToUpdate);
                 toast.success("CV summary updated successfully!");
             }
 
-            // Apply for the contract
             await applyContract(contractId);
             toast.dismiss(toastId);
             toast.success("Successfully applied for contract!");

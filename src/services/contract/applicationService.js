@@ -18,7 +18,7 @@ const reject_application = async (application_id) => {
 }
 
 const apply_contract = async (contract_id) => {
-    const res = await http.put(`/contract/apply-contract/${contract_id}`);
+    const res = await http.post(`/contract/apply-contract/${contract_id}`);
     res.data
 }
 

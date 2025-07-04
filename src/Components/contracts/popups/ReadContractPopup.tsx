@@ -2,11 +2,12 @@ import { useState } from "react";
 import { Modal } from "../../ui/modal";
 import Button from "../../ui/button/Button.tsx";
 import { UpdateCvSummary } from "../../UserProfile/popups/locum/UpdateCvSummary.tsx";
-import {useAuth} from "../../../context/AuthContext.tsx";
+import { useAuth } from "../../../context/AuthContext.tsx";
 
 export function ReadContractPopup({ isOpen, closeModal, selectedContract }) {
     const { user } = useAuth();
     const [isCvSummaryModalOpen, setIsCvSummaryModalOpen] = useState(false);
+    const latestCv = user?.cvs?.[user.cvs.length - 1];
 
     const formatFieldName = (key) => {
         return key
@@ -120,8 +121,8 @@ export function ReadContractPopup({ isOpen, closeModal, selectedContract }) {
                                                 >
                                                     <span className="text-blue-600 dark:text-blue-400 mr-3 text-lg">📄</span>
                                                     <span className="text-sm font-medium text-blue-600 dark:text-blue-400 group-hover:underline">
-                            {typeof doc === "string" ? doc : `Document ${index + 1}`}
-                          </span>
+                                                        {typeof doc === "string" ? doc : `Document ${index + 1}`}
+                                                    </span>
                                                 </a>
                                             ))}
                                         </div>
@@ -214,12 +215,11 @@ export function ReadContractPopup({ isOpen, closeModal, selectedContract }) {
                     <div className="px-8 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-b-xl">
                         <div className="flex justify-between items-center">
                             <div className="text-xs text-gray-500 dark:text-gray-400">
-                                Last updated:{" "}
-                                {new Date().toLocaleDateString("en-US", {
-                                    year: "numeric",
-                                    month: "long",
-                                    day: "numeric",
-                                })}
+                                Last updated: {new Date().toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                            })}
                             </div>
                             <div className="flex items-center gap-4">
                                 {user?.user_type === "locum" && (
@@ -243,9 +243,9 @@ export function ReadContractPopup({ isOpen, closeModal, selectedContract }) {
                 </div>
             </Modal>
 
-            {isCvSummaryModalOpen && (
+            {isCvSummaryModalOpen && latestCv && (
                 <UpdateCvSummary
-                    cvSummary={user?.cv_summary || { education: [], experience: [], skills: [] }}
+                    cvSummary={latestCv || { education: [], experience: [], skills: [] }}
                     isCvSummaryModalOpen={isCvSummaryModalOpen}
                     setIsCvSummaryModalOpen={setIsCvSummaryModalOpen}
                     contractId={selectedContract.contract_id}

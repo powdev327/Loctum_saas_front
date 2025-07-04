@@ -87,7 +87,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ user }) => {
         { name: "Data Tables", path: "/data-tables", pro: true },
       ],
     },*/
-    {
+   /* {
       name: "Pages",
       icon: <PageIcon />,
       subItems: [
@@ -102,7 +102,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ user }) => {
         { name: "Maintenance", path: "/maintenance", pro: true },
         { name: "Success", path: "/success", pro: true },
       ],
-    },
+    },*/
   ];
 
   const supportItems: NavItem[] = [
