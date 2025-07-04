@@ -88,6 +88,16 @@ export function ClientAddManager({ isOpen, openModal, closeModal }) {
     }
   }, [isOpen]);
 
+  // Update the shouldShowError function to always show errors for non-empty fields or when submit is attempted
+  const shouldShowError = (fieldName) => {
+    return (
+      // Show errors in these cases:
+      (formik.touched[fieldName] && formik.errors[fieldName]) || // Field was touched and has error
+      (formik.submitCount > 0 && formik.errors[fieldName]) ||    // Form submission was attempted
+      (formik.values[fieldName] && formik.errors[fieldName])     // Field has a value but it's invalid
+    );
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
       <div className="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-11">
@@ -100,6 +110,11 @@ export function ClientAddManager({ isOpen, openModal, closeModal }) {
           </p>
         </div>
         <form className="flex flex-col" onSubmit={formik.handleSubmit}>
+          <div className="px-2 mb-4">
+            <p className="text-xs text-amber-600 dark:text-amber-400">
+              <span className="font-semibold">Note:</span> Fields marked with * are required.
+            </p>
+          </div>
           <div className="px-2 overflow-y-auto custom-scrollbar">
             <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
               <div>
@@ -111,11 +126,14 @@ export function ClientAddManager({ isOpen, openModal, closeModal }) {
                   value={formik.values.manager_name}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={
-                    formik.touched.manager_name && formik.errors.manager_name
-                  }
+                  error={shouldShowError('manager_name') ? formik.errors.manager_name : undefined}
                   placeholder="John Doe"
                 />
+                {shouldShowError('manager_name') && (
+                  <div className="mt-1 text-sm text-red-600">
+                    {formik.errors.manager_name}
+                  </div>
+                )}
               </div>
 
               <div>
@@ -127,9 +145,14 @@ export function ClientAddManager({ isOpen, openModal, closeModal }) {
                   value={formik.values.email}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  error={formik.touched.email && formik.errors.email}
+                  error={shouldShowError('email') ? formik.errors.email : undefined}
                   placeholder="manager@example.com"
                 />
+                {shouldShowError('email') && (
+                  <div className="mt-1 text-sm text-red-600">
+                    {formik.errors.email}
+                  </div>
+                )}
               </div>
 
               <div className="col-span-2">
@@ -141,12 +164,15 @@ export function ClientAddManager({ isOpen, openModal, closeModal }) {
                   value={formik.values.phone_number}
                   onChange={handlePhoneChange}
                   onBlur={formik.handleBlur}
-                  error={
-                    formik.touched.phone_number && formik.errors.phone_number
-                  }
+                  error={shouldShowError('phone_number') ? formik.errors.phone_number : undefined}
                   placeholder="(123) 456-7890"
                   maxLength={14}
                 />
+                {shouldShowError('phone_number') && (
+                  <div className="mt-1 text-sm text-red-600">
+                    {formik.errors.phone_number}
+                  </div>
+                )}
                 <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                   Canadian format: (123) 456-7890 or 123-456-7890
                 </p>
@@ -161,7 +187,7 @@ export function ClientAddManager({ isOpen, openModal, closeModal }) {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   className={`w-full px-3 py-2 border rounded-md ${
-                    formik.touched.institution_id && formik.errors.institution_id
+                    shouldShowError('institution_id')
                       ? "border-red-500"
                       : "border-gray-300"
                   } dark:bg-gray-800 dark:border-gray-700 dark:text-white`}
@@ -176,7 +202,7 @@ export function ClientAddManager({ isOpen, openModal, closeModal }) {
                     </option>
                   ))}
                 </select>
-                {formik.touched.institution_id && formik.errors.institution_id && (
+                {shouldShowError('institution_id') && (
                   <div className="mt-1 text-sm text-red-600">
                     {formik.errors.institution_id}
                   </div>
@@ -239,8 +265,17 @@ export function ClientAddManager({ isOpen, openModal, closeModal }) {
             <Button
               size="sm"
               type="submit"
-              disabled={!formik.isValid || formik.isSubmitting}
+              disabled={formik.isSubmitting}
               loading={formik.isSubmitting}
+              onClick={() => {
+                // This will set all fields as touched to trigger validation
+                formik.setTouched({
+                  manager_name: true,
+                  email: true,
+                  phone_number: true,
+                  institution_id: true
+                });
+              }}
             >
               {formik.isSubmitting ? "Saving..." : "Save Manager"}
             </Button>

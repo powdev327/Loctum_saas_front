@@ -1,5 +1,3 @@
-"use client"
-
 import { Modal } from "../../ui/modal"
 import Label from "../../form/Label.tsx"
 import Input from "../../form/input/InputField.tsx"
@@ -11,7 +9,7 @@ import provincesData from "@/data/canada-provinces-cities.json"
 import { useClient } from "../../../context/owner/ClientContext.tsx"
 
 export function ClientUpdate({ isOpen, openModal, closeModal, clientId, client }) {
- const [filteredCities, setFilteredCities] = useState([])
+  const [filteredCities, setFilteredCities] = useState([])
   const [neighborhoods, setNeighborhoods] = useState([])
   const [isLoadingNeighborhoods, setIsLoadingNeighborhoods] = useState(false)
   const [neighborhoodError, setNeighborhoodError] = useState(null)
@@ -37,33 +35,74 @@ export function ClientUpdate({ isOpen, openModal, closeModal, clientId, client }
     logo: Yup.mixed().nullable(),
   })
 
+  // Replace your formik initialization with this
   const formik = useFormik({
+    enableReinitialize: true, // This will make formik reinitialize when initialValues changes
     initialValues: {
-      institution_name: "",
-      province: "",
-      city: "",
-      phone_number: "",
-      full_address: "",
+      institution_name: client?.institution_name || "",
+      province: client?.province || "",
+      city: client?.city || "",
+      phone_number: client?.phone_number || "",
+      full_address: client?.full_address || "",
+      postal_code: client?.postal_code || "",
       logo: null,
     },
     validationSchema,
     onSubmit: async (values) => {
       const formData = new FormData()
-      formData.append("institution_name", values.institution_name)
-      formData.append("province", values.province)
-      formData.append("city", values.city)
-      formData.append("phone_number", values.phone_number)
-      formData.append("full_address", values.full_address)
-      if (values.logo) formData.append("logo_url", values.logo)
-
+      // Only append changed values to formData
+      let hasChanges = false;
+      
+      Object.keys(values).forEach(key => {
+        if (values[key] !== client[key] && values[key] !== undefined) {
+          formData.append(key, values[key])
+          hasChanges = true;
+        }
+      })
+      
+      if (!hasChanges) {
+        closeModal();
+        return; // Don't make API call if nothing changed
+      }
+      
       try {
         await updateClient(clientId, formData)
         closeModal()
-      } catch (err) {
-        console.error("Error updating client:", err)
+      } catch (e) {
+        console.error("Error updating client:", e)
       }
     },
   })
+
+  // This useEffect ensures form data is reset if client changes while modal is open
+  useEffect(() => {
+    if (client && isOpen) {
+      // Properly set all form values from client data
+      formik.setValues({
+        institution_name: client.institution_name || "",
+        province: client.province || "",
+        city: client.city || "",
+        phone_number: client.phone_number || "",
+        full_address: client.full_address || "", 
+        postal_code: client.postal_code || "",
+        logo: null,
+        // Add any other fields from your form
+      });
+      
+      // Set up dependent fields correctly
+      if (client.province) {
+        const citiesForProvince = provincesData[client.province] || [];
+        setFilteredCities(citiesForProvince);
+        
+        // If city and province are available, fetch neighborhoods
+        if (client.city) {
+          fetchNeighborhoods(client.city, client.province);
+        }
+      }
+      
+      console.log("Form initialized with client data:", client);
+    }
+  }, [client, isOpen]);
 
   const handleProvinceChange = (selectedProvince) => {
     formik.setFieldValue("province", selectedProvince)
@@ -262,25 +301,6 @@ export function ClientUpdate({ isOpen, openModal, closeModal, clientId, client }
     }
   }
 
-  useEffect(() => {
-    if (client) {
-      formik.setValues({
-        institution_name: client.institution_name || "",
-        province: client.province || "",
-        city: client.city || "",
-        phone_number: client.phone_number || "",
-        full_address: client.full_address || "",
-        logo: null,
-      });
-
-      // If province is available, set the filtered cities
-      if (client.province) {
-        const citiesForProvince = provincesData[client.province] || [];
-        setFilteredCities(citiesForProvince);
-      }
-    }
-  }, [client]);
-
 
 
   useEffect(() => {
@@ -294,6 +314,8 @@ export function ClientUpdate({ isOpen, openModal, closeModal, clientId, client }
       setNeighborhoods([])
     }
   }, [formik.values.city, formik.values.province])
+
+  console.log("ClientUpdate received client:", client);
 
   return (
     <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
