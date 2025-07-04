@@ -1,10 +1,10 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import ComponentCard from "../../components/common/ComponentCard";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import ComponentCard from "../../Components/common/ComponentCard";
 
-import PageMeta from "../../components/common/PageMeta";
-import DataTableOne from "../../components/tables/DataTables/TableOne/DataTableOne";
-import DataTableTwo from "../../components/tables/DataTables/TableTwo/DataTableTwo";
-import DataTableThree from "../../components/tables/DataTables/TableThree/DataTableThree";
+import PageMeta from "../../Components/common/PageMeta";
+import DataTableOne from "../../Components/tables/DataTables/TableOne/DataTableOne";
+import DataTableTwo from "../../Components/tables/DataTables/TableTwo/DataTableTwo";
+import DataTableThree from "../../Components/tables/DataTables/TableThree/DataTableThree";
 
 export default function DataTables() {
   return (

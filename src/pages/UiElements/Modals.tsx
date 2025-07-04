@@ -1,6 +1,6 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import ModalExamples from "../../components/UiExample/ModalExample";
-import PageMeta from "../../components/common/PageMeta";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import ModalExamples from "../../Components/UiExample/ModalExample";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function Modals() {
   return (

@@ -1,6 +1,6 @@
-import GridShape from "../../components/common/GridShape";
+import GridShape from "../../Components/common/GridShape";
 import { Link } from "react-router";
-import PageMeta from "../../components/common/PageMeta";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function Success() {
   return (

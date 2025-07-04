@@ -1,6 +1,6 @@
-import PageBreadcrumb from "../components/common/PageBreadCrumb";
-import Invoice from "../components/invoice/Invoice";
-import PageMeta from "../components/common/PageMeta";
+import PageBreadcrumb from "../Components/common/PageBreadCrumb";
+import Invoice from "../Components/invoice/Invoice";
+import PageMeta from "../Components/common/PageMeta";
 
 export default function Invoices() {
   return (

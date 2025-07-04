@@ -1,6 +1,6 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import PageMeta from "../../components/common/PageMeta";
-import ListExample from "../../components/list";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import PageMeta from "../../Components/common/PageMeta";
+import ListExample from "../../Components/list";
 
 export default function Lists() {
   return (

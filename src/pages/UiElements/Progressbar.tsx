@@ -1,6 +1,6 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import ProgressBarExample from "../../components/ui/progressbar";
-import PageMeta from "../../components/common/PageMeta";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import ProgressBarExample from "../../Components/ui/progressbar";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function Progressbar() {
   return (

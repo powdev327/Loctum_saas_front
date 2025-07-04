@@ -1,6 +1,6 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import TabExample from "../../components/ui/tabs";
-import PageMeta from "../../components/common/PageMeta";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import TabExample from "../../Components/ui/tabs";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function Tabs() {
   return (

@@ -1,10 +1,10 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import SlideOnly from "../../components/ui/carousel/SlideOnly";
-import WithControl from "../../components/ui/carousel/WithControl";
-import WithIndicators from "../../components/ui/carousel/WithIndicators";
-import WithControlAndIndicators from "../../components/ui/carousel/WithControlAndIndicators";
-import ComponentCard from "../../components/common/ComponentCard";
-import PageMeta from "../../components/common/PageMeta";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import SlideOnly from "../../Components/ui/carousel/SlideOnly";
+import WithControl from "../../Components/ui/carousel/WithControl";
+import WithIndicators from "../../Components/ui/carousel/WithIndicators";
+import WithControlAndIndicators from "../../Components/ui/carousel/WithControlAndIndicators";
+import ComponentCard from "../../Components/common/ComponentCard";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function Carousel() {
   return (

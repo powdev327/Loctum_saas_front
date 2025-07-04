@@ -1,6 +1,6 @@
-import PageMeta from "../../components/common/PageMeta";
-import EmailContent from "../../components/email/EmailInbox/EmailContent";
-import EmailSidebar from "../../components/email/EmailSidebar/EmailSidebar";
+import PageMeta from "../../Components/common/PageMeta";
+import EmailContent from "../../Components/email/EmailInbox/EmailContent";
+import EmailSidebar from "../../Components/email/EmailSidebar/EmailSidebar";
 
 export default function EmailInbox() {
   return (

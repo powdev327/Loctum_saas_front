@@ -1,11 +1,11 @@
-import PageMeta from "../../components/common/PageMeta";
-import ActivitiesCard from "../../components/saas/ActivitiesCard";
-import ChurnRateChart from "../../components/saas/ChurnRateChart";
-import FunnelChart from "../../components/saas/FunnelChart";
-import GrowthChart from "../../components/saas/GrowthChart";
-import ProductPerformanceTab from "../../components/saas/ProductPerformanceTab";
-import SaasInvoiceTable from "../../components/saas/SaasInvoiceTable";
-import SaasMetrics from "../../components/saas/SaasMetrics";
+import PageMeta from "../../Components/common/PageMeta";
+import ActivitiesCard from "../../Components/saas/ActivitiesCard";
+import ChurnRateChart from "../../Components/saas/ChurnRateChart";
+import FunnelChart from "../../Components/saas/FunnelChart";
+import GrowthChart from "../../Components/saas/GrowthChart";
+import ProductPerformanceTab from "../../Components/saas/ProductPerformanceTab";
+import SaasInvoiceTable from "../../Components/saas/SaasInvoiceTable";
+import SaasMetrics from "../../Components/saas/SaasMetrics";
 
 export default function Saas() {
   return (

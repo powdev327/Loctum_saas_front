@@ -1,9 +1,9 @@
-import PageBreadcrumb from "../../components/common/PageBreadCrumb";
-import ExampleFormTwo from "../../components/form/example-form/ExampleFormTwo";
-import BasicForm from "../../components/form/example-form/BasicForm";
-import ExampleFormOne from "../../components/form/example-form/ExampleFormOne";
-import ExampleFormWithIcon from "../../components/form/example-form/ExampleFormWithIcon";
-import PageMeta from "../../components/common/PageMeta";
+import PageBreadcrumb from "../../Components/common/PageBreadCrumb";
+import ExampleFormTwo from "../../Components/form/example-form/ExampleFormTwo";
+import BasicForm from "../../Components/form/example-form/BasicForm";
+import ExampleFormOne from "../../Components/form/example-form/ExampleFormOne";
+import ExampleFormWithIcon from "../../Components/form/example-form/ExampleFormWithIcon";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function FormLayout() {
   return (

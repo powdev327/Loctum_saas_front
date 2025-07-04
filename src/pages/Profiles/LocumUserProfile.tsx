@@ -1,13 +1,19 @@
 import PageBreadcrumb from "../../Components/common/PageBreadCrumb.tsx"
 import PageMeta from "../../Components/common/PageMeta.tsx"
-import LocumMetaCard from "../../Components/UserProfile/locum/LocumMetaCard.tsx";
-import LocumInfoCard from "../../Components/UserProfile/locum/LocumInfoCard.tsx";
-import LocumAddressCard from "../../Components/UserProfile/locum/LocumAddressCard.tsx";
-import {useLocum} from "../../context/locum/LocumContext.tsx";
+import LocumMetaCard from "../../Components/UserProfile/locum/LocumMetaCard.tsx"
+import LocumInfoCard from "../../Components/UserProfile/locum/LocumInfoCard.tsx"
+import LocumCvSummary from "../../Components/UserProfile/locum/LocumCvSummary.tsx"
+import { useLocum } from "../../context/locum/LocumContext.tsx"
+import {useEffect} from "react";
 
 export default function LocumUserProfile() {
-    const {locum} = useLocum()
-    console.log('hdhdh', locum)
+    const { locum, cvs, refreshLocum } = useLocum()
+
+
+    const hasCVs = cvs && cvs.length > 0
+    useEffect(() => {
+        refreshLocum()
+    }, []);
     return (
         <>
             <PageMeta
@@ -19,8 +25,10 @@ export default function LocumUserProfile() {
                 <h3 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-7">Profile</h3>
                 <div className="space-y-6">
                     <LocumMetaCard locum={locum} />
-                    <LocumInfoCard />
-                    {/*<LocumAddressCard />*/}
+                    <div className={`grid grid-cols-1 gap-6 ${hasCVs ? "lg:grid-cols-2" : ""}`}>
+                        <LocumInfoCard />
+                        {hasCVs && <LocumCvSummary cvs={cvs} />}
+                    </div>
                 </div>
             </div>
         </>

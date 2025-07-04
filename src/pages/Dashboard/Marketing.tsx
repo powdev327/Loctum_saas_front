@@ -1,9 +1,9 @@
-import TrafficStats from "../../components/marketing/TrafficStats";
-import MarketingMetricsCards from "../../components/marketing/MarketingMetricsCards";
-import TrafficSource from "../../components/marketing/TrafficSource";
-import ImpressionChart from "../../components/marketing/ImpressionChart";
-import FeaturedCampaign from "../../components/marketing/FeaturedCampaign";
-import PageMeta from "../../components/common/PageMeta";
+import TrafficStats from "../../Components/marketing/TrafficStats";
+import MarketingMetricsCards from "../../Components/marketing/MarketingMetricsCards";
+import TrafficSource from "../../Components/marketing/TrafficSource";
+import ImpressionChart from "../../Components/marketing/ImpressionChart";
+import FeaturedCampaign from "../../Components/marketing/FeaturedCampaign";
+import PageMeta from "../../Components/common/PageMeta";
 
 export default function Marketing() {
   return (

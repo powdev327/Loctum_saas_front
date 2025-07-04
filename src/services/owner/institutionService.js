@@ -18,7 +18,6 @@ const getClientInstitution = async () => {
 
 const getInstitution_by_id = async (institution_id) => {
   const res = await http.get(`/client/institutions/${institution_id}`);
-  console.log("dzjdkzod", res.data);
   return res.data;
 }
 

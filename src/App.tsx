@@ -87,90 +87,89 @@ import LocumUserProfile from "./pages/Profiles/LocumUserProfile.tsx";
 import {LocumProvider} from "./context/locum/LocumContext.tsx";
 import Contract from "./pages/Contract/Contract.tsx";
 import {ContractProvider} from "./context/owner/ContractContext.tsx";
+import {ConversationProvider} from "./context/owner/ConversationContext.tsx";
+import RoleBasedLayout from "./helpers/RoleBasedLayout.tsx";
+import ContractRouteHandler from "./helpers/ContractRouteHandler.tsx";
 
 const App = () => {
   return (
       <>
         <ScrollToTop />
         <Routes>
-          <Route element={<ProtectedRoute role="client">
-            <ContractProvider>
-              <AppLayout />
-            </ContractProvider>
-            </ProtectedRoute>}>
+          <Route
+              element={
+                <ProtectedRoute>
+                  <RoleBasedLayout />
+                </ProtectedRoute>
+              }
+          >
+            {/* Shared Pages */}
+            {/*<Route path="/calendar" element={<Calendar />} />*/}
+            <Route path="/faq" element={<Faqs />} />
+            <Route path="/pricing-tables" element={<PricingTables />} />
+            <Route path="/chat" element={<Chats />} />
+            <Route path="/videos" element={<Videos />} />
+
+            {/* Client-only Pages */}
             <Route path="/dashboard" element={<Ecommerce />} />
             <Route path="/marketing" element={<Marketing />} />
             <Route path="/crm" element={<Crm />} />
             <Route path="/stocks" element={<Stocks />} />
             <Route path="/saas" element={<Saas />} />
-
-            {/* Other Pages */}
-            <Route path="/profile" element={<ClientUserProfile />} />
-            <Route path="/contract" element={<Contract />} />
-            <Route path="/calendar" element={<Calendar />} />
+            <Route path="/contract" element={<ContractRouteHandler />} />
             <Route path="/invoice" element={<Invoices />} />
-            <Route path="/faq" element={<Faqs />} />
-            <Route path="/pricing-tables" element={<PricingTables />} />
-            <Route path="/blank" element={<Blank />} />
+            <Route path="/profile" element={<ClientUserProfile />} />
+
+            {/* Locum-only Pages */}
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/locumprofile" element={<LocumUserProfile />} />
 
             {/* Forms */}
             <Route path="/form-elements" element={<FormElements />} />
             <Route path="/form-layout" element={<FormLayout />} />
 
-            {/* Applications */}
-            <Route path="/chat" element={<Chats />} />
-            <Route path="/task-list" element={<TaskList />} />
-            <Route path="/task-kanban" element={<TaskKanban />} />
+            {/* Apps */}
+            {/*<Route path="/task-list" element={<TaskList />} />*/}
+            {/*<Route path="/task-kanban" element={<TaskKanban />} />*/}
             <Route path="/file-manager" element={<FileManager />} />
 
             {/* Email */}
-            <Route path="/inbox" element={<EmailInbox />} />
-            <Route path="/inbox-details" element={<EmailDetails />} />
+            {/*<Route path="/inbox" element={<EmailInbox />} />*/}
+            {/*<Route path="/inbox-details" element={<EmailDetails />} />*/}
 
             {/* Tables */}
-            <Route path="/basic-tables" element={<BasicTables />} />
-            <Route path="/data-tables" element={<DataTables />} />
+            {/*<Route path="/basic-tables" element={<BasicTables />} />*/}
+            {/*<Route path="/data-tables" element={<DataTables />} />*/}
 
-            {/* UI Elements */}
-            <Route path="/alerts" element={<Alerts />} />
-            <Route path="/avatars" element={<Avatars />} />
-            <Route path="/badge" element={<Badges />} />
-            <Route path="/breadcrumb" element={<BreadCrumb />} />
-            <Route path="/buttons" element={<Buttons />} />
-            <Route path="/buttons-group" element={<ButtonsGroup />} />
-            <Route path="/cards" element={<Cards />} />
-            <Route path="/carousel" element={<Carousel />} />
-            <Route path="/dropdowns" element={<Dropdowns />} />
-            <Route path="/images" element={<Images />} />
-            <Route path="/links" element={<Links />} />
-            <Route path="/list" element={<Lists />} />
-            <Route path="/modals" element={<Modals />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/pagination" element={<Pagination />} />
-            <Route path="/popovers" element={<Popovers />} />
-            <Route path="/progress-bar" element={<Progressbar />} />
-            <Route path="/ribbons" element={<Ribbons />} />
-            <Route path="/spinners" element={<Spinners />} />
-            <Route path="/tabs" element={<Tabs />} />
-            <Route path="/tooltips" element={<Tooltips />} />
-            <Route path="/videos" element={<Videos />} />
+            {/* UI */}
+            {/*<Route path="/alerts" element={<Alerts />} />*/}
+            {/*<Route path="/avatars" element={<Avatars />} />*/}
+            {/*<Route path="/badge" element={<Badges />} />*/}
+            {/*<Route path="/breadcrumb" element={<BreadCrumb />} />*/}
+            {/*<Route path="/buttons" element={<Buttons />} />*/}
+            {/*<Route path="/buttons-group" element={<ButtonsGroup />} />*/}
+            {/*<Route path="/cards" element={<Cards />} />*/}
+            {/*<Route path="/carousel" element={<Carousel />} />*/}
+            {/*<Route path="/dropdowns" element={<Dropdowns />} />*/}
+            {/*<Route path="/images" element={<Images />} />*/}
+            {/*<Route path="/links" element={<Links />} />*/}
+            {/*<Route path="/list" element={<Lists />} />*/}
+            {/*<Route path="/modals" element={<Modals />} />*/}
+            {/*<Route path="/notifications" element={<Notifications />} />*/}
+            {/*<Route path="/pagination" element={<Pagination />} />*/}
+            {/*<Route path="/popovers" element={<Popovers />} />*/}
+            {/*<Route path="/progress-bar" element={<Progressbar />} />*/}
+            {/*<Route path="/ribbons" element={<Ribbons />} />*/}
+            {/*<Route path="/spinners" element={<Spinners />} />*/}
+            {/*<Route path="/tabs" element={<Tabs />} />*/}
+            {/*<Route path="/tooltips" element={<Tooltips />} />*/}
 
             {/* Charts */}
-            <Route path="/line-chart" element={<LineChart />} />
-            <Route path="/bar-chart" element={<BarChart />} />
-            <Route path="/pie-chart" element={<PieChart />} />
+            {/*<Route path="/line-chart" element={<LineChart />} />*/}
+            {/*<Route path="/bar-chart" element={<BarChart />} />*/}
+            {/*<Route path="/pie-chart" element={<PieChart />} />*/}
           </Route>
 
-          <Route element={
-            <ProtectedRoute role="locum">
-              <LocumProvider>
-                <AppLayout />
-              </LocumProvider>
-            </ProtectedRoute>
-          }>
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/Locumprofile" element={<LocumUserProfile />} />
-          </Route>
 
           <Route path="/" element={<Home />} />
           <Route path="/customer-service" element={<CustomerService />} />

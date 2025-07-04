@@ -1,6 +1,6 @@
-import PageMeta from "../../components/common/PageMeta";
+import PageMeta from "../../Components/common/PageMeta";
 import AuthLayout from "./AuthPageLayout";
-import ResetPasswordForm from "../../components/auth/ResetPasswordForm";
+import ResetPasswordForm from "../../Components/auth/ResetPasswordForm";
 
 export default function ResetPassword() {
   return (
