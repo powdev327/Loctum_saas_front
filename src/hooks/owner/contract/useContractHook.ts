@@ -75,11 +75,22 @@ type PharmacyIndustryFields = {
     mission_special?: boolean;
     position_type?: string;
     working_hours?: string;
+    working_hours_start?: string; // Start time for working hours
+    working_hours_end?: string;   // End time for working hours
     required_experience?: string;
     bonuses?: boolean;
     software_required?: string[];
     detailed_tasks?: string;
     additional_information?: string;
+    // Mission spécialisée fields (for consistency with DentalIndustryFields)
+    specialized_mission_type?: string;  // Type de mission
+    required_specialty?: string;        // Spécialité requise
+    mission_objective?: string;         // Objectif de la mission
+    estimated_duration?: string;        // Durée estimée
+    proposed_rate?: string;             // Taux proposé
+    equipment_required?: boolean;       // Equipement nécessaire (Oui/Non)
+    equipment_description?: string;     // Description de l'équipement
+    documents_required?: boolean;       // Documents requis (Oui/Non)
 };
 
 type DentalIndustryFields = {
@@ -95,10 +106,21 @@ type DentalIndustryFields = {
     software_required?: string[];
     required_experience?: string;
     working_hours?: string;
+    working_hours_start?: string; // Start time for working hours
+    working_hours_end?: string;   // End time for working hours
     bonuses?: boolean;
     specialties?: string[];
     detailed_tasks?: string;
     additional_information?: string;
+    // Mission spécialisée fields
+    specialized_mission_type?: string;  // Type de mission (chirurgicale, evaluation_complexe, etc.)
+    required_specialty?: string;        // Spécialité requise
+    mission_objective?: string;         // Objectif de la mission / acte requis
+    estimated_duration?: string;        // Durée estimée
+    proposed_rate?: string;             // Taux proposé
+    equipment_required?: boolean;       // Matériel / Salle (Oui/Non)
+    equipment_description?: string;     // Description du matériel / salle
+    documents_required?: boolean;       // Documents requis / Consentement (Oui/Non)
 };
 
 const useContractForm = (initialContract: any = null) => {
@@ -139,9 +161,7 @@ const useContractForm = (initialContract: any = null) => {
         initialContract?.status || "pending"
     );
 
-    const [position_title, setPositionTitle] = useState<string>(
-        initialContract?.position_title || ""
-    );
+    // Removed position_title field as per requirements
     const [description, setDescription] = useState<string>(
         initialContract?.description || ""
     );
@@ -213,6 +233,18 @@ const useContractForm = (initialContract: any = null) => {
         bonus_or_additional_compensation: initialContract?.specific_industry_fields?.bonus_or_premium || false,
         software: initialContract?.specific_industry_fields?.software || [],
         per_day_work_hours: initialContract?.specific_industry_fields?.per_day_work_hours || {},
+        working_hours: initialContract?.specific_industry_fields?.working_hours || "",
+        working_hours_start: initialContract?.specific_industry_fields?.working_hours_start || "09:00",
+        working_hours_end: initialContract?.specific_industry_fields?.working_hours_end || "17:00",
+        // Initialize specialized mission fields
+        specialized_mission_type: initialContract?.specific_industry_fields?.specialized_mission_type || "",
+        required_specialty: initialContract?.specific_industry_fields?.required_specialty || "",
+        mission_objective: initialContract?.specific_industry_fields?.mission_objective || "",
+        estimated_duration: initialContract?.specific_industry_fields?.estimated_duration || "",
+        proposed_rate: initialContract?.specific_industry_fields?.proposed_rate || "",
+        equipment_required: initialContract?.specific_industry_fields?.equipment_required || false,
+        equipment_description: initialContract?.specific_industry_fields?.equipment_description || "",
+        documents_required: initialContract?.specific_industry_fields?.documents_required || false,
     });
 
     const [dentalIndustryFields, setDentalIndustryFields] = useState<DentalIndustryFields>({
@@ -227,7 +259,18 @@ const useContractForm = (initialContract: any = null) => {
         position_type: initialContract?.specific_industry_fields?.position_type || "dentiste_generaliste",
         software_required: initialContract?.specific_industry_fields?.software_required || [],
         required_experience: initialContract?.specific_industry_fields?.required_experience || "Any",
-        working_hours: initialContract?.specific_industry_fields?.working_hours || "09:00-17:00",
+        working_hours: initialContract?.specific_industry_fields?.working_hours || "",
+        working_hours_start: initialContract?.specific_industry_fields?.working_hours_start || "09:00",
+        working_hours_end: initialContract?.specific_industry_fields?.working_hours_end || "17:00",
+        // Initialize Mission spécialisée fields
+        specialized_mission_type: initialContract?.specific_industry_fields?.specialized_mission_type || "",
+        required_specialty: initialContract?.specific_industry_fields?.required_specialty || "",
+        mission_objective: initialContract?.specific_industry_fields?.mission_objective || "",
+        estimated_duration: initialContract?.specific_industry_fields?.estimated_duration || "",
+        proposed_rate: initialContract?.specific_industry_fields?.proposed_rate || "",
+        equipment_required: initialContract?.specific_industry_fields?.equipment_required || false,
+        equipment_description: initialContract?.specific_industry_fields?.equipment_description || "",
+        documents_required: initialContract?.specific_industry_fields?.documents_required || false,
     });
 
 
@@ -292,8 +335,7 @@ const useContractForm = (initialContract: any = null) => {
         setIndustryType,
         status,
         setStatus,
-        position_title,
-        setPositionTitle,
+        // position_title and setPositionTitle removed as per requirements
         description,
         setDescription,
         start_date,

@@ -7,19 +7,20 @@ export const RemplacementFieldsComponent = ({ remplacementFields, setRemplacemen
             Remplacement Details
         </h5>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            <div>
+            {/* Hidden fields - still processed in the backend but not displayed */}
+            <div style={{ display: 'none' }}>
                 <Label>Mission Type</Label>
                 <Input
-                    value={remplacementFields.mission_type || ""}
+                    value={remplacementFields.mission_type || "Default Mission Type"}
                     onChange={(e) =>
                         setRemplacementFields({ ...remplacementFields, mission_type: e.target.value })
                     }
                 />
             </div>
-            <div>
+            <div style={{ display: 'none' }}>
                 <Label>Required Specialty</Label>
                 <Input
-                    value={remplacementFields.required_specialty || ""}
+                    value={remplacementFields.required_specialty || "Default Specialty"}
                     onChange={(e) =>
                         setRemplacementFields({ ...remplacementFields, required_specialty: e.target.value })
                     }

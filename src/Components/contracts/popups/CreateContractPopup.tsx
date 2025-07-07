@@ -87,13 +87,43 @@ const processContractTypes = (contractTypes) => {
   return processed;
 };
 
+// Helper function to generate position title based on industry type and contract type
+const generatePositionTitle = (industryType, contractType, specificFields) => {
+    let title = "";
+    
+    // Base on industry type
+    if (industryType === "pharmacy") {
+        // Use the position_type from pharmacy fields if available
+        if (specificFields && specificFields.position_type) {
+            title = specificFields.position_type;
+        } else {
+            title = "Pharmacien";  // Default for pharmacy
+        }
+    } else if (industryType === "dental_clinic") {
+        // Use the position_type from dental fields if available
+        if (specificFields && specificFields.position_type) {
+            title = specificFields.position_type;
+        } else {
+            title = "Dentiste";  // Default for dental
+        }
+    }
+    
+    // Append contract type to make it more specific
+    if (contractType) {
+        title += ` - ${contractType.charAt(0).toUpperCase() + contractType.slice(1)}`;
+    }
+    
+    return title || "Position Title";  // Fallback if nothing else works
+};
+
 export function CreateContractPopup({ isOpen, closeModal }) {
     const { institutions, client_id } = useClient();
     const { storeContract } = useContract();
+    const [submissionAttempted, setSubmissionAttempted] = useState(false);
     const {
         contract_type, setContractType,
         status, setStatus,
-        position_title, setPositionTitle,
+        // position_title removed as per requirements
         description, setDescription,
         start_date, setStartDate,
         end_date, setEndDate,
@@ -194,6 +224,9 @@ export function CreateContractPopup({ isOpen, closeModal }) {
     }, [contract_type, industry_type]);
 
     const handleSubmit = async () => {
+        // Set submission attempted to true to trigger validation warnings
+        setSubmissionAttempted(true);
+        
         if (!institution?.value || !contract_type) {
             toast.error("Missing required fields institution_id or contract_type");
             return;
@@ -214,12 +247,13 @@ export function CreateContractPopup({ isOpen, closeModal }) {
         }
         if (
             contract_type === "remplacement" &&
-            (!remplacementFields.mission_type ||
-                !remplacementFields.required_specialty ||
+            (
+                // We don't check mission_type and required_specialty since they're hidden with default values
                 !remplacementFields.mission_objective ||
                 !remplacementFields.estimated_duration ||
                 !remplacementFields.preferred_date ||
-                !remplacementFields.proposed_rate)
+                !remplacementFields.proposed_rate
+            )
         ) {
             toast.error("Missing required remplacement fields");
             return;
@@ -232,7 +266,10 @@ export function CreateContractPopup({ isOpen, closeModal }) {
             contract_type: contract_type.toUpperCase(),
             industry: industry_type,
             status: status || "PENDING",
-            position_title: position_title || "",
+            // Position title is required by the backend but removed from UI as per requirements
+            // Adding a default value based on industry type and contract type
+            position_title: generatePositionTitle(industry_type, contract_type, 
+                industry_type === "pharmacy" ? pharmacyIndustryFields : dentalIndustryFields),
             description: description || "",
             start_date: start_date || "",
             end_date: end_date || "",
@@ -395,6 +432,11 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                         <div className="flex flex-col">
                             <div className="col-span-2 mb-5">
                                 <Label>Institution</Label>
+                                {submissionAttempted && !institution && (
+                                    <span className="text-red-500 text-xs block mb-1">
+                                        Ce champ est obligatoire. Veuillez sélectionner une institution.
+                                    </span>
+                                )}
                                 <Select
                                     options={institutions.map((inst) => {
                                         console.log("Institution:", inst.institution_name);
@@ -437,6 +479,11 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                             </div>
                             <div className="mb-5">
                                 <Label>Contract Type</Label>
+                                {submissionAttempted && !contract_type && (
+                                    <span className="text-red-500 text-xs block mb-1">
+                                        Ce champ est obligatoire. Veuillez sélectionner un type de contrat.
+                                    </span>
+                                )}
                                 <div className="grid grid-cols-3 gap-3 mt-2">
                                     {contractOptions.map((option) => {
                                         // Get contract types from institution
@@ -467,6 +514,15 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                                 onChange={(value) => {
                                                     console.log(`Setting contract_type to: ${value}`);
                                                     setContractType(value);
+                                                    
+                                                    // Set default values for hidden fields when selecting "remplacement"
+                                                    if (value === "remplacement") {
+                                                        setRemplacementFields(prev => ({
+                                                            ...prev,
+                                                            mission_type: prev.mission_type || "Default Mission Type",
+                                                            required_specialty: prev.required_specialty || "Default Specialty"
+                                                        }));
+                                                    }
                                                 }}
                                                 disabled={isDisabled}
                                             />
@@ -475,13 +531,9 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                 </div>
                             </div>
                             {/* Replace pharmacy mission type checkboxes with: */}
-                            {console.log("Pharmacy checkbox visibility check - industry_type:", industry_type, "contract_type:", contract_type)}
-                            {(() => {
-                                const isPharmacy = industry_type === "pharmacy" || 
-                                                 industry_type === "Pharmacy";
-                                console.log("Is pharmacy?", isPharmacy);
-                                return (isPharmacy && contract_type === "remplacement");
-                            })() && (
+                            {/* Pharmacy checkbox visibility check */}
+                            {((industry_type === "pharmacy" || industry_type === "Pharmacy") && 
+                               contract_type === "remplacement") && (
                                 <div className="mb-5 px-2">
                                     <Label>Mission Type</Label>
                                     <div className="flex space-x-8 items-center mt-2">
@@ -532,16 +584,9 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                             )}
 
                             {/* Add Mission General Fields section here */}
-                            {console.log("Pharmacy Mission General Fields check:", industry_type, contract_type, "mission_general:", pharmacyIndustryFields.mission_general)}
-                            {(() => {
-                                const isPharmacy = industry_type === "pharmacy" || 
-                                                 industry_type === "Pharmacy";
-                                const shouldShowMissionGeneral = isPharmacy && 
-                                                              contract_type === "remplacement" && 
-                                                              pharmacyIndustryFields.mission_general;
-                                console.log("Should show pharmacy mission general fields?", shouldShowMissionGeneral);
-                                return shouldShowMissionGeneral;
-                            })() && (
+                            {((industry_type === "pharmacy" || industry_type === "Pharmacy") && 
+                              contract_type === "remplacement" && 
+                              pharmacyIndustryFields.mission_general) && (
                                 <div className="mb-5 px-2">
                                     <div className="space-y-4 border p-4 rounded-lg">
                                         <h3 className="text-lg font-medium">Mission General Fields</h3>
@@ -549,6 +594,11 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                         {/* Position Type dropdown */}
                                         <div>
                                             <Label required>Position Type</Label>
+                                            {!pharmacyIndustryFields.position_type && (
+                                                <span className="text-red-500 text-xs block mb-1">
+                                                    Ce champ est obligatoire. Veuillez sélectionner un type de poste.
+                                                </span>
+                                            )}
                                             <Select
                                                 options={isInQuebec ? 
                                                     [
@@ -576,33 +626,52 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                         {/* Working Hours field */}
                                         <div>
                                             <Label required>Working Hours</Label>
+                                            {(!pharmacyIndustryFields.working_hours_start || !pharmacyIndustryFields.working_hours_end) && (
+                                                <span className="text-red-500 text-xs block mb-1">
+                                                    Ce champ est obligatoire. Veuillez sélectionner les heures de travail.
+                                                </span>
+                                            )}
                                             <div className="flex items-center gap-2">
-                                                <Input
-                                                    type="time"
-                                                    className="w-[100px]"
-                                                    value={pharmacyIndustryFields.working_hours?.split('-')[0] || "09:00"}
-                                                    onChange={(e) => {
-                                                        const start = e.target.value;
-                                                        const end = pharmacyIndustryFields.working_hours?.split('-')[1] || "17:00";
-                                                        setPharmacyIndustryFields({
-                                                            ...pharmacyIndustryFields,
-                                                            working_hours: `${start}-${end}`
-                                                        });
+                                                <Select
+                                                    className="w-[140px]"
+                                                    placeholder="09:00"
+                                                    options={Array.from({length: 48}, (_, i) => {
+                                                        const hours = Math.floor(i/2).toString().padStart(2, '0');
+                                                        const minutes = (i%2 === 0 ? '00' : '30');
+                                                        const time = `${hours}:${minutes}`;
+                                                        return { value: time, label: time };
+                                                    })}
+                                                    value={{ 
+                                                        value: pharmacyIndustryFields.working_hours_start || "", 
+                                                        label: pharmacyIndustryFields.working_hours_start || ""
+                                                    }}
+                                                    onChange={(option) => {
+                                                        setPharmacyIndustryFields(prev => ({
+                                                            ...prev,
+                                                            working_hours_start: option?.value || ""
+                                                        }));
                                                     }}
                                                     required
                                                 />
-                                                <span>to</span>
-                                                <Input
-                                                    type="time"
-                                                    className="w-[100px]"
-                                                    value={pharmacyIndustryFields.working_hours?.split('-')[1] || "17:00"}
-                                                    onChange={(e) => {
-                                                        const start = pharmacyIndustryFields.working_hours?.split('-')[0] || "09:00";
-                                                        const end = e.target.value;
-                                                        setPharmacyIndustryFields({
-                                                            ...pharmacyIndustryFields,
-                                                            working_hours: `${start}-${end}`
-                                                        });
+                                                <span className="mx-2">to</span>
+                                                <Select
+                                                    className="w-[140px]"
+                                                    placeholder="17:00"
+                                                    options={Array.from({length: 48}, (_, i) => {
+                                                        const hours = Math.floor(i/2).toString().padStart(2, '0');
+                                                        const minutes = (i%2 === 0 ? '00' : '30');
+                                                        const time = `${hours}:${minutes}`;
+                                                        return { value: time, label: time };
+                                                    })}
+                                                    value={{ 
+                                                        value: pharmacyIndustryFields.working_hours_end || "", 
+                                                        label: pharmacyIndustryFields.working_hours_end || ""
+                                                    }}
+                                                    onChange={(option) => {
+                                                        setPharmacyIndustryFields(prev => ({
+                                                            ...prev,
+                                                            working_hours_end: option?.value || ""
+                                                        }));
                                                     }}
                                                     required
                                                 />
@@ -611,12 +680,13 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                         
                                         {/* Required Experience */}
                                         <div>
-                                            <Label required>Required Experience</Label>
+                                            <Label required>Experience Required</Label>
                                             <Select
                                                 options={[
-                                                    { value: "New Graduate", label: "Moins de 1 an" },
+                                                    { value: "0-1 year", label: "0-1 an" },
                                                     { value: "1-3 years", label: "1-3 ans" },
-                                                    { value: "4-6 years", label: "4-6 ans" },
+                                                    { value: "3-5 years", label: "3-5 ans" },
+                                                    { value: "5-7 years", label: "5-7 ans" },
                                                     { value: "7+ years", label: "Plus de 7 ans" },
                                                     { value: "Any", label: "Peu importe" }
                                                 ]}
@@ -672,28 +742,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                             />
                                         </div>
                                         
-                                        {/* Software Required */}
-                                        <div>
-                                            <Label>Software Required</Label>
-                                            <Select
-                                              options={industry_type === "pharmacy" ?
-                                                [
-                                                  { value: "Ubik", label: "Ubik" },
-                                                  { value: "AssystRx", label: "AssystRx" },
-                                                  { value: "Kroll", label: "Kroll" },
-                                                  { value: "Fillware", label: "Fillware" },
-                                                  { value: "Genesis", label: "Genesis" }
-                                                ] :
-                                                [
-                                                  { value: "Dentrix", label: "Dentrix" },
-                                                  { value: "Dentaide", label: "Dentaide" },
-                                                  { value: "LogiDent", label: "LogiDent" },
-                                                  { value: "Progident", label: "Progident" },
-                                                  { value: "Maxident", label: "Maxident" }
-                                                ]
-                                              }
-                                              isMulti
-                                              placeholder="Select required software"
+                                        {/* Software Required field has been removed to avoid duplication with the software field in PharmacyFields/DentalFields 
                                               value={industry_type === "pharmacy"
                                                 ? (pharmacyIndustryFields.software_required || []).map(sw => ({ value: sw, label: sw }))
                                                 : (dentalIndustryFields.software_required || []).map(sw => ({ value: sw, label: sw }))
@@ -712,7 +761,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                                 }
                                               }}
                                             />
-                                        </div>
+                                        </div> */}
                                         
                                         {/* Detailed Tasks */}
                                         <div>
@@ -757,15 +806,11 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                 </div>
                             )}
                             {/* Add Mission Type Checkboxes for dental industry */}
-                            {console.log("Dental checkbox visibility check - industry_type:", industry_type, "contract_type:", contract_type)}
                             {/* Check for both dental_clinic and DentalClinic */}
-                            {(() => {
-                                const isDentalClinic = industry_type === "dental_clinic" || 
-                                                     industry_type === "DentalClinic" || 
-                                                     industry_type?.toLowerCase() === "dentalclinic";
-                                console.log("Is dental clinic?", isDentalClinic);
-                                return (isDentalClinic && contract_type === "remplacement");
-                            })() && (
+                            {((industry_type === "dental_clinic" || 
+                              industry_type === "DentalClinic" || 
+                              industry_type?.toLowerCase() === "dentalclinic") && 
+                              contract_type === "remplacement") && (
                                 <div className="mb-5 px-2">
                                     <Label>Mission Type</Label>
                                     <div className="flex space-x-8 items-center mt-2">
@@ -816,17 +861,11 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                             )}
 
                             {/* Add Mission General Fields section for dental */}
-                            {console.log("Dental Mission General Fields check:", industry_type, contract_type, "mission_general:", dentalIndustryFields.mission_general)}
-                            {(() => {
-                                const isDentalClinic = industry_type === "dental_clinic" || 
-                                                    industry_type === "DentalClinic" || 
-                                                    industry_type?.toLowerCase() === "dentalclinic";
-                                const shouldShowMissionGeneral = isDentalClinic && 
-                                                              contract_type === "remplacement" && 
-                                                              dentalIndustryFields.mission_general;
-                                console.log("Should show dental mission general fields?", shouldShowMissionGeneral);
-                                return shouldShowMissionGeneral;
-                            })() && (
+                            {((industry_type === "dental_clinic" || 
+                               industry_type === "DentalClinic" || 
+                               industry_type?.toLowerCase() === "dentalclinic") && 
+                               contract_type === "remplacement" && 
+                               dentalIndustryFields.mission_general) && (
                                 <div className="mb-5 px-2">
                                     <div className="space-y-4 border p-4 rounded-lg">
                                         <h3 className="text-lg font-medium">Mission General Fields</h3>
@@ -892,38 +931,84 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                         {/* Working Hours field */}
                                         <div>
                                             <Label required>Working Hours</Label>
+                                            {(!dentalIndustryFields.working_hours_start || !dentalIndustryFields.working_hours_end) && (
+                                                <span className="text-red-500 text-xs block mb-1">
+                                                    Ce champ est obligatoire. Veuillez sélectionner les heures de travail.
+                                                </span>
+                                            )}
                                             <div className="flex items-center gap-2">
                                                 <Select
-                                                    className="w-36"
-                                                    options={hourOptions}
-                                                    placeholder="Start Time"
-                                                    value={hourOptions.find(opt => 
-                                                        opt.value === (dentalIndustryFields.working_hours?.split('-')[0] || "09:00")
-                                                    )}
+                                                    className="w-[140px]"
+                                                    placeholder="09:00"
+                                                    options={Array.from({length: 48}, (_, i) => {
+                                                        const hours = Math.floor(i/2).toString().padStart(2, '0');
+                                                        const minutes = (i%2 === 0 ? '00' : '30');
+                                                        const time = `${hours}:${minutes}`;
+                                                        return { value: time, label: time };
+                                                    })}
+                                                    value={industry_type === "pharmacy"
+                                                        ? { value: pharmacyIndustryFields.working_hours_start || "", label: pharmacyIndustryFields.working_hours_start || "" }
+                                                        : { value: dentalIndustryFields.working_hours_start || "", label: dentalIndustryFields.working_hours_start || "" }
+                                                    }
                                                     onChange={(option) => {
-                                                        const start = option?.value || "09:00";
-                                                        const end = dentalIndustryFields.working_hours?.split('-')[1] || "17:00";
-                                                        setDentalIndustryFields({
-                                                            ...dentalIndustryFields,
-                                                            working_hours: `${start}-${end}`
-                                                        });
+                                                        if (industry_type === "pharmacy") {
+                                                            setPharmacyIndustryFields(prev => ({
+                                                                ...prev,
+                                                                working_hours_start: option?.value || ""
+                                                            }));
+                                                        } else {
+                                                            setDentalIndustryFields(prev => ({
+                                                                ...prev,
+                                                                working_hours_start: option?.value || ""
+                                                            }));
+                                                        }
                                                     }}
-                                                    required
                                                 />
-                                                <span>to</span>
+                                                <span className="mx-2">to</span>
                                                 <Select
-                                                    className="w-36"
-                                                    options={hourOptions}
-                                                    placeholder="End Time"
-                                                    value={hourOptions.find(opt => 
-                                                        opt.value === (dentalIndustryFields.working_hours?.split('-')[1] || "17:00")
-                                                    )}
+                                                    className="w-[140px]"
+                                                    placeholder="End time"
+                                                    options={Array.from({length: 48}, (_, i) => {
+                                                        const hours = Math.floor(i/2).toString().padStart(2, '0');
+                                                        const minutes = (i%2 === 0 ? '00' : '30');
+                                                        const time = `${hours}:${minutes}`;
+                                                        return { value: time, label: time };
+                                                    })}
+                                                    value={industry_type === "pharmacy"
+                                                        ? { value: pharmacyIndustryFields.working_hours_end || "", label: pharmacyIndustryFields.working_hours_end || "" }
+                                                        : { value: dentalIndustryFields.working_hours_end || "", label: dentalIndustryFields.working_hours_end || "" }
+                                                    }
                                                     onChange={(option) => {
-                                                        const start = dentalIndustryFields.working_hours?.split('-')[0] || "09:00";
-                                                        const end = option?.value || "17:00";
+                                                        if (industry_type === "pharmacy") {
+                                                            setPharmacyIndustryFields(prev => ({
+                                                                ...prev,
+                                                                working_hours_end: option?.value || ""
+                                                            }));
+                                                        } else {
+                                                            setDentalIndustryFields(prev => ({
+                                                                ...prev,
+                                                                working_hours_end: option?.value || ""
+                                                            }));
+                                                        }
+                                                    }}
+                                                    placeholder="Sélectionner les heures de travail"
+                                                    value={
+                                                        dentalIndustryFields.working_hours === "custom" ?
+                                                        { value: "custom", label: "Horaire personnalisé" } :
+                                                        { 
+                                                            value: dentalIndustryFields.working_hours || "09:00-17:00", 
+                                                            label: dentalIndustryFields.working_hours === "09:00-17:00" ? "Jour standard (9:00 - 17:00)" :
+                                                                dentalIndustryFields.working_hours === "08:00-16:00" ? "Tôt (8:00 - 16:00)" :
+                                                                dentalIndustryFields.working_hours === "10:00-18:00" ? "Tard (10:00 - 18:00)" :
+                                                                dentalIndustryFields.working_hours === "16:00-00:00" ? "Soir (16:00 - 00:00)" :
+                                                                dentalIndustryFields.working_hours === "22:00-06:00" ? "Nuit (22:00 - 06:00)" :
+                                                                "Horaire personnalisé"
+                                                        }
+                                                    }
+                                                    onChange={(option) => {
                                                         setDentalIndustryFields({
                                                             ...dentalIndustryFields,
-                                                            working_hours: `${start}-${end}`
+                                                            working_hours: option?.value || ""
                                                         });
                                                     }}
                                                     required
@@ -1023,47 +1108,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                             />
                                         </div>
                                         
-                                        {/* Software Required */}
-                                        <div>
-                                            <Label>Software Required</Label>
-                                            <Select
-                                              options={industry_type === "pharmacy" ?
-                                                [
-                                                  { value: "Ubik", label: "Ubik" },
-                                                  { value: "AssystRx", label: "AssystRx" },
-                                                  { value: "Kroll", label: "Kroll" },
-                                                  { value: "Fillware", label: "Fillware" },
-                                                  { value: "Genesis", label: "Genesis" }
-                                                ] :
-                                                [
-                                                  { value: "Dentrix", label: "Dentrix" },
-                                                  { value: "Dentaide", label: "Dentaide" },
-                                                  { value: "LogiDent", label: "LogiDent" },
-                                                  { value: "Progident", label: "Progident" },
-                                                  { value: "Maxident", label: "Maxident" }
-                                                ]
-                                              }
-                                              isMulti
-                                              placeholder="Select required software"
-                                              value={industry_type === "pharmacy"
-                                                ? (pharmacyIndustryFields.software_required || []).map(sw => ({ value: sw, label: sw }))
-                                                : (dentalIndustryFields.software_required || []).map(sw => ({ value: sw, label: sw }))
-                                              }
-                                              onChange={(options) => {
-                                                if (industry_type === "pharmacy") {
-                                                  setPharmacyIndustryFields({
-                                                    ...pharmacyIndustryFields,
-                                                    software_required: options ? options.map(option => option.value) : []
-                                                  });
-                                                } else {
-                                                  setDentalIndustryFields({
-                                                    ...dentalIndustryFields,
-                                                    software_required: options ? options.map(option => option.value) : []
-                                                  });
-                                                }
-                                              }}
-                                            />
-                                        </div>
+                                        {/* Software Required field has been removed to avoid duplication with the software field in PharmacyFields/DentalFields */}
                                         
                                         {/* Institution Address - Non-modifiable */}
                                         <div>
@@ -1264,6 +1309,29 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                                 />
                                             </div>
                                         )}
+                                        
+                                        {/* Documents requis / Consentement */}
+                                        <div>
+                                            <Label>Documents requis / Consentement</Label>
+                                            <div className="flex items-center">
+                                                <Select
+                                                    options={[
+                                                        { value: "oui", label: "Oui" },
+                                                        { value: "non", label: "Non" }
+                                                    ]}
+                                                    placeholder="Documents requis?"
+                                                    value={{ 
+                                                        value: dentalIndustryFields.documents_required ? "oui" : "non", 
+                                                        label: dentalIndustryFields.documents_required ? "Oui" : "Non" 
+                                                    }}
+                                                    onChange={(option) => setDentalIndustryFields({
+                                                        ...dentalIndustryFields,
+                                                        documents_required: option?.value === "oui"
+                                                    })}
+                                                />
+                                            </div>
+                                            <p className="text-xs text-gray-500 mt-1">Les fichiers peuvent être ajoutés au moment de la finalisation du contrat.</p>
+                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -1404,6 +1472,29 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                                 />
                                             </div>
                                         )}
+                                        
+                                        {/* Documents requis / Consentement */}
+                                        <div>
+                                            <Label>Documents requis / Consentement</Label>
+                                            <div className="flex items-center">
+                                                <Select
+                                                    options={[
+                                                        { value: "oui", label: "Oui" },
+                                                        { value: "non", label: "Non" }
+                                                    ]}
+                                                    placeholder="Documents requis?"
+                                                    value={{ 
+                                                        value: pharmacyIndustryFields.documents_required ? "oui" : "non", 
+                                                        label: pharmacyIndustryFields.documents_required ? "Oui" : "Non" 
+                                                    }}
+                                                    onChange={(option) => setPharmacyIndustryFields({
+                                                        ...pharmacyIndustryFields,
+                                                        documents_required: option?.value === "oui"
+                                                    })}
+                                                />
+                                            </div>
+                                            <p className="text-xs text-gray-500 mt-1">Les fichiers peuvent être ajoutés au moment de la finalisation du contrat.</p>
+                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -1488,17 +1579,28 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                   {/* Working Hours field */}
                                   <div>
                                     <Label required>Working Hours</Label>
+                                    {((industry_type === "pharmacy" && 
+                                       !pharmacyIndustryFields.working_hours) || 
+                                      (industry_type === "dental_clinic" && 
+                                       !dentalIndustryFields.working_hours)) && (
+                                      <span className="text-red-500 text-xs block mb-1">
+                                        Ce champ est obligatoire. Veuillez sélectionner les heures de travail.
+                                      </span>
+                                    )}
                                     <div className="flex items-center gap-2">
-                                      <Input
-                                        type="time"
-                                        className="w-[100px]"
+                                      <Select
+                                        className="w-[130px]"
+                                        options={hourOptions}
+                                        placeholder="09:00"
                                         value={
-                                          industry_type === "pharmacy"
-                                            ? pharmacyIndustryFields.working_hours?.split('-')[0] || "09:00"
-                                            : dentalIndustryFields.working_hours?.split('-')[0] || "09:00"
+                                          hourOptions.find(opt => opt.value === (
+                                            industry_type === "pharmacy"
+                                              ? pharmacyIndustryFields.working_hours?.split('-')[0] || "09:00"
+                                              : dentalIndustryFields.working_hours?.split('-')[0] || "09:00"
+                                          ))
                                         }
-                                        onChange={(e) => {
-                                          const start = e.target.value;
+                                        onChange={(option) => {
+                                          const start = option?.value || "09:00";
                                           const end = industry_type === "pharmacy"
                                             ? pharmacyIndustryFields.working_hours?.split('-')[1] || "17:00"
                                             : dentalIndustryFields.working_hours?.split('-')[1] || "17:00";
@@ -1515,22 +1617,24 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                             });
                                           }
                                         }}
-                                        required
                                       />
                                       <span>to</span>
-                                      <Input
-                                        type="time"
-                                        className="w-[100px]"
+                                      <Select
+                                        className="w-[130px]"
+                                        options={hourOptions}
+                                        placeholder="17:00"
                                         value={
-                                          industry_type === "pharmacy"
-                                            ? pharmacyIndustryFields.working_hours?.split('-')[1] || "17:00"
-                                            : dentalIndustryFields.working_hours?.split('-')[1] || "17:00"
+                                          hourOptions.find(opt => opt.value === (
+                                            industry_type === "pharmacy"
+                                              ? pharmacyIndustryFields.working_hours?.split('-')[1] || "17:00"
+                                              : dentalIndustryFields.working_hours?.split('-')[1] || "17:00"
+                                          ))
                                         }
-                                        onChange={(e) => {
+                                        onChange={(option) => {
                                           const start = industry_type === "pharmacy"
                                             ? pharmacyIndustryFields.working_hours?.split('-')[0] || "09:00"
                                             : dentalIndustryFields.working_hours?.split('-')[0] || "09:00";
-                                          const end = e.target.value;
+                                          const end = option?.value || "17:00";
                                           
                                           if (industry_type === "pharmacy") {
                                             setPharmacyIndustryFields({
@@ -1544,7 +1648,6 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                             });
                                           }
                                         }}
-                                        required
                                       />
                                     </div>
                                   </div>
@@ -1662,38 +1765,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                     />
                                   </div>
                                   
-                                  {/* Software Required - Different options for each industry */}
-                                  <div>
-                                    <Label>Software Required</Label>
-                                    <Select
-                                      options={industry_type === "pharmacy" ?
-                                        [
-                                          { value: "Ubik", label: "Ubik" },
-                                          { value: "AssystRx", label: "AssystRx" },
-                                          { value: "Kroll", label: "Kroll" },
-                                          { value: "Fillware", label: "Fillware" },
-                                          { value: "Genesis", label: "Genesis" }
-                                        ] :
-                                        [
-                                          { value: "Dentrix", label: "Dentrix" },
-                                          { value: "Dentaide", label: "Dentaide" },
-                                          { value: "LogiDent", label: "LogiDent" },
-                                          { value: "Progident", label: "Progident" },
-                                          { value: "Maxident", label: "Maxident" }
-                                        ]
-                                      }
-                                      isMulti
-                                      placeholder="Select required software"
-                                      value={industry_type === "pharmacy"
-                                        ? (pharmacyIndustryFields.software_required || []).map(sw => ({ value: sw, label: sw }))
-                                        : (dentalIndustryFields.software_required || []).map(sw => ({ value: sw, label: sw }))
-                                      }
-                                      onChange={(options) => {
-                                        if (industry_type === "pharmacy") {
-                                          setPharmacyIndustryFields({
-                                            ...pharmacyIndustryFields,
-                                            software_required: options ? options.map(option => option.value) : []
-                                          });
+                                  {/* Software Required field has been removed to avoid duplication with the software field in PharmacyFields/DentalFields 
                                         } else {
                                           setDentalIndustryFields({
                                             ...dentalIndustryFields,
@@ -1702,7 +1774,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                         }
                                       }}
                                     />
-                                  </div>
+                                  </div> */}
                                   
                                   {/* Detailed Tasks */}
                                   <div>
@@ -1765,8 +1837,6 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                               </div>
                             )}
                             <BaseFields
-                                position_title={position_title}
-                                setPositionTitle={setPositionTitle}
                                 description={description}
                                 setDescription={setDescription}
                                 start_date={start_date}
@@ -1778,32 +1848,17 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                 industry_type={industry_type}
                                 setIndustryType={setIndustryType}
                                 options={options}
-                                
-                                // New props for per-day work hours
                                 contract_type={contract_type}
                                 setIsWorkHoursPopupOpen={setIsWorkHoursPopupOpen}
                                 showPerDayWorkHours={start_date && end_date ? 
-                                  (new Date(end_date) - new Date(start_date)) / (1000 * 60 * 60 * 24) <= 10 : false}
-                                
-                                // Add these missing props
+                                  Math.ceil((new Date(end_date).getTime() - new Date(start_date).getTime()) / (1000 * 60 * 60 * 24)) <= 10 : false}
                                 pharmacyIndustryFields={pharmacyIndustryFields}
                                 setPharmacyIndustryFields={setPharmacyIndustryFields}
                                 dentalIndustryFields={dentalIndustryFields}
                                 setDentalIndustryFields={setDentalIndustryFields}
+                                submissionAttempted={submissionAttempted}
                             />
-                            {showPerDayWorkHours && (
-                                <div className="mt-4 px-2">
-                                  <Button 
-                                    size="sm" 
-                                    variant="primary"
-                                    onClick={() => setIsWorkHoursPopupOpen(true)}
-                                    className="w-full md:w-auto"
-                                  >
-                                    Set Daily Work Hours
-                                  </Button>
-                                </div>
-                            )}
-                            {/* Modify these two component renderings to prevent duplication */}
+                            
                             {industry_type === "pharmacy" && contract_type !== "placement" && (
                                 <PharmacyFields
                                     contract_type={contract_type}
@@ -1812,6 +1867,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                     dateRange={generateDateRange(start_date, end_date)}
                                     showPerDayWorkHours={generateDateRange(start_date, end_date).length <= 10}
                                     hourOptions={hourOptions}
+                                    submissionAttempted={submissionAttempted}
                                     institution_id={institution}
                                     isWorkHoursPopupOpen={isWorkHoursPopupOpen}
                                     setIsWorkHoursPopupOpen={setIsWorkHoursPopupOpen}
@@ -1826,6 +1882,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                     dateRange={generateDateRange(start_date, end_date)}
                                     showPerDayWorkHours={generateDateRange(start_date, end_date).length <= 10}
                                     hourOptions={hourOptions}
+                                    submissionAttempted={submissionAttempted}
                                     isWorkHoursPopupOpen={isWorkHoursPopupOpen}
                                     setIsWorkHoursPopup={setIsWorkHoursPopupOpen}
                                 />
@@ -1917,21 +1974,24 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                           
                           {isEnabled && (
                             <div className="flex items-center gap-2 ml-6 mt-2">
-                              <Input
-                                type="time"
-                                className="w-[100px]"
+                              <Select
+                                className="w-[130px]"
+                                options={hourOptions}
+                                placeholder="09:00"
                                 value={
-                                  industry_type === "pharmacy"
-                                    ? pharmacyIndustryFields.daily_hours?.[date]?.start_time || "09:00"
-                                    : dentalIndustryFields.daily_hours?.[date]?.start_time || "09:00"
+                                  hourOptions.find(opt => opt.value === (
+                                    industry_type === "pharmacy"
+                                      ? pharmacyIndustryFields.daily_hours?.[date]?.start_time || "09:00"
+                                      : dentalIndustryFields.daily_hours?.[date]?.start_time || "09:00"
+                                  ))
                                 }
-                                onChange={(e) => {
+                                onChange={(option) => {
                                   const updatedHours = industry_type === "pharmacy"
                                     ? { ...(pharmacyIndustryFields.daily_hours || {}) }
                                     : { ...(dentalIndustryFields.daily_hours || {}) };
                                     
                                   updatedHours[date] = updatedHours[date] || { enabled: true };
-                                  updatedHours[date].start_time = e.target.value;
+                                  updatedHours[date].start_time = option?.value || "09:00";
                                   
                                   if (industry_type === "pharmacy") {
                                     setPharmacyIndustryFields({
@@ -1947,21 +2007,24 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                 }}
                               />
                               <span>to</span>
-                              <Input
-                                type="time"
-                                className="w-[100px]"
+                              <Select
+                                className="w-[130px]"
+                                options={hourOptions}
+                                placeholder="17:00"
                                 value={
-                                  industry_type === "pharmacy"
-                                    ? pharmacyIndustryFields.daily_hours?.[date]?.end_time || "17:00"
-                                    : dentalIndustryFields.daily_hours?.[date]?.end_time || "17:00"
+                                  hourOptions.find(opt => opt.value === (
+                                    industry_type === "pharmacy"
+                                      ? pharmacyIndustryFields.daily_hours?.[date]?.end_time || "17:00"
+                                      : dentalIndustryFields.daily_hours?.[date]?.end_time || "17:00"
+                                  ))
                                 }
-                                onChange={(e) => {
+                                onChange={(option) => {
                                   const updatedHours = industry_type === "pharmacy"
                                     ? { ...(pharmacyIndustryFields.daily_hours || {}) }
                                     : { ...(dentalIndustryFields.daily_hours || {}) };
                                     
                                   updatedHours[date] = updatedHours[date] || { enabled: true };
-                                  updatedHours[date].end_time = e.target.value;
+                                  updatedHours[date].end_time = option?.value || "17:00";
                                   
                                   if (industry_type === "pharmacy") {
                                     setPharmacyIndustryFields({

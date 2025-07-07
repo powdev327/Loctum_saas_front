@@ -5,15 +5,20 @@ import Switch from "../../../form/switch/Switch.tsx";
 
 export const PharmacyFields = ({
                                    contract_type, pharmacyIndustryFields, setPharmacyIndustryFields,
-                                   dateRange, showPerDayWorkHours, hourOptions
+                                   dateRange, showPerDayWorkHours, hourOptions, submissionAttempted = false
                                }) => (
     <div className="space-y-4 mt-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div>
                 <Label>Daily Work Hours (Default Start)</Label>
+                {submissionAttempted && (!pharmacyIndustryFields.daily_work_hours[0]?.split("-")[0] && contract_type !== "affiliation") && (
+                    <span className="text-red-500 text-xs block mb-1">
+                        Ce champ est obligatoire. Veuillez sélectionner une heure de début.
+                    </span>
+                )}
                 <Select
                     options={hourOptions}
-                    placeholder="Select start time"
+                    placeholder="09:00"
                     value={hourOptions.find(opt => opt.value === (pharmacyIndustryFields.daily_work_hours[0]?.split("-")[0] || ""))}
                     onChange={(option) => {
                         const start = option ? option.value : "";
@@ -30,9 +35,14 @@ export const PharmacyFields = ({
             </div>
             <div>
                 <Label>Daily Work Hours (Default End)</Label>
+                {submissionAttempted && (!pharmacyIndustryFields.daily_work_hours[0]?.split("-")[1] && contract_type !== "affiliation") && (
+                    <span className="text-red-500 text-xs block mb-1">
+                        Ce champ est obligatoire. Veuillez sélectionner une heure de fin.
+                    </span>
+                )}
                 <Select
                     options={hourOptions}
-                    placeholder="Select end time"
+                    placeholder="17:00"
                     value={hourOptions.find(opt => opt.value === (pharmacyIndustryFields.daily_work_hours[0]?.split("-")[1] || ""))}
                     onChange={(option) => {
                         const start = pharmacyIndustryFields.daily_work_hours[0]?.split("-")[0] || "09:00";
@@ -59,11 +69,15 @@ export const PharmacyFields = ({
                         ...(contract_type === "affiliation" && { per_day_work_hours: null })
                     })
                 }
-                required
             />
         </div>
         <div>
             <Label>Break Duration (minutes)</Label>
+            {submissionAttempted && (pharmacyIndustryFields.break_included && !pharmacyIndustryFields.break_duration) && (
+                <span className="text-red-500 text-xs block mb-1">
+                    Ce champ est obligatoire lorsque la pause est incluse. Veuillez spécifier la durée de pause.
+                </span>
+            )}
             <Input
                 type="number"
                 value={pharmacyIndustryFields.break_duration ?? ""}
@@ -74,7 +88,6 @@ export const PharmacyFields = ({
                         ...(contract_type === "affiliation" && { per_day_work_hours: null })
                     })
                 }
-                required
             />
         </div>
         <div>
@@ -88,15 +101,20 @@ export const PharmacyFields = ({
                         ...(contract_type === "affiliation" && { per_day_work_hours: null })
                     })
                 }
-                required
             />
         </div>
-        <div>
+        {/* Software field hidden but still processed in the backend */}
+        <div style={{ display: 'none' }}>
             <Label>Software</Label>
+            {submissionAttempted && (!pharmacyIndustryFields.software || pharmacyIndustryFields.software.length === 0 || (pharmacyIndustryFields.software.length === 1 && !pharmacyIndustryFields.software[0])) && (
+                <span className="text-red-500 text-xs block mb-1">
+                    Ce champ est obligatoire. Veuillez spécifier au moins un logiciel.
+                </span>
+            )}
             <Input
                 type="text"
                 placeholder="e.g. Kroll, Pharmasys"
-                value={pharmacyIndustryFields.software.join(", ")}
+                value={pharmacyIndustryFields.software ? pharmacyIndustryFields.software.join(", ") : "Default Software"}
                 onChange={(e) =>
                     setPharmacyIndustryFields({
                         ...pharmacyIndustryFields,
@@ -104,7 +122,6 @@ export const PharmacyFields = ({
                         ...(contract_type === "affiliation" && { per_day_work_hours: null })
                     })
                 }
-                required
             />
         </div>
         {showPerDayWorkHours && dateRange.length > 0 && (
