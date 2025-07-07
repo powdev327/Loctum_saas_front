@@ -499,8 +499,8 @@ export function ClientUpdate({ isOpen, openModal, closeModal, clientId, client }
                 <input
                   className="h-11 cursor-pointer w-full rounded-lg border-gray-700 border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden dark:bg-gray-900 dark:text-gray-500/90 dark:placeholder:text-white/30 ring-0"
                   type="file"
-                  name="logo"
-                  onChange={(e) => formik.setFieldValue("logo", e.target.files?.[0] || null)}
+                  name="logo_url"
+                  onChange={(e) => formik.setFieldValue("logo_url", e.target.files?.[0] || null)}
                   onBlur={formik.handleBlur}
                 />
               </div>
