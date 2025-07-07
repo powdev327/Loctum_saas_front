@@ -164,7 +164,7 @@ const AppHeader: React.FC = ({ user_type }) => {
             {/* <!-- Notification Menu Area --> */}
           </div>
           {/* <!-- User Area --> */}
-          <UserDropdown />
+          <UserDropdown userType={user_type} />
         </div>
       </div>
     </header>
