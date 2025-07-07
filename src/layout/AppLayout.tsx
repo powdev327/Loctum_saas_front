@@ -8,6 +8,7 @@ import React from "react";
 
 interface AppLayoutProps {
     user: { user_type: "client" | "locum" };
+    children?: React.ReactNode;
 }
 
 const LayoutContent: React.FC<{ user: AppLayoutProps["user"] }> = ({ user }) => {

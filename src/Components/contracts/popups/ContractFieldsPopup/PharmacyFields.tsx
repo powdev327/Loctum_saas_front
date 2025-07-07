@@ -8,56 +8,7 @@ export const PharmacyFields = ({
                                    dateRange, showPerDayWorkHours, hourOptions, submissionAttempted = false
                                }) => (
     <div className="space-y-4 mt-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div>
-                <Label>Daily Work Hours (Default Start)</Label>
-                {submissionAttempted && (!pharmacyIndustryFields.daily_work_hours[0]?.split("-")[0] && contract_type !== "affiliation") && (
-                    <span className="text-red-500 text-xs block mb-1">
-                        Ce champ est obligatoire. Veuillez sélectionner une heure de début.
-                    </span>
-                )}
-                <Select
-                    options={hourOptions}
-                    placeholder="09:00"
-                    value={hourOptions.find(opt => opt.value === (pharmacyIndustryFields.daily_work_hours[0]?.split("-")[0] || ""))}
-                    onChange={(option) => {
-                        const start = option ? option.value : "";
-                        const end = pharmacyIndustryFields.daily_work_hours[0]?.split("-")[1] || "17:00";
-                        setPharmacyIndustryFields({
-                            ...pharmacyIndustryFields,
-                            daily_work_hours: [`${start}-${end}`],
-                            ...(contract_type === "affiliation" && { per_day_work_hours: null })
-                        });
-                    }}
-                    disabled={contract_type === "affiliation"}
-                    required={contract_type !== "affiliation"}
-                />
-            </div>
-            <div>
-                <Label>Daily Work Hours (Default End)</Label>
-                {submissionAttempted && (!pharmacyIndustryFields.daily_work_hours[0]?.split("-")[1] && contract_type !== "affiliation") && (
-                    <span className="text-red-500 text-xs block mb-1">
-                        Ce champ est obligatoire. Veuillez sélectionner une heure de fin.
-                    </span>
-                )}
-                <Select
-                    options={hourOptions}
-                    placeholder="17:00"
-                    value={hourOptions.find(opt => opt.value === (pharmacyIndustryFields.daily_work_hours[0]?.split("-")[1] || ""))}
-                    onChange={(option) => {
-                        const start = pharmacyIndustryFields.daily_work_hours[0]?.split("-")[0] || "09:00";
-                        const end = option ? option.value : "";
-                        setPharmacyIndustryFields({
-                            ...pharmacyIndustryFields,
-                            daily_work_hours: [`${start}-${end}`],
-                            ...(contract_type === "affiliation" && { per_day_work_hours: null })
-                        });
-                    }}
-                    disabled={contract_type === "affiliation"}
-                    required={contract_type !== "affiliation"}
-                />
-            </div>
-        </div>
+        
         <div>
             <Switch
                 label="Break Included"
