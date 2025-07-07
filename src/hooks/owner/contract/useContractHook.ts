@@ -6,21 +6,21 @@ type ContractStatus = "pending" | "active" | "completed" | "cancelled";
 
 type PlacementContract = {
     desired_position:
-        | "General_dentist"
-        | "Specialist_dentist"
-        | "Dental_hygienist"
-        | "Dental_assistant"
-        | "Dental_receptionist";
+    | "General_dentist"
+    | "Specialist_dentist"
+    | "Dental_hygienist"
+    | "Dental_assistant"
+    | "Dental_receptionist";
     specialties?: Array<"Orthodontics" | "Endodontics" | "Periodontics" | "Surgery" | "Other">;
     contract_location: string;
     start_date: string;
     experience_level:
-        | "Less_than_1_year"
-        | "1-3_years"
-        | "3-5_years"
-        | "5-10_years"
-        | "More_than_10_years"
-        | "Does_not_matter";
+    | "Less_than_1_year"
+    | "1-3_years"
+    | "3-5_years"
+    | "5-10_years"
+    | "More_than_10_years"
+    | "Does_not_matter";
     compensation: "Hourly_rate" | "Fixed_salary" | "Percentage_of_production" | "Other";
     other_compensation?: string;
     benefits: Array<"In_kind" | "In_cash">;
@@ -71,6 +71,15 @@ type PharmacyIndustryFields = {
     bonus_or_additional_compensation: boolean;
     software?: string[];
     per_day_work_hours: DailyWorkHours;
+    mission_general?: boolean;
+    mission_special?: boolean;
+    position_type?: string;
+    working_hours?: string;
+    required_experience?: string;
+    bonuses?: boolean;
+    software_required?: string[];
+    detailed_tasks?: string;
+    additional_information?: string;
 };
 
 type DentalIndustryFields = {
@@ -80,15 +89,52 @@ type DentalIndustryFields = {
     bonus_or_premium?: boolean;
     software?: string[];
     per_day_work_hours: DailyWorkHours;
+    mission_general?: boolean;
+    mission_special?: boolean;
+    position_type?: string;
+    software_required?: string[];
+    required_experience?: string;
+    working_hours?: string;
+    bonuses?: boolean;
+    specialties?: string[];
+    detailed_tasks?: string;
+    additional_information?: string;
 };
 
 const useContractForm = (initialContract: any = null) => {
     const [contract_type, setContractType] = useState<ContractType | string>(
         initialContract?.contract_type?.toLowerCase() || ""
     );
-    const [industry_type, setIndustryType] = useState<IndustryType | string>(
-        initialContract?.industry_type === "dental_clinic" ? "dental_clinic" : initialContract?.industry_type || ""
+    // Normalize industry type from initial contract
+    const normalizeIndustryType = (type: string | undefined): string => {
+        if (!type) return "";
+
+        // Convert to lowercase for case-insensitive comparison
+        const lowercaseType = type.toLowerCase();
+
+        // Normalize dental clinic variations
+        if (lowercaseType === "dentalclinic" || lowercaseType === "dental_clinic" || lowercaseType === "dental clinic") {
+            return "dental_clinic";
+        }
+
+        // Normalize pharmacy variations
+        if (lowercaseType === "pharmacy") {
+            return "pharmacy";
+        }
+
+        return type;
+    };
+
+    const [industry_type, setRawIndustryType] = useState<IndustryType | string>(
+        normalizeIndustryType(initialContract?.industry_type)
     );
+
+    // Wrapper for setIndustryType that adds logging and normalization
+    const setIndustryType = (value: any) => {
+        const normalizedValue = normalizeIndustryType(value);
+        console.log(`Setting industry_type from ${industry_type} to ${value} (normalized: ${normalizedValue})`);
+        setRawIndustryType(normalizedValue);
+    };
     const [status, setStatus] = useState<ContractStatus>(
         initialContract?.status || "pending"
     );
@@ -134,7 +180,7 @@ const useContractForm = (initialContract: any = null) => {
     });
 
     const [affiliationFields, setAffiliationFields] = useState<AffiliationContract>({
-        establishment_name: initialContract?.specific_contract_fields?.establishment_name|| "",
+        establishment_name: initialContract?.specific_contract_fields?.establishment_name || "",
         position_sought: initialContract?.specific_contract_fields?.position_sought || "",
         specialties: initialContract?.specific_contract_fields?.specialties || [],
         affiliation_location: initialContract?.specific_contract_fields?.affiliation_location || "",
@@ -156,7 +202,7 @@ const useContractForm = (initialContract: any = null) => {
         estimated_duration: initialContract?.specific_contract_fields?.estimated_duration || "",
         preferred_date: initialContract?.specific_contract_fields?.preferred_date || "",
         proposed_rate: initialContract?.specific_contract_fields?.proposed_rate || "",
-        equipment_or_operating_room:initialContract?.specific_contract_fields?.equipment_or_operating_room || "",
+        equipment_or_operating_room: initialContract?.specific_contract_fields?.equipment_or_operating_room || "",
         attached_documents: initialContract?.specific_contract_fields?.attached_documents || [],
     });
 
@@ -171,11 +217,17 @@ const useContractForm = (initialContract: any = null) => {
 
     const [dentalIndustryFields, setDentalIndustryFields] = useState<DentalIndustryFields>({
         work_hours: initialContract?.specific_industry_fields?.work_hours || [],
-        break_included: initialContract?.specific_industry_fields?.break_included || undefined,
-        break_duration: initialContract?.specific_industry_fields?.break_duration || undefined,
-        bonus_or_premium: initialContract?.specific_industry_fields?.bonus_or_premium || undefined,
+        break_included: initialContract?.specific_industry_fields?.break_included || false,
+        break_duration: initialContract?.specific_industry_fields?.break_duration || 30,
+        bonus_or_premium: initialContract?.specific_industry_fields?.bonus_or_premium || false,
         software: initialContract?.specific_industry_fields?.software || [],
         per_day_work_hours: initialContract?.specific_industry_fields?.per_day_work_hours || {},
+        mission_general: initialContract?.specific_industry_fields?.mission_general || false,
+        mission_special: initialContract?.specific_industry_fields?.mission_special || false,
+        position_type: initialContract?.specific_industry_fields?.position_type || "dentiste_generaliste",
+        software_required: initialContract?.specific_industry_fields?.software_required || [],
+        required_experience: initialContract?.specific_industry_fields?.required_experience || "Any",
+        working_hours: initialContract?.specific_industry_fields?.working_hours || "09:00-17:00",
     });
 
 
@@ -223,7 +275,7 @@ const useContractForm = (initialContract: any = null) => {
         }
     };
 
-  const handleStartDateChange = (value: string) => {
+    const handleStartDateChange = (value: string) => {
         setStartDate(value);
         updateWorkHours(value, end_date);
     };

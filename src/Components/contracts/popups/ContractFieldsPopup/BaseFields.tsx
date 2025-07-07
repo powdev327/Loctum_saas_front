@@ -42,7 +42,7 @@ export const BaseFields = ({
         </div>
         
         {/* Add Per-Day Work Hours button right after date inputs - support both industry types */}
-        {(industry_type === "pharmacy" || industry_type === "dentalClinic") && 
+        {(industry_type === "pharmacy" || industry_type === "dental_clinic") && 
          contract_type === "remplacement" && 
          showPerDayWorkHours && start_date && end_date && (
             <div className="lg:col-span-2 mt-0 mb-3">

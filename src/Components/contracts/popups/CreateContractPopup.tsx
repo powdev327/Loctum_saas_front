@@ -32,19 +32,59 @@ const generateDateRange = (startDate: string, endDate: string): string[] => {
   return dateArray;
 };
 
-// Update this function to handle non-array inputs
+// Update this function to handle non-array inputs and ensure remplacement is always available
 const processContractTypes = (contractTypes) => {
+  console.log("Processing contract types:", contractTypes);
+  
+  // Define our default contract types that should always be available
+  const defaultContractTypes = [
+    { value: "placement", label: "Placement" },
+    { value: "affiliation", label: "Affiliation" },
+    { value: "remplacement", label: "Remplacement" }
+  ];
+  
   // Handle case when contractTypes is not an array
   if (!contractTypes || !Array.isArray(contractTypes)) {
     console.warn("Expected array for contractTypes but got:", contractTypes);
-    return [];
+    // Return default values that include all contract types
+    return defaultContractTypes;
   }
   
-  // Process the contract types as needed when it is an array
-  return contractTypes.map(type => ({
-    value: type.id || type.value,
-    label: type.name || type.label
+  // If array is empty, add all contract types
+  if (contractTypes.length === 0) {
+    console.log("Contract types array is empty, adding all types");
+    return defaultContractTypes;
+  }
+  
+  // Check if we need to convert strings to objects
+  if (contractTypes.length > 0 && typeof contractTypes[0] === 'string') {
+    console.log("Contract types are strings, converting to objects");
+    // Make sure 'remplacement' is included
+    if (!contractTypes.includes('remplacement')) {
+      console.log("Adding 'remplacement' to contract types");
+      contractTypes.push('remplacement');
+    }
+    
+    return contractTypes.map(type => ({
+      value: type,
+      label: type.charAt(0).toUpperCase() + type.slice(1)
+    }));
+  }
+  
+  // Process the contract types as needed when it is an array of objects
+  const processed = contractTypes.map(type => ({
+    value: type.id || type.value || type,
+    label: type.name || type.label || (typeof type === 'string' ? type : '')
   }));
+  
+  // Make sure 'remplacement' is included in the processed array
+  const hasRemplacement = processed.some(type => type.value === 'remplacement');
+  if (!hasRemplacement) {
+    console.log("Adding 'remplacement' option to contract types");
+    processed.push({ value: 'remplacement', label: 'Remplacement' });
+  }
+  
+  return processed;
 };
 
 export function CreateContractPopup({ isOpen, closeModal }) {
@@ -357,11 +397,19 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                 <Label>Institution</Label>
                                 <Select
                                     options={institutions.map((inst) => {
+                                        console.log("Institution:", inst.institution_name);
                                         console.log("Raw type_of_contract from API:", inst.type_of_contract);
+                                        // Force include "remplacement" for all institutions for now
+                                        const typeOfContract = inst.type_of_contract || [];
+                                        // Add "remplacement" if it's not already there
+                                        if (!typeOfContract.includes("remplacement")) {
+                                            typeOfContract.push("remplacement");
+                                        }
+                                        console.log("Modified type_of_contract:", typeOfContract);
                                         return {
                                             label: inst.institution_name,
                                             value: inst.institution_id,
-                                            type_of_contract: processContractTypes(inst.type_of_contract),
+                                            type_of_contract: processContractTypes(typeOfContract),
                                             institution_type: inst.institution_type,
                                             fees_enabled: inst.fees_enabled,
                                         };
@@ -370,11 +418,19 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                     value={institution}
                                     onChange={(selectedOption) => {
                                         console.log("Selected institution:", selectedOption);
+                                        console.log("Institution type:", selectedOption.institution_type);
+                                        console.log("Contract types from institution:", selectedOption.type_of_contract);
+                                        
                                         setInstitution(selectedOption);
                                         
                                         setFeesEnabled(selectedOption.fees_enabled);
                                         if (selectedOption.institution_type) {
-                                            setIndustryType(selectedOption.institution_type);
+                                            console.log(`Institution type from API: ${selectedOption.institution_type}`);
+                                            // Handle both "DentalClinic" and "dental_clinic" format
+                                            const normalizedType = selectedOption.institution_type.toLowerCase() === "dentalclinic" ? 
+                                                "dental_clinic" : selectedOption.institution_type;
+                                            console.log(`Normalized industry_type: ${normalizedType}`);
+                                            setIndustryType(normalizedType);
                                         }
                                     }}
                                 />
@@ -383,11 +439,22 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                 <Label>Contract Type</Label>
                                 <div className="grid grid-cols-3 gap-3 mt-2">
                                     {contractOptions.map((option) => {
-                                        const contractTypes = institution?.type_of_contract || [];
-                                        console.log(`Option ${option.value}, allowed types:`, contractTypes);
+                                        // Get contract types from institution
+                                        const availableTypes = institution && institution.type_of_contract ? institution.type_of_contract : [];
                                         
-                                        // Only disable if institution is selected AND option not in allowed types
-                                        const isDisabled = institution && contractTypes.length > 0 && !contractTypes.includes(option.value);
+                                        // Log the option and available types
+                                        console.log(`Contract option ${option.value}, institution:`, institution);
+                                        console.log(`Available types for ${option.value}:`, availableTypes);
+                                        
+                                        // For debugging, never disable remplacement
+                                        let isDisabled = false;
+                                        
+                                        // For non-remplacement options, check if they should be disabled
+                                        if (option.value !== 'remplacement' && institution && availableTypes.length > 0) {
+                                            isDisabled = !availableTypes.includes(option.value);
+                                        }
+                                        
+                                        console.log(`Option ${option.value} disabled:`, isDisabled);
                                         
                                         return (
                                             <Radio
@@ -397,7 +464,10 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                                 value={option.value}
                                                 label={option.label}
                                                 checked={contract_type === option.value}
-                                                onChange={(value) => setContractType(value)}
+                                                onChange={(value) => {
+                                                    console.log(`Setting contract_type to: ${value}`);
+                                                    setContractType(value);
+                                                }}
                                                 disabled={isDisabled}
                                             />
                                         );
@@ -405,7 +475,13 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                 </div>
                             </div>
                             {/* Replace pharmacy mission type checkboxes with: */}
-                            {industry_type === "pharmacy" && contract_type === "remplacement" && (
+                            {console.log("Pharmacy checkbox visibility check - industry_type:", industry_type, "contract_type:", contract_type)}
+                            {(() => {
+                                const isPharmacy = industry_type === "pharmacy" || 
+                                                 industry_type === "Pharmacy";
+                                console.log("Is pharmacy?", isPharmacy);
+                                return (isPharmacy && contract_type === "remplacement");
+                            })() && (
                                 <div className="mb-5 px-2">
                                     <Label>Mission Type</Label>
                                     <div className="flex space-x-8 items-center mt-2">
@@ -456,7 +532,16 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                             )}
 
                             {/* Add Mission General Fields section here */}
-                            {industry_type === "pharmacy" && contract_type === "remplacement" && pharmacyIndustryFields.mission_general && (
+                            {console.log("Pharmacy Mission General Fields check:", industry_type, contract_type, "mission_general:", pharmacyIndustryFields.mission_general)}
+                            {(() => {
+                                const isPharmacy = industry_type === "pharmacy" || 
+                                                 industry_type === "Pharmacy";
+                                const shouldShowMissionGeneral = isPharmacy && 
+                                                              contract_type === "remplacement" && 
+                                                              pharmacyIndustryFields.mission_general;
+                                console.log("Should show pharmacy mission general fields?", shouldShowMissionGeneral);
+                                return shouldShowMissionGeneral;
+                            })() && (
                                 <div className="mb-5 px-2">
                                     <div className="space-y-4 border p-4 rounded-lg">
                                         <h3 className="text-lg font-medium">Mission General Fields</h3>
@@ -672,7 +757,15 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                 </div>
                             )}
                             {/* Add Mission Type Checkboxes for dental industry */}
-                            {industry_type === "dentalClinic" && contract_type === "remplacement" && (
+                            {console.log("Dental checkbox visibility check - industry_type:", industry_type, "contract_type:", contract_type)}
+                            {/* Check for both dental_clinic and DentalClinic */}
+                            {(() => {
+                                const isDentalClinic = industry_type === "dental_clinic" || 
+                                                     industry_type === "DentalClinic" || 
+                                                     industry_type?.toLowerCase() === "dentalclinic";
+                                console.log("Is dental clinic?", isDentalClinic);
+                                return (isDentalClinic && contract_type === "remplacement");
+                            })() && (
                                 <div className="mb-5 px-2">
                                     <Label>Mission Type</Label>
                                     <div className="flex space-x-8 items-center mt-2">
@@ -680,20 +773,42 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                             <Checkbox 
                                                 label="Mission Général" 
                                                 checked={dentalIndustryFields.mission_general || false}
-                                                onChange={(checked) => setDentalIndustryFields({
-                                                    ...dentalIndustryFields,
-                                                    mission_general: checked
-                                                })}
+                                                onChange={(checked) => {
+                                                    if (checked) {
+                                                        // If checking general, uncheck special
+                                                        setDentalIndustryFields({
+                                                            ...dentalIndustryFields,
+                                                            mission_general: checked,
+                                                            mission_special: false
+                                                        });
+                                                    } else {
+                                                        setDentalIndustryFields({
+                                                            ...dentalIndustryFields,
+                                                            mission_general: checked
+                                                        });
+                                                    }
+                                                }}
                                             />
                                         </div>
                                         <div>
                                             <Checkbox 
                                                 label="Mission Spécialisé" 
                                                 checked={dentalIndustryFields.mission_special || false}
-                                                onChange={(checked) => setDentalIndustryFields({
-                                                    ...dentalIndustryFields,
-                                                    mission_special: checked
-                                                })}
+                                                onChange={(checked) => {
+                                                    if (checked) {
+                                                        // If checking special, uncheck general
+                                                        setDentalIndustryFields({
+                                                            ...dentalIndustryFields,
+                                                            mission_special: checked,
+                                                            mission_general: false
+                                                        });
+                                                    } else {
+                                                        setDentalIndustryFields({
+                                                            ...dentalIndustryFields,
+                                                            mission_special: checked
+                                                        });
+                                                    }
+                                                }}
                                             />
                                         </div>
                                     </div>
@@ -701,7 +816,17 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                             )}
 
                             {/* Add Mission General Fields section for dental */}
-                            {industry_type === "dentalClinic" && contract_type === "remplacement" && dentalIndustryFields.mission_general && (
+                            {console.log("Dental Mission General Fields check:", industry_type, contract_type, "mission_general:", dentalIndustryFields.mission_general)}
+                            {(() => {
+                                const isDentalClinic = industry_type === "dental_clinic" || 
+                                                    industry_type === "DentalClinic" || 
+                                                    industry_type?.toLowerCase() === "dentalclinic";
+                                const shouldShowMissionGeneral = isDentalClinic && 
+                                                              contract_type === "remplacement" && 
+                                                              dentalIndustryFields.mission_general;
+                                console.log("Should show dental mission general fields?", shouldShowMissionGeneral);
+                                return shouldShowMissionGeneral;
+                            })() && (
                                 <div className="mb-5 px-2">
                                     <div className="space-y-4 border p-4 rounded-lg">
                                         <h3 className="text-lg font-medium">Mission General Fields</h3>
@@ -1002,7 +1127,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                 </div>
                             )}
                             {/* Add Specialized Mission Fields section for dental */}
-                            {industry_type === "dentalClinic" && contract_type === "remplacement" && dentalIndustryFields.mission_special && (
+                            {industry_type === "dental_clinic" && contract_type === "remplacement" && dentalIndustryFields.mission_special && (
                                 <div className="mb-5 px-2">
                                     <div className="space-y-4 border p-4 rounded-lg">
                                         <h3 className="text-lg font-medium">Mission Spécialisée</h3>
