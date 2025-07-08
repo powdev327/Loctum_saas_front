@@ -26,7 +26,7 @@ export const BaseFields = ({
   return (
     <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2 px-2">
         {/* Description détaillée des tâches - Obligatoire */}
-        <div className="col-span-2">
+        {/*<div className="col-span-2">
             <Label required>Description détaillée des tâches</Label>
             {submissionAttempted && !description && (
                 <span className="text-red-500 text-xs block mb-1">
@@ -38,7 +38,7 @@ export const BaseFields = ({
                 onChange={(e) => setDescription(e.target.value)} 
                 placeholder="Détail des tâches à accomplir"
             />
-        </div>
+        </div>*/}
         
         {/* Contract Date Range - Obligatoire */}
         <div>

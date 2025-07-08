@@ -593,7 +593,8 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                         
                                         {/* Position Type dropdown */}
                                         <div>
-                                            <Label required>Position Type</Label>
+                                            <Label required>Poste recherché
+                                            </Label>
                                             {!pharmacyIndustryFields.position_type && (
                                                 <span className="text-red-500 text-xs block mb-1">
                                                     Ce champ est obligatoire. Veuillez sélectionner un type de poste.
@@ -872,7 +873,8 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                         
                                         {/* Position Type dropdown */}
                                         <div>
-                                            <Label required>Position Type</Label>
+                                            <Label required>Poste recherché
+                                            </Label>
                                             <Select
                                                 options={[
                                                     { value: "dentiste_generaliste", label: "Dentiste généraliste" },
@@ -1506,7 +1508,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                   
                                   {/* Position Type dropdown - different options based on industry */}
                                   <div>
-                                    <Label required>Position Type</Label>
+                                    <Label required>Poste recherché</Label>
                                     <Select
                                       options={industry_type === "pharmacy" ? 
                                         [

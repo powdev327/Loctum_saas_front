@@ -56,16 +56,7 @@ export const RemplacementFieldsComponent = ({ remplacementFields, setRemplacemen
                     }
                 />
             </div>
-            <div>
-                <Label>Proposed Rate</Label>
-                <Input
-                    type="number"
-                    value={remplacementFields.proposed_rate || ""}
-                    onChange={(e) =>
-                        setRemplacementFields({ ...remplacementFields, proposed_rate: e.target.value })
-                    }
-                />
-            </div>
+            {/*
             <div className="col-span-2">
                 <Label>Equipment or Operating Room</Label>
                 <textarea
@@ -76,7 +67,7 @@ export const RemplacementFieldsComponent = ({ remplacementFields, setRemplacemen
                         setRemplacementFields({ ...remplacementFields, equipment_or_operating_room: e.target.value })
                     }
                 />
-            </div>
+            </div>*/}
             <div className="col-span-2">
                 <Label>Attached Documents</Label>
                 <input
