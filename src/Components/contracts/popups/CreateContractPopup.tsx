@@ -201,6 +201,30 @@ export function CreateContractPopup({ isOpen, closeModal }) {
       }
     }, [contract_type, industry_type]);
 
+    // Add a new useEffect to set a default position_title for Mission spécialisée
+    useEffect(() => {
+      if (contract_type === "remplacement") {
+        // Check if mission_special is true in the industry fields
+        const isMissionSpecial = 
+          (industry_type === "pharmacy" && pharmacyIndustryFields?.mission_special) ||
+          (industry_type === "dental_clinic" && dentalIndustryFields?.mission_special);
+        
+        if (isMissionSpecial && !remplacementFields.position_title) {
+          // Set a default position title for specialized missions
+          setRemplacementFields(prev => ({
+            ...prev,
+            position_title: `Spécialiste - ${industry_type === "pharmacy" ? "Pharmacie" : "Dentaire"}`
+          }));
+        }
+      }
+    }, [
+      contract_type, 
+      industry_type, 
+      pharmacyIndustryFields?.mission_special, 
+      dentalIndustryFields?.mission_special,
+      remplacementFields.position_title
+    ]);
+
     const handleSubmit = async () => {
         console.log("Starting form submission");
         console.log("Current remplacementFields:", remplacementFields);
@@ -208,7 +232,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
         // Check required fields
         const missingFields = [];
         if (!remplacementFields.mission_objective) missingFields.push("mission_objective");
-        if (!remplacementFields.position_title) missingFields.push("position_title");
+        if (!remplacementFields.position_title) missingFields.push("position_title");  // This is causing your error
         if (!remplacementFields.preferred_date) missingFields.push("preferred_date");
         if (!remplacementFields.end_date) missingFields.push("end_date");
         if (!remplacementFields.proposed_rate) missingFields.push("proposed_rate");
