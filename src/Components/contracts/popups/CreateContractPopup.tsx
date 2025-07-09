@@ -387,6 +387,17 @@ export function CreateContractPopup({ isOpen, closeModal }) {
         } else if (contract_type === "remplacement") {
             contractData = {
                 ...baseContract,
+                // Map frontend fields to backend fields here!
+                languages_required: remplacementFields.languages || [],
+                software_required: remplacementFields.softwares || [],
+                detailed_tasks: remplacementFields.mission_objective || "",
+                additional_information: remplacementFields.additional_information || "",
+                parking_available: remplacementFields.parking_available ?? null,
+                bonuses: remplacementFields.bonus_available ?? null,
+                required_experience: remplacementFields.required_experience || "",
+                working_hours: (remplacementFields.working_hours_start && remplacementFields.working_hours_end)
+                    ? `${remplacementFields.working_hours_start}-${remplacementFields.working_hours_end}`
+                    : "",
                 specific_contract_fields: {
                     mission_type: remplacementFields.mission_type || "",
                     required_specialty: remplacementFields.required_specialty || "",
@@ -395,7 +406,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                     preferred_date: remplacementFields.preferred_date || "",
                     proposed_rate: remplacementFields.proposed_rate || "",
                     equipment_or_operating_room: remplacementFields.equipment_or_operating_room || "",
-                    attached_documents: [],
+                    attached_documents: remplacementFields.attached_documents || [],
                 },
                 specific_industry_fields,
             };
@@ -408,6 +419,8 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                 specific_industry_fields,
             };
         }
+
+        console.log("Payload to backend:", contractData);
 
         formData.append("contract_data", JSON.stringify(contractData));
 
