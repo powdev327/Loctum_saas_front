@@ -5,7 +5,7 @@ import MultiSelect from "../../form/MultiSelect.tsx";
 import {typeContractList} from "../../../config/owner/typeContractList.ts";
 import Select from "../../form/Select.tsx";
 import {provincesList} from "../../../config/owner/provincesList.ts";
-import {softwareList} from "../../../config/owner/softwareList.ts";
+import {dentalSoftwareList, pharmacySoftwareList} from "../../../config/owner/softwareList.ts";
 import {languagesList} from "../../../config/owner/languagesList.ts";
 import {clinicServicesList} from "../../../config/owner/clinicInstitution/clinicServicesList.ts";
 import Switch from "../../form/switch/Switch.tsx";
@@ -296,12 +296,14 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                                 </div>
 
                                 <div className="col-span-2 lg:col-span-1 z-99999">
-                                    <MultiSelect
+                                    <DropdownWithCheckbox
                                         label="Software (Optional)"
-                                        options={softwareList}
-                                        defaultSelected={software}
-                                        onChange={(values) => setSoftware(values)}
+                                        options={clientInfo?.business_sector === "pharmacy" ? pharmacySoftwareList : dentalSoftwareList}
+                                        selectedValues={software}
+                                        onChange={setSoftware}
+                                        className="z-[99999]"
                                     />
+
                                 </div>
 
                                 <div className="col-span-2 z-9999">
