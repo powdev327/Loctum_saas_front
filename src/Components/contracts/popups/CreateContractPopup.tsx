@@ -201,29 +201,48 @@ export function CreateContractPopup({ isOpen, closeModal }) {
       }
     }, [contract_type, industry_type]);
 
-    // Add this useEffect near the top of your component with your other effects
+    // Add a new useEffect to set a default position_title for Mission spécialisée
     useEffect(() => {
-      // Initialize default values when placement is selected
-      if (contract_type === "placement") {
-        if (industry_type === "pharmacy") {
-          setPharmacyIndustryFields(prev => ({
+      if (contract_type === "remplacement") {
+        // Check if mission_special is true in the industry fields
+        const isMissionSpecial = 
+          (industry_type === "pharmacy" && pharmacyIndustryFields?.mission_special) ||
+          (industry_type === "dental_clinic" && dentalIndustryFields?.mission_special);
+        
+        if (isMissionSpecial && !remplacementFields.position_title) {
+          // Set a default position title for specialized missions
+          setRemplacementFields(prev => ({
             ...prev,
-            position_type: prev.position_type || "Pharmacien",
-            working_hours: "09:00-17:00", // Set a default value for working_hours
-            required_experience: prev.required_experience || "Any"
-          }));
-        } else if (industry_type === "dental_clinic") {
-          setDentalIndustryFields(prev => ({
-            ...prev,
-            position_type: prev.position_type || "dentiste_generaliste",
-            working_hours: "09:00-17:00", // Set a default value for working_hours
-            required_experience: prev.required_experience || "Any"
+            position_title: `Spécialiste - ${industry_type === "pharmacy" ? "Pharmacie" : "Dentaire"}`
           }));
         }
       }
-    }, [contract_type, industry_type]);
+    }, [
+      contract_type, 
+      industry_type, 
+      pharmacyIndustryFields?.mission_special, 
+      dentalIndustryFields?.mission_special,
+      remplacementFields.position_title
+    ]);
 
     const handleSubmit = async () => {
+        console.log("Starting form submission");
+        console.log("Current remplacementFields:", remplacementFields);
+        
+        // Check required fields
+        const missingFields = [];
+        if (!remplacementFields.mission_objective) missingFields.push("mission_objective");
+        if (!remplacementFields.position_title) missingFields.push("position_title");  // This is causing your error
+        if (!remplacementFields.preferred_date) missingFields.push("preferred_date");
+        if (!remplacementFields.end_date) missingFields.push("end_date");
+        if (!remplacementFields.proposed_rate) missingFields.push("proposed_rate");
+        
+        if (missingFields.length > 0) {
+            console.error("Missing required fields:", missingFields);
+            setSubmissionAttempted(true);
+            return;
+        }
+
         // Set submission attempted to true to trigger validation warnings
         setSubmissionAttempted(true);
         
@@ -248,9 +267,8 @@ export function CreateContractPopup({ isOpen, closeModal }) {
         if (
             contract_type === "remplacement" &&
             (
-                // We don't check mission_type and required_specialty since they're hidden with default values
+                // We don't check mission_type, required_specialty, and estimated_duration
                 !remplacementFields.mission_objective ||
-                !remplacementFields.estimated_duration ||
                 !remplacementFields.preferred_date ||
                 !remplacementFields.proposed_rate
             )
@@ -275,6 +293,38 @@ export function CreateContractPopup({ isOpen, closeModal }) {
             end_date: end_date || "",
             hourly_rate: hourly_rate || 0,
         };
+
+        // Modify the baseContract object when contract_type is "remplacement"
+        if (contract_type === "remplacement") {
+            // Use the remplacement dates for the main contract dates
+            baseContract.start_date = remplacementFields.preferred_date || "";
+            baseContract.end_date = remplacementFields.end_date || "";
+            
+            // Use the proposed_rate for hourly_rate if not set
+            if (!hourly_rate && remplacementFields.proposed_rate) {
+                baseContract.hourly_rate = parseFloat(remplacementFields.proposed_rate) || 0;
+            }
+            
+            // Set a default description if empty
+            if (!baseContract.description && remplacementFields.mission_objective) {
+                baseContract.description = remplacementFields.mission_objective;
+            }
+        }
+
+        // Before sending the data, convert empty strings to appropriate values
+        if (!baseContract.start_date) {
+            baseContract.start_date = remplacementFields.preferred_date || new Date().toISOString().split('T')[0];
+        }
+
+        if (!baseContract.end_date) {
+            // If we have a start_date, set end_date to at least the same day
+            baseContract.end_date = baseContract.start_date || new Date().toISOString().split('T')[0];
+        }
+
+        // Make sure description is never empty (it's non-nullable in the database)
+        if (!baseContract.description) {
+            baseContract.description = "Contract created on " + new Date().toLocaleDateString();
+        }
 
         let specific_industry_fields = {};
         if (industry_type === "pharmacy") {
@@ -489,10 +539,6 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                         // Get contract types from institution
                                         const availableTypes = institution && institution.type_of_contract ? institution.type_of_contract : [];
                                         
-                                        // Log the option and available types
-                                        console.log(`Contract option ${option.value}, institution:`, institution);
-                                        console.log(`Available types for ${option.value}:`, availableTypes);
-                                        
                                         // For debugging, never disable remplacement
                                         let isDisabled = false;
                                         
@@ -500,8 +546,6 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                         if (option.value !== 'remplacement' && institution && availableTypes.length > 0) {
                                             isDisabled = !availableTypes.includes(option.value);
                                         }
-                                        
-                                        console.log(`Option ${option.value} disabled:`, isDisabled);
                                         
                                         return (
                                             <Radio
@@ -512,7 +556,6 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                                 label={option.label}
                                                 checked={contract_type === option.value}
                                                 onChange={(value) => {
-                                                    console.log(`Setting contract_type to: ${value}`);
                                                     setContractType(value);
                                                     
                                                     // Set default values for hidden fields when selecting "remplacement"
@@ -530,976 +573,85 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                     })}
                                 </div>
                             </div>
-                            {/* Replace pharmacy mission type checkboxes with: */}
-                            {/* Pharmacy checkbox visibility check */}
-                            {((industry_type === "pharmacy" || industry_type === "Pharmacy") && 
-                               contract_type === "remplacement") && (
+                            
+                            {/* Remplacement Fields Component */}
+                            {contract_type === "remplacement" && remplacementFields && (
                                 <div className="mb-5 px-2">
-                                    <Label>Mission Type</Label>
-                                    <div className="flex space-x-8 items-center mt-2">
-                                        <div>
-                                            <Checkbox 
-                                                label="Mission Général" 
-                                                checked={pharmacyIndustryFields.mission_general || false}
-                                                onChange={(checked) => {
-                                                    if (checked) {
-                                                        // If checking general, uncheck special
-                                                        setPharmacyIndustryFields({
-                                                            ...pharmacyIndustryFields,
-                                                            mission_general: checked,
-                                                            mission_special: false
-                                                        });
-                                                    } else {
-                                                        setPharmacyIndustryFields({
-                                                            ...pharmacyIndustryFields,
-                                                            mission_general: checked
-                                                        });
-                                                    }
-                                                }}
-                                            />
-                                        </div>
-                                        <div>
-                                            <Checkbox 
-                                                label="Mission Spécialisé" 
-                                                checked={pharmacyIndustryFields.mission_special || false}
-                                                onChange={(checked) => {
-                                                    if (checked) {
-                                                        // If checking special, uncheck general
-                                                        setPharmacyIndustryFields({
-                                                            ...pharmacyIndustryFields,
-                                                            mission_special: checked,
-                                                            mission_general: false
-                                                        });
-                                                    } else {
-                                                        setPharmacyIndustryFields({
-                                                            ...pharmacyIndustryFields,
-                                                            mission_special: checked
-                                                        });
-                                                    }
-                                                }}
-                                            />
-                                        </div>
+                                    <div className="space-y-4 border p-4 rounded-lg">
+                                        <h3 className="text-lg font-medium">Remplacement Details</h3>
+                                        <RemplacementFieldsComponent
+                                            remplacementFields={remplacementFields}
+                                            setRemplacementFields={setRemplacementFields}
+                                            industry_type={industry_type}
+                                            contract_type={contract_type}
+                                            pharmacyIndustryFields={pharmacyIndustryFields}
+                                            setPharmacyIndustryFields={setPharmacyIndustryFields}
+                                            dentalIndustryFields={dentalIndustryFields}
+                                            setDentalIndustryFields={setDentalIndustryFields}
+                                            submissionAttempted={submissionAttempted}
+                                            isInQuebec={isInQuebec}
+                                            institution={institutions.find(inst => inst.institution_id === institution?.value)}
+                                            start_date={start_date}
+                                            end_date={end_date}
+                                            setIsWorkHoursPopupOpen={setIsWorkHoursPopupOpen}
+                                            showPerDayWorkHours={showPerDayWorkHours}
+                                        />
                                     </div>
                                 </div>
                             )}
 
-                            {/* Add Mission General Fields section here */}
-                            {((industry_type === "pharmacy" || industry_type === "Pharmacy") && 
-                              contract_type === "remplacement" && 
-                              pharmacyIndustryFields.mission_general) && (
-                                <div className="mb-5 px-2">
-                                    <div className="space-y-4 border p-4 rounded-lg">
-                                        <h3 className="text-lg font-medium">Mission General Fields</h3>
-                                        
-                                        {/* Position Type dropdown */}
-                                        <div>
-                                            <Label required>Poste recherché
-                                            </Label>
-                                            {!pharmacyIndustryFields.position_type && (
-                                                <span className="text-red-500 text-xs block mb-1">
-                                                    Ce champ est obligatoire. Veuillez sélectionner un type de poste.
-                                                </span>
-                                            )}
-                                            <Select
-                                                options={isInQuebec ? 
-                                                    [
-                                                        { value: "ATP", label: "ATP" },
-                                                        { value: "Stagiaire", label: "Stagiaire" },
-                                                        { value: "Pharmacien", label: "Pharmacien" }
-                                                    ] : 
-                                                    [
-                                                        { value: "Assistant", label: "Assistant" },
-                                                        { value: "Technicien", label: "Technicien" },
-                                                        { value: "Stagiaire", label: "Stagiaire" },
-                                                        { value: "Pharmacien", label: "Pharmacien" }
-                                                    ]
-                                                }
-                                                placeholder="Select position type"
-                                                value={{ value: pharmacyIndustryFields.position_type, label: pharmacyIndustryFields.position_type }}
-                                                onChange={(option) => setPharmacyIndustryFields({
-                                                    ...pharmacyIndustryFields,
-                                                    position_type: option?.value
-                                                })}
-                                                required
-                                            />
-                                        </div>
-                                        
-                                        {/* Working Hours field */}
-                                        <div>
-                                            <Label required>Working Hours</Label>
-                                            {(!pharmacyIndustryFields.working_hours_start || !pharmacyIndustryFields.working_hours_end) && (
-                                                <span className="text-red-500 text-xs block mb-1">
-                                                    Ce champ est obligatoire. Veuillez sélectionner les heures de travail.
-                                                </span>
-                                            )}
-                                            <div className="flex items-center gap-2">
-                                                <Select
-                                                    className="w-[140px]"
-                                                    placeholder="09:00"
-                                                    options={Array.from({length: 48}, (_, i) => {
-                                                        const hours = Math.floor(i/2).toString().padStart(2, '0');
-                                                        const minutes = (i%2 === 0 ? '00' : '30');
-                                                        const time = `${hours}:${minutes}`;
-                                                        return { value: time, label: time };
-                                                    })}
-                                                    value={{ 
-                                                        value: pharmacyIndustryFields.working_hours_start || "", 
-                                                        label: pharmacyIndustryFields.working_hours_start || ""
-                                                    }}
-                                                    onChange={(option) => {
-                                                        setPharmacyIndustryFields(prev => ({
-                                                            ...prev,
-                                                            working_hours_start: option?.value || ""
-                                                        }));
-                                                    }}
-                                                    required
-                                                />
-                                                <span className="mx-2">to</span>
-                                                <Select
-                                                    className="w-[140px]"
-                                                    placeholder="17:00"
-                                                    options={Array.from({length: 48}, (_, i) => {
-                                                        const hours = Math.floor(i/2).toString().padStart(2, '0');
-                                                        const minutes = (i%2 === 0 ? '00' : '30');
-                                                        const time = `${hours}:${minutes}`;
-                                                        return { value: time, label: time };
-                                                    })}
-                                                    value={{ 
-                                                        value: pharmacyIndustryFields.working_hours_end || "", 
-                                                        label: pharmacyIndustryFields.working_hours_end || ""
-                                                    }}
-                                                    onChange={(option) => {
-                                                        setPharmacyIndustryFields(prev => ({
-                                                            ...prev,
-                                                            working_hours_end: option?.value || ""
-                                                        }));
-                                                    }}
-                                                    required
-                                                />
-                                            </div>
-                                        </div>
-                                        
-                                        {/* Required Experience */}
-                                        <div>
-                                            <Label required>Experience Required</Label>
-                                            <Select
-                                                options={[
-                                                    { value: "0-1 year", label: "0-1 an" },
-                                                    { value: "1-3 years", label: "1-3 ans" },
-                                                    { value: "3-5 years", label: "3-5 ans" },
-                                                    { value: "5-7 years", label: "5-7 ans" },
-                                                    { value: "7+ years", label: "Plus de 7 ans" },
-                                                    { value: "Any", label: "Peu importe" }
-                                                ]}
-                                                placeholder="Sélectionner le niveau d'expérience"
-                                                value={{ value: pharmacyIndustryFields.required_experience, label: pharmacyIndustryFields.required_experience }}
-                                                onChange={(option) => setPharmacyIndustryFields({
-                                                    ...pharmacyIndustryFields,
-                                                    required_experience: option?.value
-                                                })}
-                                                required
-                                            />
-                                        </div>
-                                        
-                                        {/* Break Included */}
-                                        <div>
-                                            <Checkbox
-                                                label="Break Included"
-                                                checked={pharmacyIndustryFields.break_included || false}
-                                                onChange={(checked) => setPharmacyIndustryFields({
-                                                    ...pharmacyIndustryFields,
-                                                    break_included: checked
-                                                })}
-                                            />
-                                        </div>
-                                        
-                                        {/* Break Duration - only shown if break is included */}
-                                        {pharmacyIndustryFields.break_included && (
-                                            <div>
-                                                <Label>Break Duration (minutes)</Label>
-                                                <Input
-                                                    type="number"
-                                                    min="0"
-                                                    step="15"
-                                                    placeholder="e.g., 30"
-                                                    value={pharmacyIndustryFields.break_duration || ""}
-                                                    onChange={(e) => setPharmacyIndustryFields({
-                                                        ...pharmacyIndustryFields,
-                                                        break_duration: e.target.value ? Number(e.target.value) : ""
-                                                    })}
-                                                />
-                                            </div>
-                                        )}
-                                        
-                                        {/* Bonuses */}
-                                        <div>
-                                            <Checkbox
-                                                label="Bonuses Available"
-                                                checked={pharmacyIndustryFields.bonuses || false}
-                                                onChange={(checked) => setPharmacyIndustryFields({
-                                                    ...pharmacyIndustryFields,
-                                                    bonuses: checked
-                                                })}
-                                            />
-                                        </div>
-                                        
-                                        {/* Software Required field has been removed to avoid duplication with the software field in PharmacyFields/DentalFields 
-                                              value={industry_type === "pharmacy"
-                                                ? (pharmacyIndustryFields.software_required || []).map(sw => ({ value: sw, label: sw }))
-                                                : (dentalIndustryFields.software_required || []).map(sw => ({ value: sw, label: sw }))
-                                              }
-                                              onChange={(options) => {
-                                                if (industry_type === "pharmacy") {
-                                                  setPharmacyIndustryFields({
-                                                    ...pharmacyIndustryFields,
-                                                    software_required: options ? options.map(option => option.value) : []
-                                                  });
-                                                } else {
-                                                  setDentalIndustryFields({
-                                                    ...dentalIndustryFields,
-                                                    software_required: options ? options.map(option => option.value) : []
-                                                  });
-                                                }
-                                              }}
-                                            />
-                                        </div> */}
-                                        
-                                        {/* Detailed Tasks */}
-                                        <div>
-                                            <Label>Detailed Tasks</Label>
-                                            <TextArea
-                                                placeholder="Describe the detailed tasks..."
-                                                value={pharmacyIndustryFields.detailed_tasks || ""}
-                                                onChange={(e) => {
-                                                    // Handle both string value and event object
-                                                    const value = typeof e === 'object' && e !== null && 'target' in e 
-                                                      ? e.target.value 
-                                                      : e;
-                                                      
-                                                    setPharmacyIndustryFields({
-                                                        ...pharmacyIndustryFields,
-                                                        detailed_tasks: value || ""
-                                                    });
-                                                }}
-                                            />
-                                        </div>
-                                        
-                                        {/* Additional Information */}
-                                        <div>
-                                            <Label>Additional Information</Label>
-                                            <TextArea
-                                                placeholder="Any additional information..."
-                                                value={pharmacyIndustryFields.additional_information || ""}
-                                                onChange={(e) => {
-                                                    // Handle both string value and event object
-                                                    const value = typeof e === 'object' && e !== null && 'target' in e 
-                                                      ? e.target.value 
-                                                      : e;
-                                                      
-                                                    setPharmacyIndustryFields({
-                                                        ...pharmacyIndustryFields,
-                                                        additional_information: value || ""
-                                                    });
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                            {/* Add Mission Type Checkboxes for dental industry */}
-                            {/* Check for both dental_clinic and DentalClinic */}
-                            {((industry_type === "dental_clinic" || 
-                              industry_type === "DentalClinic" || 
-                              industry_type?.toLowerCase() === "dentalclinic") && 
-                              contract_type === "remplacement") && (
-                                <div className="mb-5 px-2">
-                                    <Label>Mission Type</Label>
-                                    <div className="flex space-x-8 items-center mt-2">
-                                        <div>
-                                            <Checkbox 
-                                                label="Mission Général" 
-                                                checked={dentalIndustryFields.mission_general || false}
-                                                onChange={(checked) => {
-                                                    if (checked) {
-                                                        // If checking general, uncheck special
-                                                        setDentalIndustryFields({
-                                                            ...dentalIndustryFields,
-                                                            mission_general: checked,
-                                                            mission_special: false
-                                                        });
-                                                    } else {
-                                                        setDentalIndustryFields({
-                                                            ...dentalIndustryFields,
-                                                            mission_general: checked
-                                                        });
-                                                    }
-                                                }}
-                                            />
-                                        </div>
-                                        <div>
-                                            <Checkbox 
-                                                label="Mission Spécialisé" 
-                                                checked={dentalIndustryFields.mission_special || false}
-                                                onChange={(checked) => {
-                                                    if (checked) {
-                                                        // If checking special, uncheck general
-                                                        setDentalIndustryFields({
-                                                            ...dentalIndustryFields,
-                                                            mission_special: checked,
-                                                            mission_general: false
-                                                        });
-                                                    } else {
-                                                        setDentalIndustryFields({
-                                                            ...dentalIndustryFields,
-                                                            mission_special: checked
-                                                        });
-                                                    }
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
+                            <BaseFields
+                                description={description}
+                                setDescription={setDescription}
+                                start_date={start_date}
+                                setStartDate={setStartDate}
+                                end_date={end_date}
+                                setEndDate={setEndDate}
+                                hourly_rate={hourly_rate}
+                                setHourlyRate={setHourlyRate}
+                                industry_type={industry_type}
+                                setIndustryType={setIndustryType}
+                                options={options}
+                                contract_type={contract_type}
+                                setIsWorkHoursPopupOpen={setIsWorkHoursPopupOpen}
+                                showPerDayWorkHours={start_date && end_date ? 
+                                  Math.ceil((new Date(end_date).getTime() - new Date(start_date).getTime()) / (1000 * 60 * 60 * 24)) <= 10 : false}
+                                pharmacyIndustryFields={pharmacyIndustryFields}
+                                setPharmacyIndustryFields={setPharmacyIndustryFields}
+                                dentalIndustryFields={dentalIndustryFields}
+                                setDentalIndustryFields={setDentalIndustryFields}
+                                submissionAttempted={submissionAttempted}
+                            />
+                            
+                            {industry_type === "pharmacy" && contract_type !== "placement" && (
+                                <PharmacyFields
+                                    contract_type={contract_type}
+                                    pharmacyIndustryFields={pharmacyIndustryFields}
+                                    setPharmacyIndustryFields={setPharmacyIndustryFields}
+                                    dateRange={generateDateRange(start_date, end_date)}
+                                    showPerDayWorkHours={generateDateRange(start_date, end_date).length <= 10}
+                                    hourOptions={hourOptions}
+                                    submissionAttempted={submissionAttempted}
+                                    institution_id={institution}
+                                    isWorkHoursPopupOpen={isWorkHoursPopupOpen}
+                                    setIsWorkHoursPopup={setIsWorkHoursPopupOpen}
+                                />
                             )}
 
-                            {/* Add Mission General Fields section for dental */}
-                            {((industry_type === "dental_clinic" || 
-                               industry_type === "DentalClinic" || 
-                               industry_type?.toLowerCase() === "dentalclinic") && 
-                               contract_type === "remplacement" && 
-                               dentalIndustryFields.mission_general) && (
-                                <div className="mb-5 px-2">
-                                    <div className="space-y-4 border p-4 rounded-lg">
-                                        <h3 className="text-lg font-medium">Mission General Fields</h3>
-                                        
-                                        {/* Position Type dropdown */}
-                                        <div>
-                                            <Label required>Poste recherché
-                                            </Label>
-                                            <Select
-                                                options={[
-                                                    { value: "dentiste_generaliste", label: "Dentiste généraliste" },
-                                                    { value: "dentiste_specialiste", label: "Dentiste spécialiste" },
-                                                    { value: "hygieniste_dentaire", label: "Hygiéniste dentaire" },
-                                                    { value: "assistant_dentaire", label: "Assistant dentaire" },
-                                                    { value: "secretaire_dentaire", label: "Secrétaire dentaire" }
-                                                ]}
-                                                placeholder="Select position type"
-                                                value={dentalIndustryFields.position_type ? {
-                                                    value: dentalIndustryFields.position_type,
-                                                    label: dentalIndustryFields.position_type === "dentiste_generaliste" ? "Dentiste généraliste" :
-                                                          dentalIndustryFields.position_type === "dentiste_specialiste" ? "Dentiste spécialiste" :
-                                                          dentalIndustryFields.position_type === "hygieniste_dentaire" ? "Hygiéniste dentaire" :
-                                                          dentalIndustryFields.position_type === "assistant_dentaire" ? "Assistant dentaire" :
-                                                          dentalIndustryFields.position_type === "secretaire_dentaire" ? "Secrétaire dentaire" : ""
-                                                } : null}
-                                                onChange={(option) => setDentalIndustryFields({
-                                                    ...dentalIndustryFields,
-                                                    position_type: option?.value,
-                                                    specialties: option?.value !== "dentiste_specialiste" ? [] : dentalIndustryFields.specialties
-                                                })}
-                                                required
-                                            />
-                                        </div>
-                                        
-                                        {/* Specialties Multi-Select */}
-                                        {dentalIndustryFields.position_type === "dentiste_specialiste" && (
-                                            <div>
-                                                <Label required>Specialties</Label>
-                                                <Select
-                                                    options={[
-                                                        { value: "orthodontie", label: "Orthodontie" },
-                                                        { value: "implantologie", label: "Implantologie" },
-                                                        { value: "chirurgie_buccale", label: "Chirurgie buccale" },
-                                                        { value: "parodontologie", label: "Parodontologie" },
-                                                        { value: "endodontie", label: "Endodontie" },
-                                                        { value: "pedodontie", label: "Pédodontie" },
-                                                        { value: "prosthodontie", label: "Prosthodontie" }
-                                                    ]}
-                                                    isMulti={true}
-                                                    placeholder="Select specialties"
-                                                    value={(dentalIndustryFields.specialties || []).map(s => ({
-                                                        value: s,
-                                                        label: s.charAt(0).toUpperCase() + s.slice(1).replace('_', ' ')
-                                                    }))}
-                                                    onChange={(options) => setDentalIndustryFields({
-                                                        ...dentalIndustryFields,
-                                                        specialties: options.map(opt => opt.value)
-                                                    })}
-                                                    required
-                                                />
-                                            </div>
-                                        )}
-                                        
-                                        {/* Working Hours field */}
-                                        <div>
-                                            <Label required>Working Hours</Label>
-                                            {(!dentalIndustryFields.working_hours_start || !dentalIndustryFields.working_hours_end) && (
-                                                <span className="text-red-500 text-xs block mb-1">
-                                                    Ce champ est obligatoire. Veuillez sélectionner les heures de travail.
-                                                </span>
-                                            )}
-                                            <div className="flex items-center gap-2">
-                                                <Select
-                                                    className="w-[140px]"
-                                                    placeholder="09:00"
-                                                    options={Array.from({length: 48}, (_, i) => {
-                                                        const hours = Math.floor(i/2).toString().padStart(2, '0');
-                                                        const minutes = (i%2 === 0 ? '00' : '30');
-                                                        const time = `${hours}:${minutes}`;
-                                                        return { value: time, label: time };
-                                                    })}
-                                                    value={industry_type === "pharmacy"
-                                                        ? { value: pharmacyIndustryFields.working_hours_start || "", label: pharmacyIndustryFields.working_hours_start || "" }
-                                                        : { value: dentalIndustryFields.working_hours_start || "", label: dentalIndustryFields.working_hours_start || "" }
-                                                    }
-                                                    onChange={(option) => {
-                                                        if (industry_type === "pharmacy") {
-                                                            setPharmacyIndustryFields(prev => ({
-                                                                ...prev,
-                                                                working_hours_start: option?.value || ""
-                                                            }));
-                                                        } else {
-                                                            setDentalIndustryFields(prev => ({
-                                                                ...prev,
-                                                                working_hours_start: option?.value || ""
-                                                            }));
-                                                        }
-                                                    }}
-                                                />
-                                                <span className="mx-2">to</span>
-                                                <Select
-                                                    className="w-[140px]"
-                                                    placeholder="End time"
-                                                    options={Array.from({length: 48}, (_, i) => {
-                                                        const hours = Math.floor(i/2).toString().padStart(2, '0');
-                                                        const minutes = (i%2 === 0 ? '00' : '30');
-                                                        const time = `${hours}:${minutes}`;
-                                                        return { value: time, label: time };
-                                                    })}
-                                                    value={industry_type === "pharmacy"
-                                                        ? { value: pharmacyIndustryFields.working_hours_end || "", label: pharmacyIndustryFields.working_hours_end || "" }
-                                                        : { value: dentalIndustryFields.working_hours_end || "", label: dentalIndustryFields.working_hours_end || "" }
-                                                    }
-                                                    onChange={(option) => {
-                                                        if (industry_type === "pharmacy") {
-                                                            setPharmacyIndustryFields(prev => ({
-                                                                ...prev,
-                                                                working_hours_end: option?.value || ""
-                                                            }));
-                                                        } else {
-                                                            setDentalIndustryFields(prev => ({
-                                                                ...prev,
-                                                                working_hours_end: option?.value || ""
-                                                            }));
-                                                        }
-                                                    }}
-                                                    placeholder="Sélectionner les heures de travail"
-                                                    value={
-                                                        dentalIndustryFields.working_hours === "custom" ?
-                                                        { value: "custom", label: "Horaire personnalisé" } :
-                                                        { 
-                                                            value: dentalIndustryFields.working_hours || "09:00-17:00", 
-                                                            label: dentalIndustryFields.working_hours === "09:00-17:00" ? "Jour standard (9:00 - 17:00)" :
-                                                                dentalIndustryFields.working_hours === "08:00-16:00" ? "Tôt (8:00 - 16:00)" :
-                                                                dentalIndustryFields.working_hours === "10:00-18:00" ? "Tard (10:00 - 18:00)" :
-                                                                dentalIndustryFields.working_hours === "16:00-00:00" ? "Soir (16:00 - 00:00)" :
-                                                                dentalIndustryFields.working_hours === "22:00-06:00" ? "Nuit (22:00 - 06:00)" :
-                                                                "Horaire personnalisé"
-                                                        }
-                                                    }
-                                                    onChange={(option) => {
-                                                        setDentalIndustryFields({
-                                                            ...dentalIndustryFields,
-                                                            working_hours: option?.value || ""
-                                                        });
-                                                    }}
-                                                    required
-                                                />
-                                            </div>
-                                        </div>
-                                        
-                                        {/* Break Included */}
-                                        <div>
-                                            <Checkbox
-                                                label="Break Included"
-                                                checked={dentalIndustryFields.break_included || false}
-                                                onChange={(checked) => setDentalIndustryFields({
-                                                    ...dentalIndustryFields,
-                                                    break_included: checked
-                                                })}
-                                            />
-                                        </div>
-                                        
-                                        {/* Break Duration - only shown if break is included */}
-                                        {dentalIndustryFields.break_included && (
-                                            <div>
-                                                <Label>Break Duration (minutes)</Label>
-                                                <Input
-                                                    type="number"
-                                                    min="0"
-                                                    step="15"
-                                                    placeholder="e.g., 30"
-                                                    value={dentalIndustryFields.break_duration || ""}
-                                                    onChange={(e) => setDentalIndustryFields({
-                                                        ...dentalIndustryFields,
-                                                        break_duration: e.target.value ? Number(e.target.value) : ""
-                                                    })}
-                                                />
-                                            </div>
-                                        )}
-                                        
-                                        {/* Required Experience */}
-                                        <div>
-                                            <Label required>Required Experience</Label>
-                                            <Select
-                                                options={[
-                                                    { value: "New Graduate", label: "New Graduate" },
-                                                    { value: "1-3 years", label: "1-3 years" },
-                                                    { value: "4-6 years", label: "4-6 years" },
-                                                    { value: "7+ years", label: "7+ years" }
-                                                ]}
-                                                placeholder="Select required experience"
-                                                value={{ value: dentalIndustryFields.required_experience, label: dentalIndustryFields.required_experience }}
-                                                onChange={(option) => setDentalIndustryFields({
-                                                    ...dentalIndustryFields,
-                                                    required_experience: option?.value
-                                                })}
-                                                required
-                                            />
-                                        </div>
-                                        
-                                        {/* Bonuses */}
-                                        <div>
-                                            <Checkbox
-                                                label="Bonuses Available"
-                                                checked={dentalIndustryFields.bonuses || false}
-                                                onChange={(checked) => setDentalIndustryFields({
-                                                    ...dentalIndustryFields,
-                                                    bonuses: checked
-                                                })}
-                                            />
-                                        </div>
-                                        
-                                        {/* Fees - Show only if institution has fees enabled */}
-                                        {institution?.fees_enabled && (
-                                            <div>
-                                                <Label>Fees</Label>
-                                                <Input
-                                                    type="number"
-                                                    min="0"
-                                                    step="1"
-                                                    placeholder="e.g., 100"
-                                                    value={dentalIndustryFields.fees || ""}
-                                                    onChange={(e) => setDentalIndustryFields({
-                                                        ...dentalIndustryFields,
-                                                        fees: e.target.value
-                                                    })}
-                                                />
-                                            </div>
-                                        )}
-                                        
-                                        {/* Parking Available - The unique field for dental clinics */}
-                                        <div>
-                                            <Checkbox
-                                                label="Parking Available"
-                                                checked={dentalIndustryFields.parking_available || false}
-                                                onChange={(checked) => setDentalIndustryFields({
-                                                    ...dentalIndustryFields,
-                                                    parking_available: checked
-                                                })}
-                                            />
-                                        </div>
-                                        
-                                        {/* Software Required field has been removed to avoid duplication with the software field in PharmacyFields/DentalFields */}
-                                        
-                                        {/* Institution Address - Non-modifiable */}
-                                        <div>
-                                            <Label>Institution Address</Label>
-                                            <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300">
-                                                {institution ? (
-                                                    <>
-                                                        <p>{institutions.find(inst => inst.institution_id === institution.value)?.address || "No address found"}</p>
-                                                        <p>
-                                                            {institutions.find(inst => inst.institution_id === institution.value)?.city || ""}, 
-                                                            {institutions.find(inst => inst.institution_id === institution.value)?.province || ""}
-                                                        </p>
-                                                    </>
-                                                ) : (
-                                                    "No institution selected"
-                                                )}
-                                            </div>
-                                            <p className="text-xs text-gray-500 mt-1">Address is pulled from institution profile</p>
-                                        </div>
-                                        
-                                        {/* Detailed Tasks */}
-                                        <div>
-                                            <Label>Detailed Tasks</Label>
-                                            <TextArea
-                                                placeholder="Describe the detailed tasks..."
-                                                value={dentalIndustryFields.detailed_tasks || ""}
-                                                onChange={(e) => {
-                                                    // Handle both string value and event object
-                                                    const value = typeof e === 'object' && e !== null && 'target' in e 
-                                                      ? e.target.value 
-                                                      : e;
-                                                      
-                                                    setDentalIndustryFields({
-                                                        ...dentalIndustryFields,
-                                                        detailed_tasks: value || ""
-                                                    });
-                                                }}
-                                            />
-                                        </div>
-                                        
-                                        {/* Additional Information */}
-                                        <div>
-                                            <Label>Additional Information</Label>
-                                            <TextArea
-                                                placeholder="Any additional information..."
-                                                value={dentalIndustryFields.additional_information || ""}
-                                                onChange={(e) => {
-                                                    // Handle both string value and event object
-                                                    const value = typeof e === 'object' && e !== null && 'target' in e 
-                                                      ? e.target.value 
-                                                      : e;
-                                                      
-                                                    setDentalIndustryFields({
-                                                        ...dentalIndustryFields,
-                                                        additional_information: value || ""
-                                                    });
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
+                            {industry_type === "dental_clinic" && contract_type !== "placement" && (
+                                <DentalFields
+                                    contract_type={contract_type}
+                                    dentalIndustryFields={dentalIndustryFields}
+                                    setDentalIndustryFields={setDentalIndustryFields}
+                                    dateRange={generateDateRange(start_date, end_date)}
+                                    showPerDayWorkHours={generateDateRange(start_date, end_date).length <= 10}
+                                    hourOptions={hourOptions}
+                                    submissionAttempted={submissionAttempted}
+                                    isWorkHoursPopupOpen={isWorkHoursPopupOpen}
+                                    setIsWorkHoursPopup={setIsWorkHoursPopupOpen}
+                                />
                             )}
-                            {/* Add Specialized Mission Fields section for dental */}
-                            {industry_type === "dental_clinic" && contract_type === "remplacement" && dentalIndustryFields.mission_special && (
-                                <div className="mb-5 px-2">
-                                    <div className="space-y-4 border p-4 rounded-lg">
-                                        <h3 className="text-lg font-medium">Mission Spécialisée</h3>
-                                        
-                                        {/* Type de mission dropdown */}
-                                        <div>
-                                            <Label required>Type de mission</Label>
-                                            <Select
-                                                options={[
-                                                    { value: "chirurgicale", label: "Chirurgicale" },
-                                                    { value: "evaluation_complexe", label: "Évaluation complexe" },
-                                                    { value: "implant", label: "Pose d'implant" },
-                                                    { value: "endodontie", label: "Traitement endodontique" },
-                                                    { value: "orthodontie", label: "Orthodontie" },
-                                                    { value: "prothese", label: "Prothèse dentaire" },
-                                                    { value: "autre", label: "Autre" }
-                                                ]}
-                                                placeholder="Sélectionner le type de mission"
-                                                value={{ 
-                                                    value: dentalIndustryFields.specialized_mission_type || "", 
-                                                    label: dentalIndustryFields.specialized_mission_type || "" 
-                                                }}
-                                                onChange={(option) => setDentalIndustryFields({
-                                                    ...dentalIndustryFields,
-                                                    specialized_mission_type: option?.value
-                                                })}
-                                                required
-                                            />
-                                        </div>
-                                        
-                                        {/* Spécialité requise */}
-                                        <div>
-                                            <Label required>Spécialité requise</Label>
-                                            <Input
-                                                type="text"
-                                                placeholder="Ex: Orthodontie, Implantologie, etc."
-                                                value={dentalIndustryFields.required_specialty || ""}
-                                                onChange={(e) => setDentalIndustryFields({
-                                                    ...dentalIndustryFields,
-                                                    required_specialty: e.target.value
-                                                })}
-                                            />
-                                        </div>
-                                        
-                                        {/* Objectif de la mission */}
-                                        <div>
-                                            <Label required>Objectif de la mission / acte requis</Label>
-                                            <TextArea
-                                                placeholder="Décrivez l'objectif de la mission..."
-                                                value={dentalIndustryFields.mission_objective || ""}
-                                                onChange={(valueOrEvent) => {
-                                                    const value = typeof valueOrEvent === 'object' && valueOrEvent?.target 
-                                                        ? valueOrEvent.target.value 
-                                                        : valueOrEvent;
-                                                    setDentalIndustryFields({
-                                                        ...dentalIndustryFields,
-                                                        mission_objective: value
-                                                    });
-                                                }}
-                                            />
-                                        </div>
-                                        
-                                        {/* Durée estimée */}
-                                        <div>
-                                            <Label required>Durée estimée (heures)</Label>
-                                            <Input
-                                                type="number"
-                                                min="1"
-                                                step="1"
-                                                placeholder="Ex: 4"
-                                                value={dentalIndustryFields.estimated_duration || ""}
-                                                onChange={(e) => setDentalIndustryFields({
-                                                    ...dentalIndustryFields,
-                                                    estimated_duration: e.target.value
-                                                })}
-                                            />
-                                        </div>
-                                        
-                                        {/* Taux proposé */}
-                                        <div>
-                                            <Label required>Taux proposé</Label>
-                                            <div className="flex items-center">
-                                                <Input
-                                                    type="number"
-                                                    min="0"
-                                                    step="1"
-                                                    placeholder="Ex: 150"
-                                                    value={dentalIndustryFields.proposed_rate || ""}
-                                                    onChange={(e) => setDentalIndustryFields({
-                                                        ...dentalIndustryFields,
-                                                        proposed_rate: e.target.value
-                                                    })}
-                                                />
-                                                <span className="ml-2">$ / heure</span>
-                                            </div>
-                                        </div>
-                                        
-                                        {/* Matériel / Salle */}
-                                        <div>
-                                            <Label>Matériel / Salle</Label>
-                                            <Select
-                                                options={[
-                                                    { value: "oui", label: "Oui" },
-                                                    { value: "non", label: "Non" }
-                                                ]}
-                                                placeholder="Est-ce que du matériel ou une salle spécifique est requis?"
-                                                value={{ 
-                                                    value: dentalIndustryFields.equipment_required ? "oui" : "non", 
-                                                    label: dentalIndustryFields.equipment_required ? "Oui" : "Non" 
-                                                }}
-                                                onChange={(option) => setDentalIndustryFields({
-                                                    ...dentalIndustryFields,
-                                                    equipment_required: option?.value === "oui"
-                                                })}
-                                            />
-                                        </div>
-                                        
-                                        {/* Equipment description field - only shown if equipment is required */}
-                                        {dentalIndustryFields.equipment_required && (
-                                            <div>
-                                                <Label>Description du matériel / salle</Label>
-                                                <TextArea
-                                                    placeholder="Décrivez le matériel ou la salle nécessaire..."
-                                                    value={dentalIndustryFields.equipment_description || ""}
-                                                    onChange={(valueOrEvent) => {
-                                                        const value = typeof valueOrEvent === 'object' && valueOrEvent?.target 
-                                                            ? valueOrEvent.target.value 
-                                                            : valueOrEvent;
-                                                        setDentalIndustryFields({
-                                                            ...dentalIndustryFields,
-                                                            equipment_description: value
-                                                        });
-                                                    }}
-                                                />
-                                            </div>
-                                        )}
-                                        
-                                        {/* Documents requis / Consentement */}
-                                        <div>
-                                            <Label>Documents requis / Consentement</Label>
-                                            <div className="flex items-center">
-                                                <Select
-                                                    options={[
-                                                        { value: "oui", label: "Oui" },
-                                                        { value: "non", label: "Non" }
-                                                    ]}
-                                                    placeholder="Documents requis?"
-                                                    value={{ 
-                                                        value: dentalIndustryFields.documents_required ? "oui" : "non", 
-                                                        label: dentalIndustryFields.documents_required ? "Oui" : "Non" 
-                                                    }}
-                                                    onChange={(option) => setDentalIndustryFields({
-                                                        ...dentalIndustryFields,
-                                                        documents_required: option?.value === "oui"
-                                                    })}
-                                                />
-                                            </div>
-                                            <p className="text-xs text-gray-500 mt-1">Les fichiers peuvent être ajoutés au moment de la finalisation du contrat.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                            {/* Add Specialized Mission Fields section for pharmacy */}
-                            {industry_type === "pharmacy" && contract_type === "remplacement" && pharmacyIndustryFields.mission_special && (
-                                <div className="mb-5 px-2">
-                                    <div className="space-y-4 border p-4 rounded-lg">
-                                        <h3 className="text-lg font-medium">Mission Spécialisée</h3>
-                                        
-                                        {/* Type de mission dropdown - Pharmacy specific options */}
-                                        <div>
-                                            <Label required>Type de mission</Label>
-                                            <Select
-                                                options={[
-                                                    { value: "preparation_specialisee", label: "Préparation spécialisée" },
-                                                    { value: "consultation_specialisee", label: "Consultation spécialisée" },
-                                                    { value: "service_clinique", label: "Service clinique" },
-                                                    { value: "gestion_medicaments", label: "Gestion des médicaments contrôlés" },
-                                                    { value: "vaccination", label: "Campagne de vaccination" },
-                                                    { value: "autre", label: "Autre" }
-                                                ]}
-                                                placeholder="Sélectionner le type de mission"
-                                                value={{ 
-                                                    value: pharmacyIndustryFields.specialized_mission_type || "", 
-                                                    label: pharmacyIndustryFields.specialized_mission_type || "" 
-                                                }}
-                                                onChange={(option) => setPharmacyIndustryFields({
-                                                    ...pharmacyIndustryFields,
-                                                    specialized_mission_type: option?.value
-                                                })}
-                                                required
-                                            />
-                                        </div>
-                                        
-                                        {/* Spécialité requise */}
-                                        <div>
-                                            <Label required>Spécialité requise</Label>
-                                            <Input
-                                                type="text"
-                                                placeholder="Ex: Oncologie, Gériatrie, etc."
-                                                value={pharmacyIndustryFields.required_specialty || ""}
-                                                onChange={(e) => setPharmacyIndustryFields({
-                                                    ...pharmacyIndustryFields,
-                                                    required_specialty: e.target.value
-                                                })}
-                                            />
-                                        </div>
-                                        
-                                        {/* Objectif de la mission */}
-                                        <div>
-                                            <Label required>Objectif de la mission / acte requis</Label>
-                                            <TextArea
-                                                placeholder="Décrivez l'objectif de la mission..."
-                                                value={pharmacyIndustryFields.mission_objective || ""}
-                                                onChange={(valueOrEvent) => {
-                                                    const value = typeof valueOrEvent === 'object' && valueOrEvent?.target 
-                                                        ? valueOrEvent.target.value 
-                                                        : valueOrEvent;
-                                                    setPharmacyIndustryFields({
-                                                        ...pharmacyIndustryFields,
-                                                        mission_objective: value
-                                                    });
-                                                }}
-                                            />
-                                        </div>
-                                        
-                                        {/* Durée estimée */}
-                                        <div>
-                                            <Label required>Durée estimée (heures)</Label>
-                                            <Input
-                                                type="number"
-                                                min="1"
-                                                step="1"
-                                                placeholder="Ex: 4"
-                                                value={pharmacyIndustryFields.estimated_duration || ""}
-                                                onChange={(e) => setPharmacyIndustryFields({
-                                                    ...pharmacyIndustryFields,
-                                                    estimated_duration: e.target.value
-                                                })}
-                                            />
-                                        </div>
-                                        
-                                        {/* Taux proposé */}
-                                        <div>
-                                            <Label required>Taux proposé</Label>
-                                            <div className="flex items-center">
-                                                <Input
-                                                    type="number"
-                                                    min="0"
-                                                    step="1"
-                                                    placeholder="Ex: 150"
-                                                    value={pharmacyIndustryFields.proposed_rate || ""}
-                                                    onChange={(e) => setPharmacyIndustryFields({
-                                                        ...pharmacyIndustryFields,
-                                                        proposed_rate: e.target.value
-                                                    })}
-                                                />
-                                                <span className="ml-2">$ / heure</span>
-                                            </div>
-                                        </div>
-                                        
-                                        {/* Matériel / Salle */}
-                                        <div>
-                                            <Label>Matériel / Salle</Label>
-                                            <Select
-                                                options={[
-                                                    { value: "oui", label: "Oui" },
-                                                    { value: "non", label: "Non" }
-                                                ]}
-                                                placeholder="Est-ce que du matériel ou une salle spécifique est requis?"
-                                                value={{ 
-                                                    value: pharmacyIndustryFields.equipment_required ? "oui" : "non", 
-                                                    label: pharmacyIndustryFields.equipment_required ? "Oui" : "Non" 
-                                                }}
-                                                onChange={(option) => setPharmacyIndustryFields({
-                                                    ...pharmacyIndustryFields,
-                                                    equipment_required: option?.value === "oui"
-                                                })}
-                                            />
-                                        </div>
-                                        
-                                        {/* Equipment description field - only shown if equipment is required */}
-                                        {pharmacyIndustryFields.equipment_required && (
-                                            <div>
-                                                <Label>Description du matériel / salle</Label>
-                                                <TextArea
-                                                    placeholder="Décrivez le matériel ou la salle nécessaire..."
-                                                    value={pharmacyIndustryFields.equipment_description || ""}
-                                                    onChange={(valueOrEvent) => {
-                                                        const value = typeof valueOrEvent === 'object' && valueOrEvent?.target 
-                                                            ? valueOrEvent.target.value 
-                                                            : valueOrEvent;
-                                                        setPharmacyIndustryFields({
-                                                            ...pharmacyIndustryFields,
-                                                            equipment_description: value
-                                                        });
-                                                    }}
-                                                />
-                                            </div>
-                                        )}
-                                        
-                                        {/* Documents requis / Consentement */}
-                                        <div>
-                                            <Label>Documents requis / Consentement</Label>
-                                            <div className="flex items-center">
-                                                <Select
-                                                    options={[
-                                                        { value: "oui", label: "Oui" },
-                                                        { value: "non", label: "Non" }
-                                                    ]}
-                                                    placeholder="Documents requis?"
-                                                    value={{ 
-                                                        value: pharmacyIndustryFields.documents_required ? "oui" : "non", 
-                                                        label: pharmacyIndustryFields.documents_required ? "Oui" : "Non" 
-                                                    }}
-                                                    onChange={(option) => setPharmacyIndustryFields({
-                                                        ...pharmacyIndustryFields,
-                                                        documents_required: option?.value === "oui"
-                                                    })}
-                                                />
-                                            </div>
-                                            <p className="text-xs text-gray-500 mt-1">Les fichiers peuvent être ajoutés au moment de la finalisation du contrat.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
+                            
                             {/* Placement Fields for BOTH Pharmacy AND Dental Clinic */}
                             {contract_type === "placement" && (industry_type === "pharmacy" || industry_type === "dental_clinic") && (
                               <div className="mb-5 px-2">
@@ -1691,92 +843,6 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                     />
                                   </div>
                                   
-                                  {/* Break Included */}
-                                  <div>
-                                    <Checkbox
-                                      label="Break Included"
-                                      checked={industry_type === "pharmacy" 
-                                        ? pharmacyIndustryFields.break_included || false 
-                                        : dentalIndustryFields.break_included || false}
-                                      onChange={(checked) => {
-                                        if (industry_type === "pharmacy") {
-                                          setPharmacyIndustryFields({
-                                            ...pharmacyIndustryFields,
-                                            break_included: checked
-                                          });
-                                        } else {
-                                          setDentalIndustryFields({
-                                            ...dentalIndustryFields,
-                                            break_included: checked
-                                          });
-                                        }
-                                      }}
-                                    />
-                                  </div>
-                                  
-                                  {/* Break Duration - only shown if break is included */}
-                                  {((industry_type === "pharmacy" && pharmacyIndustryFields.break_included) || 
-                                    (industry_type === "dental_clinic" && dentalIndustryFields.break_included)) && (
-                                    <div>
-                                      <Label>Break Duration (minutes)</Label>
-                                      <Input
-                                        type="number"
-                                        min="0"
-                                        step="15"
-                                        placeholder="e.g., 30"
-                                        value={industry_type === "pharmacy" 
-                                          ? pharmacyIndustryFields.break_duration || "" 
-                                          : dentalIndustryFields.break_duration || ""}
-                                        onChange={(e) => {
-                                          if (industry_type === "pharmacy") {
-                                            setPharmacyIndustryFields({
-                                              ...pharmacyIndustryFields,
-                                              break_duration: e.target.value ? Number(e.target.value) : ""
-                                            });
-                                          } else {
-                                            setDentalIndustryFields({
-                                              ...dentalIndustryFields,
-                                              break_duration: e.target.value ? Number(e.target.value) : ""
-                                            });
-                                          }
-                                        }}
-                                      />
-                                    </div>
-                                  )}
-                                  
-                                  {/* Bonuses */}
-                                  <div>
-                                    <Checkbox
-                                      label="Bonuses Available"
-                                      checked={industry_type === "pharmacy" 
-                                        ? pharmacyIndustryFields.bonuses || false 
-                                        : dentalIndustryFields.bonuses || false}
-                                      onChange={(checked) => {
-                                        if (industry_type === "pharmacy") {
-                                          setPharmacyIndustryFields({
-                                            ...pharmacyIndustryFields,
-                                            bonuses: checked
-                                          });
-                                        } else {
-                                          setDentalIndustryFields({
-                                            ...dentalIndustryFields,
-                                            bonuses: checked
-                                          });
-                                        }
-                                      }}
-                                    />
-                                  </div>
-                                  
-                                  {/* Software Required field has been removed to avoid duplication with the software field in PharmacyFields/DentalFields 
-                                        } else {
-                                          setDentalIndustryFields({
-                                            ...dentalIndustryFields,
-                                            software_required: options ? options.map(option => option.value) : []
-                                          });
-                                        }
-                                      }}
-                                    />
-                                  </div> */}
                                   
                                   {/* Detailed Tasks */}
                                   <div>
@@ -1838,77 +904,23 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                 </div>
                               </div>
                             )}
-                            <BaseFields
-                                description={description}
-                                setDescription={setDescription}
-                                start_date={start_date}
-                                setStartDate={setStartDate}
-                                end_date={end_date}
-                                setEndDate={setEndDate}
-                                hourly_rate={hourly_rate}
-                                setHourlyRate={setHourlyRate}
-                                industry_type={industry_type}
-                                setIndustryType={setIndustryType}
-                                options={options}
-                                contract_type={contract_type}
-                                setIsWorkHoursPopupOpen={setIsWorkHoursPopupOpen}
-                                showPerDayWorkHours={start_date && end_date ? 
-                                  Math.ceil((new Date(end_date).getTime() - new Date(start_date).getTime()) / (1000 * 60 * 60 * 24)) <= 10 : false}
-                                pharmacyIndustryFields={pharmacyIndustryFields}
-                                setPharmacyIndustryFields={setPharmacyIndustryFields}
-                                dentalIndustryFields={dentalIndustryFields}
-                                setDentalIndustryFields={setDentalIndustryFields}
-                                submissionAttempted={submissionAttempted}
-                            />
                             
-                            {industry_type === "pharmacy" && contract_type !== "placement" && (
-                                <PharmacyFields
-                                    contract_type={contract_type}
-                                    pharmacyIndustryFields={pharmacyIndustryFields}
-                                    setPharmacyIndustryFields={setPharmacyIndustryFields}
-                                    dateRange={generateDateRange(start_date, end_date)}
-                                    showPerDayWorkHours={generateDateRange(start_date, end_date).length <= 10}
-                                    hourOptions={hourOptions}
-                                    submissionAttempted={submissionAttempted}
-                                    institution_id={institution}
-                                    isWorkHoursPopupOpen={isWorkHoursPopupOpen}
-                                    setIsWorkHoursPopupOpen={setIsWorkHoursPopupOpen}
-                                />
-                            )}
-
-                            {industry_type === "dental_clinic" && contract_type !== "placement" && (
-                                <DentalFields
-                                    contract_type={contract_type}
-                                    dentalIndustryFields={dentalIndustryFields}
-                                    setDentalIndustryFields={setDentalIndustryFields}
-                                    dateRange={generateDateRange(start_date, end_date)}
-                                    showPerDayWorkHours={generateDateRange(start_date, end_date).length <= 10}
-                                    hourOptions={hourOptions}
-                                    submissionAttempted={submissionAttempted}
-                                    isWorkHoursPopupOpen={isWorkHoursPopupOpen}
-                                    setIsWorkHoursPopup={setIsWorkHoursPopupOpen}
-                                />
-                            )}
                             {contract_type === "placement" && placementFields && 
- !(industry_type === "pharmacy" || industry_type === "dental_clinic") && (
+                            !(industry_type === "pharmacy" || industry_type === "dental_clinic") && (
                                 <PlacementFieldsComponent
                                     placementFields={placementFields}
                                     setPlacementFields={setPlacementFields}
                                     feesEnabled={feesEnabled}
                                 />
                             )}
+                            
                             {contract_type === "affiliation" && affiliationFields && (
                                 <AffiliationFieldsComponent
                                     affiliationFields={affiliationFields}
                                     setAffiliationFields={setAffiliationFields}
                                 />
                             )}
-                            {contract_type === "remplacement" && remplacementFields && (
-                                <RemplacementFieldsComponent
-                                    remplacementFields={remplacementFields}
-                                    setRemplacementFields={setRemplacementFields}
-                                />
-                            )}
+
                             <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
                                 <Button size="sm" variant="outline" onClick={closeModal}>
                                     Close

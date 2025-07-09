@@ -9,38 +9,8 @@ export const PharmacyFields = ({
                                }) => (
     <div className="space-y-4 mt-4">
         
-        <div>
-            <Switch
-                label="Break Included"
-                checked={pharmacyIndustryFields.break_included ?? false}
-                onChange={(e) =>
-                    setPharmacyIndustryFields({
-                        ...pharmacyIndustryFields,
-                        break_included: e,
-                        ...(contract_type === "affiliation" && { per_day_work_hours: null })
-                    })
-                }
-            />
-        </div>
-        <div>
-            <Label>Break Duration (minutes)</Label>
-            {submissionAttempted && (pharmacyIndustryFields.break_included && !pharmacyIndustryFields.break_duration) && (
-                <span className="text-red-500 text-xs block mb-1">
-                    Ce champ est obligatoire lorsque la pause est incluse. Veuillez spécifier la durée de pause.
-                </span>
-            )}
-            <Input
-                type="number"
-                value={pharmacyIndustryFields.break_duration ?? ""}
-                onChange={(e) =>
-                    setPharmacyIndustryFields({
-                        ...pharmacyIndustryFields,
-                        break_duration: Number(e.target.value) || undefined,
-                        ...(contract_type === "affiliation" && { per_day_work_hours: null })
-                    })
-                }
-            />
-        </div>
+       
+        
         <div>
             <Switch
                 label="Bonus or Additional Compensation"
