@@ -40,7 +40,11 @@ export function ReadContractPopup({ isOpen, closeModal, selectedContract }) {
                                         day: "numeric",
                                     })}
                                 </td>
-                                <td className="px-6 py-4 text-gray-700 dark:text-gray-300">{hours}</td>
+                                <td className="px-6 py-4 text-gray-700 dark:text-gray-300">
+                                    {typeof hours === 'object' && hours !== null ? 
+                                        `${hours.start || ''} à ${hours.end || ''}` : 
+                                        hours}
+                                </td>
                             </tr>
                         ))}
                         </tbody>
@@ -104,6 +108,47 @@ export function ReadContractPopup({ isOpen, closeModal, selectedContract }) {
         return (
             <dl className="divide-y divide-gray-100 dark:divide-gray-700">
                 {Object.entries(fields).map(([key, value]) => {
+                    // Special case for per_day_work_hours - render as full width section
+                    if (key === "per_day_work_hours") {
+                        return (
+                            <div key={key} className="py-4">
+                                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-3">{formatFieldName(key)}</h3>
+                                <div className="w-full">
+                                    <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800">
+                                        <table className="w-full text-sm">
+                                            <thead className="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                                            <tr>
+                                                <th className="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">Date</th>
+                                                <th className="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">Working Hours</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-100 dark:divide-gray-600">
+                                            {Object.entries(value).map(([date, hours]) => (
+                                                <tr key={date} className="hover:bg-gray-50 dark:hover:bg-gray-750">
+                                                    <td className="px-6 py-4 text-gray-900 dark:text-gray-100 font-medium">
+                                                        {new Date(date).toLocaleDateString("en-US", {
+                                                            weekday: "short",
+                                                            year: "numeric",
+                                                            month: "short",
+                                                            day: "numeric",
+                                                        })}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-gray-700 dark:text-gray-300">
+                                                        {typeof hours === 'object' && hours !== null ? 
+                                                            `${hours.start || ''} à ${hours.end || ''}` : 
+                                                            hours}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    }
+                    
+                    // For attached documents
                     if (key === "attached_documents") {
                         return (
                             <div key={key} className="py-4">
@@ -133,6 +178,8 @@ export function ReadContractPopup({ isOpen, closeModal, selectedContract }) {
                             </div>
                         );
                     }
+                    
+                    // Default rendering for other fields
                     return <div key={key}>{renderFieldRow(formatFieldName(key), value, key)}</div>;
                 })}
             </dl>
