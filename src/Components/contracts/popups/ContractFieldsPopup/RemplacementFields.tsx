@@ -50,12 +50,13 @@ export const RemplacementFieldsComponent = ({
     const toggleWorkHoursPopup = (open) => {
       console.log("toggleWorkHoursPopup called with:", open);
       
+      // Always update local state
+      setLocalIsWorkHoursPopupOpen(open);
+      
+      // Also notify parent if handler exists
       if (setIsWorkHoursPopupOpen) {
         console.log("Using parent component's setIsWorkHoursPopupOpen");
         setIsWorkHoursPopupOpen(open);
-      } else {
-        console.log("Using local state");
-        setLocalIsWorkHoursPopupOpen(open);
       }
     };
 
@@ -392,7 +393,7 @@ export const RemplacementFieldsComponent = ({
                                     type="number"
                                     min="0"
                                     step="15"
-                                    placeholder="30"
+                                    placeholder="e.g 30 min"
                                     value={remplacementFields.break_duration || ""}
                                     onChange={(e) => setRemplacementFields({
                                         ...remplacementFields,
@@ -635,6 +636,16 @@ export const RemplacementFieldsComponent = ({
                         />
                     </div>
                     
+                    {/* Hidden field for position_title - required by backend validation */}
+                    <div style={{ display: 'none' }}>
+                        <Input
+                            value={remplacementFields.position_title || "default_specialized_position"}
+                            onChange={(e) =>
+                                setRemplacementFields({ ...remplacementFields, position_title: e.target.value })
+                            }
+                        />
+                    </div>
+                    
                     {/* 1. Spécialité requise - Input field */}
                     <div>
                         <Label required>Spécialité requise</Label>
@@ -791,33 +802,60 @@ export const RemplacementFieldsComponent = ({
             )}
             
             {/* Daily Work Hours Popup */}
-            {(setIsWorkHoursPopupOpen ? showPerDayWorkHours : localIsWorkHoursPopupOpen) && (
-              <Modal isOpen={true} onClose={() => toggleWorkHoursPopup(false)} className="max-w-[900px] m-4">
-                <div className="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-11">
-                  <div className="custom-scrollbar max-h-[600px] overflow-y-auto px-2 pb-3">
-                    <h3 className="text-xl font-medium mb-5">Configurer les horaires quotidiens</h3>
-                    
-                    {/* Generate one section per day in the date range */}
+            {localIsWorkHoursPopupOpen && (
+              <Modal isOpen={true} onClose={() => toggleWorkHoursPopup(false)} className="max-w-lg">
+                <div className="p-6 bg-white rounded-lg dark:bg-gray-800">
+                  <h3 className="mb-4 text-lg font-medium">Configurer les horaires quotidiens</h3>
+                  <div className="space-y-4 max-h-[60vh] overflow-y-auto">
                     {getDatesInRange(remplacementFields.preferred_date, remplacementFields.end_date).map((date) => {
-                      const formattedDate = new Date(date).toLocaleDateString('fr-FR', {
-                        weekday: 'long', 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric'
+                      // Get day name and day number in French
+                      const dayName = new Date(date).toLocaleDateString('fr-FR', { weekday: 'long' });
+                      const formattedDate = new Date(date).toLocaleDateString('fr-FR', { 
+                        day: 'numeric',
+                        month: 'long'
                       });
                       
                       const dayKey = date.toISOString().split('T')[0];
                       
+                      // Initialize day state if it doesn't exist yet (default to checked)
+                      if (!dailyHours[dayKey]) {
+                        setDailyHours(prev => ({
+                          ...prev,
+                          [dayKey]: {
+                            checked: true,
+                            start: "",
+                            end: ""
+                          }
+                        }));
+                      }
+                      
+                      // Helper function to capitalize first letter
+                      const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+                      
                       return (
-                        <div key={dayKey} className="mb-6 border p-4 rounded-lg">
-                          <h4 className="text-lg font-medium mb-3">{formattedDate}</h4>
+                        <div key={dayKey} className="p-3 border rounded-md">
+                          <div className="flex items-center mb-2">
+                            <Checkbox 
+                              label={`${capitalize(dayName)} ${formattedDate}`}
+                              checked={dailyHours[dayKey]?.checked !== false} // Default to checked if undefined
+                              onChange={(checked) => {
+                                setDailyHours(prev => ({
+                                  ...prev,
+                                  [dayKey]: {
+                                    ...prev[dayKey],
+                                    checked
+                                  }
+                                }));
+                              }}
+                            />
+                          </div>
                           
-                          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <div>
-                              <Label>Heure de début</Label>
+                          {(dailyHours[dayKey]?.checked !== false) && (
+                            <div className="flex items-center gap-2 ml-6 mt-2">
                               <Select
+                                className="w-[130px]"
                                 options={timeOptions}
-                                placeholder="Heure de début"
+                                placeholder="09:00"
                                 value={dailyHours[dayKey]?.start ? 
                                   timeOptions.find(opt => opt.value === dailyHours[dayKey].start) : null}
                                 onChange={(option) => {
@@ -830,12 +868,11 @@ export const RemplacementFieldsComponent = ({
                                   }));
                                 }}
                               />
-                            </div>
-                            <div>
-                              <Label>Heure de fin</Label>
+                              <span>à</span>
                               <Select
+                                className="w-[130px]"
                                 options={timeOptions}
-                                placeholder="Heure de fin"
+                                placeholder="17:00"
                                 value={dailyHours[dayKey]?.end ? 
                                   timeOptions.find(opt => opt.value === dailyHours[dayKey].end) : null}
                                 onChange={(option) => {
@@ -849,26 +886,31 @@ export const RemplacementFieldsComponent = ({
                                 }}
                               />
                             </div>
-                          </div>
+                          )}
                         </div>
                       );
                     })}
-                    
-                    <div className="flex justify-end space-x-3 mt-5">
-                      <Button variant="outline" onClick={() => toggleWorkHoursPopup(false)}>
-                        Annuler
-                      </Button>
-                      <Button onClick={() => {
-                        // Save the daily hours data and close the popup
-                        setRemplacementFields(prev => ({
-                          ...prev,
-                          daily_work_hours: dailyHours
-                        }));
-                        toggleWorkHoursPopup(false);
-                      }}>
-                        Enregistrer
-                      </Button>
-                    </div>
+                  </div>
+                  <div className="flex justify-end mt-4">
+                    <Button size="sm" onClick={() => {
+                      // Filter out unchecked days or days with missing times
+                      const filteredHours = {};
+                      Object.keys(dailyHours).forEach(key => {
+                        if (dailyHours[key].checked && dailyHours[key].start && dailyHours[key].end) {
+                          filteredHours[key] = {
+                            start: dailyHours[key].start,
+                            end: dailyHours[key].end
+                          };
+                        }
+                      });
+                      
+                      // Save the daily hours data and close the popup
+                      setRemplacementFields(prev => ({
+                        ...prev,
+                        daily_work_hours: filteredHours
+                      }));
+                      toggleWorkHoursPopup(false);
+                    }}>Terminé</Button>
                   </div>
                 </div>
               </Modal>
