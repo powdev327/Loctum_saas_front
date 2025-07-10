@@ -437,12 +437,18 @@ export const RemplacementFieldsComponent = ({
                         <div className="flex items-center">
                             <Input
                                 type="number"
+                                min="0"
+                                step="0.01"
                                 placeholder="0.00"
                                 value={remplacementFields.proposed_rate || ""}
-                                onChange={(e) => setRemplacementFields({ 
-                                    ...remplacementFields, 
-                                    proposed_rate: e.target.value 
-                                })}
+                                onChange={(e) => {
+                                    // Convert to number, ensure it's not negative
+                                    const value = Math.max(0, parseFloat(e.target.value) || 0);
+                                    setRemplacementFields({ 
+                                        ...remplacementFields, 
+                                        proposed_rate: value.toString() 
+                                    });
+                                }}
                             />
                             <span className="ml-2">$CAD / hour + frais 3%</span>
                         </div>
