@@ -86,7 +86,7 @@ export default function ClientInstitutionCard({ institutions }) {
                     </div>
                 </div>
             );
-        } else if (institution_type === "dental_clinic") {
+        } else if (institution_type === "DentalClinic") {
             return (
                 <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     <div>
