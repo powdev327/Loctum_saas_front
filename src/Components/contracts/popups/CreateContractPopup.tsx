@@ -35,20 +35,26 @@ const generateDateRange = (startDate: string, endDate: string): string[] => {
 
 // Update this function in CreateContractPopup.tsx
 const processContractTypes = (contractTypes) => {
+  // Define our default contract types that should always be available
+  const defaultContractTypes = [
+    { value: "placement", label: "Placement" },
+    { value: "affiliation", label: "Affiliation" },
+    { value: "remplacement", label: "Remplacement" }
+  ];
+  
+  // If no contract types are specified, all should be available
   if (!contractTypes || !Array.isArray(contractTypes) || contractTypes.length === 0) {
-    // Default to all contract types if none specified
-    return ["placement", "affiliation", "remplacement"];
+    return defaultContractTypes;
   }
   
-  // Make all types lowercase for consistent comparison
-  return contractTypes.map(type => {
-    if (typeof type === 'string') {
-      return type.toLowerCase();
-    } else if (typeof type === 'object') {
-      return (type.value || type.id || "").toLowerCase();
-    }
-    return "";
-  }).filter(Boolean);
+  // If contract types are strings, convert to objects
+  if (typeof contractTypes[0] === 'string') {
+    // MAKE ALL CONTRACT TYPES AVAILABLE BY DEFAULT
+    return defaultContractTypes;
+  }
+  
+  // If we have valid contract types, use them but ensure all are available
+  return defaultContractTypes;
 };
 
 // Helper function to generate position title based on industry type and contract type
@@ -467,16 +473,14 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                 )}
                                 <Select
                                     options={institutions.map((inst) => {
-                                        // Get the original type_of_contract without modification
-                                        const typeOfContract = Array.isArray(inst.type_of_contract) ? [...inst.type_of_contract] : [];
-                                        
-                                        return {
-                                            label: inst.institution_name,
-                                            value: inst.institution_id,
-                                            type_of_contract: typeOfContract, // Use the original array without processing
-                                            institution_type: inst.institution_type,
-                                            fees_enabled: inst.fees_enabled,
-                                        };
+                                      // Use the institution's ACTUAL contract types - don't override them
+                                      return {
+                                        label: inst.institution_name,
+                                        value: inst.institution_id,
+                                        type_of_contract: inst.type_of_contract || [], // Keep the original values from database
+                                        institution_type: inst.institution_type,
+                                        fees_enabled: inst.fees_enabled,
+                                      };
                                     })}
                                     placeholder="Select institution"
                                     value={institution}
@@ -507,60 +511,86 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                     </span>
                                 )}
                                 <div className="grid grid-cols-3 gap-3 mt-2">
-                                    {contractOptions.map((option) => {
-                                        // For debugging - log raw contract types 
-                                        console.log("Raw institution contract_type data:", institution?.type_of_contract);
-                                        
-                                        // Get properly processed contract types
-                                        let availableTypes = [];
-                                        
-                                        if (institution) {
-                                            // If type_of_contract is an array of strings
-                                            if (Array.isArray(institution.type_of_contract) && 
-                                                institution.type_of_contract.length > 0) {
-                                                // Convert all types to lowercase for case-insensitive comparison
-                                                availableTypes = institution.type_of_contract.map(type => 
-                                                    typeof type === 'string' ? type.toLowerCase() : 
-                                                    typeof type === 'object' ? (type.value || type.id || "").toLowerCase() : ""
-                                                );
+                                  {contractOptions.map((option) => {
+                                    // Logic to determine if this option should be disabled
+                                    let isDisabled = false;
+                                    
+                                    // Check if this option is allowed by the institution
+                                    if (institution) {
+                                      const availableTypes = institution.type_of_contract || [];
+                                      
+                                      // If institution has specified types and this option isn't in them, disable it
+                                      if (availableTypes.length > 0) {
+                                        const isAllowed = availableTypes.some(type => {
+                                          // Handle null/undefined values safely
+                                          if (!type) return false;
+                                          
+                                          // If type is a string
+                                          if (typeof type === 'string') {
+                                            return type.toLowerCase() === option.value.toLowerCase();
+                                          }
+                                          
+                                          // If type is an object with a value property
+                                          if (typeof type === 'object' && type !== null) {
+                                            // Check if it has a value property that's a string
+                                            if (type.value && typeof type.value === 'string') {
+                                              return type.value.toLowerCase() === option.value.toLowerCase();
                                             }
+                                          }
+                                          
+                                          return false;
+                                        });
+                                        
+                                        if (!isAllowed) {
+                                          isDisabled = true;
                                         }
-                                        
-                                        // Check if this option should be enabled
-                                        // An option is enabled if it exists in the availableTypes array (case insensitive)
-                                        const isEnabled = !institution || 
-                                                         availableTypes.length === 0 || 
-                                                         availableTypes.some(type => 
-                                                             type.toLowerCase() === option.value.toLowerCase()
-                                                         );
-                                        
-                                        console.log(`Contract type: ${option.value}, enabled: ${isEnabled}`);
-                                        console.log(`Available types:`, JSON.stringify(availableTypes));
-                                        
-                                        return (
-                                            <Radio
-                                                key={option.value}
-                                                id={`contract-type-${option.value}`}
-                                                name="contract_type"
-                                                value={option.value}
-                                                label={option.label}
-                                                checked={contract_type === option.value}
-                                                onChange={(value) => {
-                                                    setContractType(value);
-                                                    
-                                                    // Set default values for hidden fields when selecting "remplacement"
-                                                    if (value === "remplacement") {
-                                                        setRemplacementFields(prev => ({
-                                                            ...prev,
-                                                            mission_type: prev.mission_type || "Default Mission Type",
-                                                            required_specialty: prev.required_specialty || "Default Specialty"
-                                                        }));
-                                                    }
-                                                }}
-                                                disabled={!isEnabled}
-                                            />
-                                        );
-                                    })}
+                                      }
+                                    }
+                                    
+                                    // Apply relationship rules if a contract type is already selected
+                                    if (contract_type && !isDisabled) {
+                                      // If AFFILIATION is already selected, only allow AFFILIATION 
+                                      if (contract_type === "affiliation" && option.value !== "affiliation") {
+                                        isDisabled = true;
+                                      }
+                                      
+                                      // If PLACEMENT is selected, only allow PLACEMENT or REMPLACEMENT
+                                      if (contract_type === "placement" && 
+                                          option.value !== "placement" && option.value !== "remplacement") {
+                                        isDisabled = true;
+                                      }
+                                      
+                                      // If REMPLACEMENT is selected, only allow REMPLACEMENT or PLACEMENT
+                                      if (contract_type === "remplacement" && 
+                                          option.value !== "remplacement" && option.value !== "placement") {
+                                        isDisabled = true;
+                                      }
+                                    }
+                                    
+                                    return (
+                                      <Radio
+                                        key={option.value}
+                                        id={`contract-type-${option.value}`}
+                                        name="contract_type"
+                                        value={option.value}
+                                        label={option.label}
+                                        checked={contract_type === option.value}
+                                        onChange={(value) => {
+                                          setContractType(value);
+                                          
+                                          // Set default values for hidden fields when selecting "remplacement"
+                                          if (value === "remplacement") {
+                                            setRemplacementFields(prev => ({
+                                              ...prev,
+                                              mission_type: prev.mission_type || "Default Mission Type",
+                                              required_specialty: prev.required_specialty || "Default Specialty"
+                                            }));
+                                          }
+                                        }}
+                                        disabled={isDisabled}
+                                      />
+                                    );
+                                  })}
                                 </div>
                             </div>
                             
