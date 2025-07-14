@@ -437,12 +437,18 @@ export const RemplacementFieldsComponent = ({
                         <div className="flex items-center">
                             <Input
                                 type="number"
+                                min="0"
+                                step="0.01"
                                 placeholder="0.00"
                                 value={remplacementFields.proposed_rate || ""}
-                                onChange={(e) => setRemplacementFields({ 
-                                    ...remplacementFields, 
-                                    proposed_rate: e.target.value 
-                                })}
+                                onChange={(e) => {
+                                    // Convert to number, ensure it's not negative
+                                    const value = Math.max(0, parseFloat(e.target.value) || 0);
+                                    setRemplacementFields({ 
+                                        ...remplacementFields, 
+                                        proposed_rate: value.toString() 
+                                    });
+                                }}
                             />
                             <span className="ml-2">$CAD / hour + frais 3%</span>
                         </div>
@@ -645,10 +651,45 @@ export const RemplacementFieldsComponent = ({
                             }
                         />
                     </div>
-                    
+                    <div className="mb-4">
+                                                              <Label required>Type de Mission</Label>
+                                                              <Select
+                                                                options={[
+                                                                  { value: "chirurgicale", label: "Chirurgicale" },
+                                                                  { value: "évaluation_complexe", label: "Évaluation complexe" },
+                                                                  { value: "autre", label: "Autre" }
+                                                                ]}
+                                                                placeholder="Sélectionner le type de mission"
+                                                                value={
+                                                                  remplacementFields.mission_special_type
+                                                                    ? {
+                                                                        value: remplacementFields.mission_special_type,
+                                                                        label:
+                                                                          remplacementFields.mission_special_type === "chirurgicale"
+                                                                            ? "Chirurgicale"
+                                                                            : remplacementFields.mission_special_type === "évaluation_complexe"
+                                                                            ? "Évaluation complexe"
+                                                                            : "Autre"
+                                                                      }
+                                                                    : null
+                                                                }
+                                                                onChange={(option) =>
+                                                                  setRemplacementFields((prev) => ({
+                                                                    ...prev,
+                                                                    mission_special_type: option?.value || ""
+                                                                  }))
+                                                                }
+                                                                required
+                                                              />
+                                                            </div>
                     {/* 1. Spécialité requise - Input field */}
                     <div>
                         <Label required>Spécialité requise</Label>
+                        {submissionAttempted && !remplacementFields.required_specialty && (
+                            <span className="text-red-500 text-xs block mb-1">
+                                Ce champ est obligatoire.
+                            </span>
+                        )}
                         <Input
                             placeholder="Entrer la spécialité requise"
                             value={remplacementFields.required_specialty || ""}
@@ -661,6 +702,11 @@ export const RemplacementFieldsComponent = ({
                     {/* 2. Objective - Mission objective */}
                     <div>
                         <Label required>Objectif de la mission</Label>
+                        {submissionAttempted && !remplacementFields.mission_objective && (
+                            <span className="text-red-500 text-xs block mb-1">
+                                Ce champ est obligatoire.
+                            </span>
+                        )}
                         <TextArea
                             placeholder="Décrire les tâches spécialisées à accomplir..."
                             value={remplacementFields.mission_objective || ""}
@@ -678,8 +724,13 @@ export const RemplacementFieldsComponent = ({
                     {/* 3. Durée estimée */}
                     <div>
                         <Label required>Durée estimée</Label>
+                        {submissionAttempted && !remplacementFields.estimated_duration && (
+                            <span className="text-red-500 text-xs block mb-1">
+                                Ce champ est obligatoire.
+                            </span>
+                        )}
                         <Input
-                            placeholder="Ex: 3 jours, 2 semaines, etc."
+                            placeholder="Nombre d'heures prévues ou créneau horaire fixe"
                             value={remplacementFields.estimated_duration || ""}
                             onChange={(e) =>
                                 setRemplacementFields({ ...remplacementFields, estimated_duration: e.target.value })
@@ -763,7 +814,7 @@ export const RemplacementFieldsComponent = ({
                     
                     {/* 6. Matériel/Salle - Equipment or operating room */}
                     <div>
-                        <Label>Équipement ou salle spécifique requis</Label>
+                        <Label>Information Additionnelles</Label>
                         <TextArea
                             placeholder="Décrire les équipements spécifiques nécessaires..."
                             value={remplacementFields.equipment_or_operating_room || ""}
