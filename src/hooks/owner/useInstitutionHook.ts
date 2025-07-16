@@ -1,79 +1,74 @@
 import { useState } from "react";
 
 const useInstitutionForm = () => {
-    const [businessLegalName, setBusinessLegalName] = useState<string>("");
-    const [pharmacyOrClinicName, setPharmacyOrClinicName] = useState<string>("");
+    const [businessLegalName, setBusinessLegalName] = useState("");
+    const [institutionName, setInstitutionName] = useState("");
     const [typeOfContract, setTypeOfContract] = useState<string[]>([]);
-    const [address, setAddress] = useState<string>("");
-    const [city, setCity] = useState<string>("");
-    const [province, setProvince] = useState<string>("");
-    const [postalCode, setPostalCode] = useState<string>("");
+    const [address, setAddress] = useState("");
+    const [city, setCity] = useState("");
+    const [province, setProvince] = useState("");
+    const [postalCode, setPostalCode] = useState("");
     const [software, setSoftware] = useState<string[]>([]);
-    const [languagesSpoken, setLanguagesSpoken] = useState<string[]>([]);
-    const [servicesOffered, setServicesOffered] = useState<string[]>([]);
-    const [logo, setLogo] = useState<File | null>(null);
-    const [feesEnabled, setFeesEnabled] = useState<boolean>(false);
-
+    const [languages, setLanguages] = useState<string[]>([]);
+    const [services, setServices] = useState<string[]>([]);
+    const [uploadLogo, setUploadLogo] = useState<File | null>(null);
+    const [feesEnabled, setFeesEnabled] = useState(false);
     const [typeOfPharmacy, setTypeOfPharmacy] = useState<string>("");
-    const [pharmacyPhoneNumber, setPharmacyPhoneNumber] = useState<string>("");
-    const [weekdayTrafficPatients, setWeekdayTrafficPatients] = useState<string>("");
-    const [weekendTrafficPatients, setWeekendTrafficPatients] = useState<string>("");
-    const [number_of_pharmacists, setNumber_of_pharmacists] = useState<string>("");
-    const [number_of_assistants, setNumber_of_assistants] = useState<string>("");
-    const [additional_information, setAdditional_information] = useState<string>("");
-    const [typeOfClinic, setTypeOfClinic] = useState<string>("");
-    const [clinicPhoneNumber, setClinicPhoneNumber] = useState<string>("");
-    const [traffic_in_week, setTraffic_in_week] = useState<number>(0);
+    const [pharmacyPhoneNumber, setPharmacyPhoneNumber] = useState("");
+    const [weekdayTrafficPatients, setWeekdayTrafficPatients] = useState<number | null>(null);
+    const [weekendTrafficPatients, setWeekendTrafficPatients] = useState<number | null>(null);
+    const [numberOfPharmacists, setNumberOfPharmacists] = useState<number | null>(null);
+    const [numberOfAssistants, setNumberOfAssistants] = useState<number | null>(null);
+    const [additionalInformation, setAdditionalInformation] = useState("");
+    const [typeOfClinic, setTypeOfClinic] = useState("");
+    const [clinicPhoneNumber, setClinicPhoneNumber] = useState("");
+    const [trafficInWeek, setTrafficInWeek] = useState<number | null>(null);
     const [chartingSystems, setChartingSystems] = useState<string[]>([]);
     const [ultrasonicTypes, setUltrasonicTypes] = useState<string[]>([]);
     const [radiographyTypes, setRadiographyTypes] = useState<string[]>([]);
     const [parkingOptions, setParkingOptions] = useState<string[]>([]);
-    const [numberOfCurrentDentists, setNumberOfCurrentDentists] = useState<string>("");
-    const [numberOfCurrentHygienists, setNumberOfCurrentHygienists] = useState<string>("");
-    const [additionalInfoBeforeHiring, setAdditionalInfoBeforeHiring] = useState<boolean>(false);
+    const [numberOfCurrentDentists, setNumberOfCurrentDentists] = useState<number | null>(null);
+    const [numberOfCurrentHygienists, setNumberOfCurrentHygienists] = useState<number | null>(null);
     const [phoneError, setPhoneError] = useState<string | null>(null);
-    const [institutionsList, setInstitutionsList] = useState<Array<{ id: number; data?: any }>>([{ id: Date.now() }]);
+    const [institutionsList, setInstitutionsList] = useState<{ id: number; data?: any }[]>([{ id: Date.now() }]);
 
     const resetForm = () => {
         setBusinessLegalName("");
-        setPharmacyOrClinicName("");
+        setInstitutionName("");
         setTypeOfContract([]);
         setAddress("");
         setCity("");
         setProvince("");
         setPostalCode("");
         setSoftware([]);
-        setLanguagesSpoken([]);
-        setServicesOffered([]);
-        setLogo(null);
-        setNumber_of_pharmacists('')
-        setNumber_of_assistants('')
-        setAdditional_information('')
+        setLanguages([]);
+        setServices([]);
+        setUploadLogo(null);
+        setFeesEnabled(false);
         setTypeOfPharmacy("");
         setPharmacyPhoneNumber("");
-        setWeekdayTrafficPatients("");
-        setWeekendTrafficPatients("");
-        setFeesEnabled(false);
-
+        setWeekdayTrafficPatients(null);
+        setWeekendTrafficPatients(null);
+        setNumberOfPharmacists(null);
+        setNumberOfAssistants(null);
+        setAdditionalInformation("");
         setTypeOfClinic("");
         setClinicPhoneNumber("");
+        setTrafficInWeek(null);
         setChartingSystems([]);
         setUltrasonicTypes([]);
         setRadiographyTypes([]);
         setParkingOptions([]);
-        setNumberOfCurrentDentists("");
-        setTraffic_in_week(0)
-        setNumberOfCurrentHygienists("");
-        setAdditionalInfoBeforeHiring(false);
+        setNumberOfCurrentDentists(null);
+        setNumberOfCurrentHygienists(null);
         setPhoneError(null);
     };
 
     return {
-
         businessLegalName,
         setBusinessLegalName,
-        pharmacyOrClinicName,
-        setPharmacyOrClinicName,
+        institutionName,
+        setInstitutionName,
         typeOfContract,
         setTypeOfContract,
         address,
@@ -86,13 +81,14 @@ const useInstitutionForm = () => {
         setPostalCode,
         software,
         setSoftware,
-        languagesSpoken,
-        setLanguagesSpoken,
-        servicesOffered,
-        setServicesOffered,
-        logo,
-        setLogo,
-        traffic_in_week, setTraffic_in_week,
+        languages,
+        setLanguages,
+        services,
+        setServices,
+        uploadLogo,
+        setUploadLogo,
+        feesEnabled,
+        setFeesEnabled,
         typeOfPharmacy,
         setTypeOfPharmacy,
         pharmacyPhoneNumber,
@@ -101,16 +97,18 @@ const useInstitutionForm = () => {
         setWeekdayTrafficPatients,
         weekendTrafficPatients,
         setWeekendTrafficPatients,
-        feesEnabled,
-        setFeesEnabled,
-
-        number_of_pharmacists, setNumber_of_pharmacists,
-        number_of_assistants, setNumber_of_assistants,
-        additional_information, setAdditional_information,
+        numberOfPharmacists,
+        setNumberOfPharmacists,
+        numberOfAssistants,
+        setNumberOfAssistants,
+        additionalInformation,
+        setAdditionalInformation,
         typeOfClinic,
         setTypeOfClinic,
         clinicPhoneNumber,
         setClinicPhoneNumber,
+        trafficInWeek,
+        setTrafficInWeek,
         chartingSystems,
         setChartingSystems,
         ultrasonicTypes,
@@ -123,8 +121,6 @@ const useInstitutionForm = () => {
         setNumberOfCurrentDentists,
         numberOfCurrentHygienists,
         setNumberOfCurrentHygienists,
-        additionalInfoBeforeHiring,
-        setAdditionalInfoBeforeHiring,
         phoneError,
         setPhoneError,
         institutionsList,

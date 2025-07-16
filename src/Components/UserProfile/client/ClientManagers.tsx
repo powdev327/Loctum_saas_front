@@ -1,8 +1,8 @@
 import {Table, TableBody, TableCell, TableHeader, TableRow} from "../../ui/table";
 import {useModal} from "../../../hooks/useModal.ts";
-import {ManagerUpdate} from "../popups/ManagerUpdate.tsx";
+import {ManagerUpdate} from "../popups/client/ManagerUpdate.tsx";
 import {useState} from "react";
-import {DeleteManager} from "../popups/DeleteManager.tsx";
+import {DeleteManager} from "../popups/client/DeleteManager.tsx";
 
 export default function ClientManagers({managers}) {
   const { isOpen : isUpdate, openModal: isOpenUpdateModal, closeModal: isCloseUpdateModal } = useModal();

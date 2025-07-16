@@ -1,48 +1,75 @@
-import { Modal } from "../../ui/modal";
-import Label from "../../form/Label.tsx";
-import Input from "../../form/input/InputField.tsx";
-import { typeContractList } from "../../../config/owner/typeContractList.ts";
-import Select from "../../form/Select.tsx";
-import { provincesList } from "../../../config/owner/provincesList.ts";
-import { languagesList } from "../../../config/owner/languagesList.ts";
-import { clinicServicesList } from "../../../config/owner/clinicInstitution/clinicServicesList.ts";
-import Switch from "../../form/switch/Switch.tsx";
-import { typePharmacyInstitutionList } from "../../../config/owner/pharmacyInstitution/typePharmacyInstitutionList.ts";
-import { typeClinicInstitutionList } from "../../../config/owner/clinicInstitution/typeClinicInstitutionList.ts";
-import { systemOdontogramList } from "../../../config/owner/clinicInstitution/systemOdontogramList.ts";
-import { typeOfUltrasoundList } from "../../../config/owner/clinicInstitution/typeOfUltrasoundList.ts";
-import { typeRadiographicList } from "../../../config/owner/clinicInstitution/typeRadiographicList.ts";
-import { parkingList } from "../../../config/owner/clinicInstitution/clinicParkingList.ts";
-import Button from "../../ui/button/Button.tsx";
-import useInstitutionForm from "../../../hooks/owner/useInstitutionHook.ts";
+import { Modal } from "../../../ui/modal";
+import Label from "../../../form/Label.tsx";
+import Input from "../../../form/input/InputField.tsx";
+import { typeContractList } from "../../../../config/owner/typeContractList.ts";
+import Select from "../../../form/Select.tsx";
+import { provincesList } from "../../../../config/owner/provincesList.ts";
+import { languagesList } from "../../../../config/owner/languagesList.ts";
+import { clinicServicesList } from "../../../../config/owner/clinicInstitution/clinicServicesList.ts";
+import Switch from "../../../form/switch/Switch.tsx";
+import { typePharmacyInstitutionList } from "../../../../config/owner/pharmacyInstitution/typePharmacyInstitutionList.ts";
+import { typeClinicInstitutionList } from "../../../../config/owner/clinicInstitution/typeClinicInstitutionList.ts";
+import { systemOdontogramList } from "../../../../config/owner/clinicInstitution/systemOdontogramList.ts";
+import { typeOfUltrasoundList } from "../../../../config/owner/clinicInstitution/typeOfUltrasoundList.ts";
+import { typeRadiographicList } from "../../../../config/owner/clinicInstitution/typeRadiographicList.ts";
+import { parkingList } from "../../../../config/owner/clinicInstitution/clinicParkingList.ts";
+import Button from "../../../ui/button/Button.tsx";
+import useInstitutionForm from "../../../../hooks/owner/useInstitutionHook.ts";
 import toast from "react-hot-toast";
-import { useClient } from "../../../context/owner/ClientContext.tsx";
+import { useClient } from "../../../../context/owner/ClientContext.tsx";
 import { useEffect, useState, useRef } from "react";
-import DropdownWithCheckbox from "../../form/DropdownWithCheckbox.tsx";
-import { dentalSoftwareList, pharmacySoftwareList } from "../../../config/owner/softwareList.ts";
+import DropdownWithCheckbox from "../../../form/DropdownWithCheckbox.tsx";
+import { dentalSoftwareList, pharmacySoftwareList } from "../../../../config/owner/softwareList.ts";
 import provincesData from "@/data/canada-provinces-cities.json";
+
 
 interface Option {
     value: string;
     label: string;
 }
 
-export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
+interface Institution {
+    institution_id?: string;
+    institution_type: string;
+    business_legal_name: string;
+    institution_name: string;
+    type_of_contract: string[];
+    address: string;
+    city: string;
+    province: string;
+    postal_code: string;
+    software: string[];
+    languages: string[];
+    services: string[];
+    fees_enabled: boolean;
+    pharmacy_fields?: any;
+    dental_fields?: any;
+    upload_logo?: File | null;
+}
+
+interface ClientInstitutionUpdateProps {
+    isOpen: boolean;
+    closeModal: () => void;
+    institution: Institution;
+}
+
+export function ClientInstitutionUpdate({ isOpen, closeModal, institution }: ClientInstitutionUpdateProps) {
     const { updateInstitution } = useClient();
-    const [institutionsObj, setInstitutionsObj] = useState(null);
-    const isInitialMount = useRef(true);
-    const [filteredCities, setFilteredCities] = useState([]);
-    const [neighborhoods, setNeighborhoods] = useState([]);
+    const [filteredCities, setFilteredCities] = useState<string[]>([]);
+    const [neighborhoods, setNeighborhoods] = useState<
+        { id?: string; name: string; fullAddress: string; type: string; isDefault?: boolean; isStatic?: boolean }[]
+    >([]);
     const [isLoadingNeighborhoods, setIsLoadingNeighborhoods] = useState(false);
-    const [neighborhoodError, setNeighborhoodError] = useState(null);
+    const [neighborhoodError, setNeighborhoodError] = useState<string | null>(null);
     const [showCustomAddressInput, setShowCustomAddressInput] = useState(false);
+    const isInitialMount = useRef(true);
     const MAPBOX_TOKEN = "pk.eyJ1IjoiaGlqaWFuZ3RhbyIsImEiOiJjampxcjFnb3E2NTB5M3BvM253ZHV5YjhjIn0.WneUon5qFigfJRJ3oaZ3Ow";
 
     const {
         businessLegalName,
         setBusinessLegalName,
-        pharmacyOrClinicName,
-        setPharmacyOrClinicName,
+        institutionName,
+        setInstitutionName,
         typeOfContract,
         setTypeOfContract,
         address,
@@ -55,12 +82,14 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
         setPostalCode,
         software,
         setSoftware,
-        languagesSpoken,
-        setLanguagesSpoken,
-        servicesOffered,
-        setServicesOffered,
-        logo,
-        setLogo,
+        languages,
+        setLanguages,
+        services,
+        setServices,
+        uploadLogo,
+        setUploadLogo,
+        feesEnabled,
+        setFeesEnabled,
         typeOfPharmacy,
         setTypeOfPharmacy,
         pharmacyPhoneNumber,
@@ -69,12 +98,18 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
         setWeekdayTrafficPatients,
         weekendTrafficPatients,
         setWeekendTrafficPatients,
-        feesEnabled,
-        setFeesEnabled,
+        numberOfPharmacists,
+        setNumberOfPharmacists,
+        numberOfAssistants,
+        setNumberOfAssistants,
+        additionalInformation,
+        setAdditionalInformation,
         typeOfClinic,
         setTypeOfClinic,
         clinicPhoneNumber,
         setClinicPhoneNumber,
+        trafficInWeek,
+        setTrafficInWeek,
         chartingSystems,
         setChartingSystems,
         ultrasonicTypes,
@@ -87,22 +122,11 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
         setNumberOfCurrentDentists,
         numberOfCurrentHygienists,
         setNumberOfCurrentHygienists,
-        additionalInfoBeforeHiring,
-        setAdditionalInfoBeforeHiring,
         phoneError,
         setPhoneError,
-        number_of_pharmacists,
-        setNumber_of_pharmacists,
-        number_of_assistants,
-        setNumber_of_assistants,
-        additional_information,
-        setAdditional_information,
-        traffic_in_week,
-        setTraffic_in_week,
         resetForm,
     } = useInstitutionForm();
 
-    // Map configuration lists to { value, label } format if they are arrays of strings
     const mapToOptions = (list: string[] | Option[]): Option[] => {
         return list.map(item =>
             typeof item === 'string' ? { value: item, label: item } : item
@@ -113,17 +137,17 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
         setProvince(selectedProvince);
         const citiesForProvince = provincesData[selectedProvince] || [];
         setFilteredCities(citiesForProvince);
-        setCity(""); // Reset city when province changes
-        setAddress(""); // Reset address
-        setNeighborhoods([]); // Reset neighborhoods
+        setCity("");
+        setAddress("");
+        setNeighborhoods([]);
         setNeighborhoodError(null);
         setShowCustomAddressInput(false);
     };
 
     const handleCityChange = (selectedCity: string) => {
         setCity(selectedCity);
-        setAddress(""); // Reset address when city changes
-        setNeighborhoods([]); // Reset neighborhoods
+        setAddress("");
+        setNeighborhoods([]);
         setNeighborhoodError(null);
         setShowCustomAddressInput(false);
     };
@@ -165,7 +189,7 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                 `suburb ${encodeURIComponent(city)}, ${encodeURIComponent(province)}`,
             ];
 
-            const allNeighborhoods = [];
+            const allNeighborhoods: any[] = [];
             const seenNames = new Set();
 
             const searchPromises = searchQueries.map(async (query) => {
@@ -184,13 +208,13 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                     const data = await response.json();
 
                     return data.features
-                        .filter((feature) => {
+                        .filter((feature: any) => {
                             const isCanadian =
                                 feature.properties?.country_code === "ca" || feature.place_name.toLowerCase().includes("canada");
-                            const isRelevantType = feature.place_type.some((type) =>
+                            const isRelevantType = feature.place_type.some((type: string) =>
                                 ["neighborhood", "locality", "district", "place", "address"].includes(type)
                             );
-                            const contextText = feature.context?.map((ctx) => ctx.text.toLowerCase()).join(" ") || "";
+                            const contextText = feature.context?.map((ctx: any) => ctx.text.toLowerCase()).join(" ") || "";
                             const placeNameLower = feature.place_name.toLowerCase();
                             const isInCorrectCity =
                                 contextText.includes(city.toLowerCase()) || placeNameLower.includes(city.toLowerCase());
@@ -200,7 +224,7 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
 
                             return isCanadian && isRelevantType && isInCorrectCity && isInCorrectProvince && isNotCityDuplicate;
                         })
-                        .map((feature) => ({
+                        .map((feature: any) => ({
                             id: feature.id,
                             name: feature.text,
                             fullAddress: feature.place_name,
@@ -218,7 +242,7 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
             const searchResults = await Promise.all(searchPromises);
 
             searchResults.forEach((results) => {
-                results.forEach((neighborhood) => {
+                results.forEach((neighborhood: any) => {
                     const nameLower = neighborhood.name.toLowerCase();
                     if (!seenNames.has(nameLower)) {
                         seenNames.add(nameLower);
@@ -245,11 +269,11 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                         const fallbackData = await fallbackResponse.json();
                         const fallbackOptions = fallbackData.features
                             .filter(
-                                (feature) =>
+                                (feature: any) =>
                                     feature.place_name.toLowerCase().includes(province.toLowerCase()) &&
                                     feature.text.toLowerCase() !== city.toLowerCase()
                             )
-                            .map((feature, index) => ({
+                            .map((feature: any, index: number) => ({
                                 id: `fallback-${index}`,
                                 name: feature.text,
                                 fullAddress: feature.place_name,
@@ -280,8 +304,7 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
     };
 
     useEffect(() => {
-        // Ensure city and province are strings before proceeding
-        if (typeof city === 'string' && typeof province === 'string' && city && province) {
+        if (city && province) {
             const timer = setTimeout(() => {
                 fetchNeighborhoods(city, province);
             }, 500);
@@ -293,38 +316,37 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
 
     useEffect(() => {
         if (isOpen && institution && isInitialMount.current) {
-            console.log("Initializing form state with institution:", institution);
             setBusinessLegalName(institution.business_legal_name || "");
-            setPharmacyOrClinicName(institution.institution_name || "");
+            setInstitutionName(institution.institution_name || "");
             setTypeOfContract(institution.type_of_contract || []);
             setAddress(institution.address || "");
             setCity(institution.city || "");
             setProvince(institution.province || "");
             setPostalCode(institution.postal_code || "");
             setSoftware(institution.software || []);
-            setLanguagesSpoken(institution.languages || []);
-            setServicesOffered(institution.services || []);
+            setLanguages(institution.languages || []);
+            setServices(institution.services || []);
             setFeesEnabled(institution.fees_enabled || false);
 
             if (institution.institution_type === "pharmacy") {
-                setTypeOfPharmacy(institution.specific_fields?.type_of_pharmacy || "");
-                setPharmacyPhoneNumber(institution.specific_fields?.pharmacy_phone_number || "");
-                setWeekdayTrafficPatients(institution.specific_fields?.weekday_traffic_patients?.toString() || "");
-                setWeekendTrafficPatients(institution.specific_fields?.weekend_traffic_patients?.toString() || "");
-                setNumber_of_pharmacists(institution.specific_fields?.number_of_pharmacists?.toString() || "");
-                setNumber_of_assistants(institution.specific_fields?.number_of_assistants?.toString() || "");
-                setAdditional_information(institution.specific_fields?.additional_information || "");
-            } else if (institution.institution_type === "dental_clinic") {
-                setTypeOfClinic(institution.specific_fields?.type_of_clinic || "");
-                setClinicPhoneNumber(institution.specific_fields?.clinic_phone_number || "");
-                setChartingSystems(institution.specific_fields?.charting_systems || []);
-                setUltrasonicTypes(institution.specific_fields?.ultrasonic_types || []);
-                setRadiographyTypes(institution.specific_fields?.radiography_types || []);
-                setParkingOptions(institution.specific_fields?.parking_options || []);
-                setNumberOfCurrentDentists(institution.specific_fields?.number_of_current_dentists?.toString() || "");
-                setNumberOfCurrentHygienists(institution.specific_fields?.number_of_current_hygienists?.toString() || "");
-                setTraffic_in_week(institution.specific_fields?.traffic_in_week?.toString() || "0");
-                setAdditionalInfoBeforeHiring(institution.specific_fields?.additional_info_visible_before || false);
+                setTypeOfPharmacy(institution.pharmacy_fields?.type_of_pharmacy || "");
+                setPharmacyPhoneNumber(institution.pharmacy_fields?.pharmacy_phone_number || "");
+                setWeekdayTrafficPatients(institution.pharmacy_fields?.weekday_traffic_patients?.toString() || "");
+                setWeekendTrafficPatients(institution.pharmacy_fields?.weekend_traffic_patients?.toString() || "");
+                setNumberOfPharmacists(institution.pharmacy_fields?.number_of_pharmacists?.toString() || "");
+                setNumberOfAssistants(institution.pharmacy_fields?.number_of_assistants?.toString() || "");
+                setAdditionalInformation(institution.pharmacy_fields?.additional_information || "");
+            } else if (institution.institution_type === "DentalClinic") {
+                setTypeOfClinic(institution.dental_fields?.type_of_clinic || "");
+                setClinicPhoneNumber(institution.dental_fields?.clinic_phone_number || "");
+                setChartingSystems(institution.dental_fields?.charting_systems || []);
+                setUltrasonicTypes(institution.dental_fields?.ultrasonic_types || []);
+                setRadiographyTypes(institution.dental_fields?.radiography_types || []);
+                setParkingOptions(institution.dental_fields?.parking_options || []);
+                setNumberOfCurrentDentists(institution.dental_fields?.number_of_current_dentists?.toString() || "");
+                setNumberOfCurrentHygienists(institution.dental_fields?.number_of_current_hygienists?.toString() || "");
+                setTrafficInWeek(institution.dental_fields?.traffic_in_week?.toString() || "");
+                setAdditionalInformation(institution.dental_fields?.additional_information || "");
             }
             isInitialMount.current = false;
         }
@@ -333,10 +355,17 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
             if (!isOpen) {
                 console.log("Resetting form state on modal close");
                 resetForm();
+                setFilteredCities([]);
+                setNeighborhoods([]);
+                setIsLoadingNeighborhoods(false);
+                setNeighborhoodError(null);
+                setShowCustomAddressInput(false);
                 isInitialMount.current = true;
             }
         };
-    }, [isOpen, institution, resetForm, setBusinessLegalName, setPharmacyOrClinicName, setTypeOfContract, setAddress, setCity, setProvince, setPostalCode, setSoftware, setLanguagesSpoken, setServicesOffered, setFeesEnabled, setTypeOfPharmacy, setPharmacyPhoneNumber, setWeekdayTrafficPatients, setWeekendTrafficPatients, setNumber_of_pharmacists, setNumber_of_assistants, setAdditional_information, setTypeOfClinic, setClinicPhoneNumber, setChartingSystems, setUltrasonicTypes, setRadiographyTypes, setParkingOptions, setNumberOfCurrentDentists, setNumberOfCurrentHygienists, setTraffic_in_week, setAdditionalInfoBeforeHiring]);
+    }, [isOpen, institution, resetForm, setBusinessLegalName, setInstitutionName, setTypeOfContract, setAddress, setCity, setProvince, setPostalCode, setSoftware, setLanguages, setServices, setFeesEnabled, setTypeOfPharmacy, setPharmacyPhoneNumber, setWeekdayTrafficPatients, setWeekendTrafficPatients, setNumberOfPharmacists, setNumberOfAssistants, setAdditionalInformation, setTypeOfClinic, setClinicPhoneNumber, setChartingSystems, setUltrasonicTypes, setRadiographyTypes, setParkingOptions, setNumberOfCurrentDentists, setNumberOfCurrentHygienists, setTrafficInWeek]);
+
+    const phoneRegex = /^\+1[\s-]?(\d{3})[\s-]?(\d{3})[\s-]?(\d{4})$/;
 
     const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>, type: "pharmacy" | "clinic") => {
         const value = e.target.value;
@@ -347,7 +376,6 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
             setClinicPhoneNumber(value);
         }
 
-        const phoneRegex = /^\+\d{1,3}\s\d{3}\s\d{3}\s\d{4}$/;
         if (value && !phoneRegex.test(value)) {
             setPhoneError("Invalid phone number format. Use +1 555 555 5555");
         } else {
@@ -356,10 +384,11 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
     };
 
     const validateForm = () => {
-        const errors = [];
+        const errors: string[] = [];
         if (!institution?.institution_type) errors.push("Institution type is required");
         if (!businessLegalName) errors.push("Business legal name is required");
-        if (!pharmacyOrClinicName) errors.push("Institution name is required");
+        if (!institutionName) errors.push("Institution name is required");
+        if (!typeOfContract.length) errors.push("At least one contract type is required");
         if (!address) errors.push("Address is required");
         if (!city) errors.push("City is required");
         if (!province) errors.push("Province is required");
@@ -367,13 +396,11 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
 
         if (institution?.institution_type === "pharmacy") {
             if (!typeOfPharmacy) errors.push("Type of pharmacy is required");
-            const phoneRegex = /^\+\d{1,3}\s\d{3}\s\d{3}\s\d{4}$/;
             if (!pharmacyPhoneNumber || !phoneRegex.test(pharmacyPhoneNumber)) {
                 errors.push("Invalid pharmacy phone number format. Use +1 555 555 5555");
             }
-        } else if (institution?.institution_type === "dental_clinic") {
+        } else if (institution?.institution_type === "DentalClinic") {
             if (!typeOfClinic) errors.push("Type of clinic is required");
-            const phoneRegex = /^\+\d{1,3}\s\d{3}\s\d{3}\s\d{4}$/;
             if (!clinicPhoneNumber || !phoneRegex.test(clinicPhoneNumber)) {
                 errors.push("Invalid clinic phone number format. Use +1 555 555 5555");
             }
@@ -396,72 +423,83 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
             return;
         }
 
-        const currentInstitutionData = {
-            institution_type: institution?.institution_type,
+        const institutionData: Institution = {
+            institution_type: institution.institution_type,
             business_legal_name: businessLegalName,
-            institution_name: pharmacyOrClinicName,
+            institution_name: institutionName,
             type_of_contract: typeOfContract,
             address,
             city,
             province,
             postal_code: postalCode,
             software,
-            languages: languagesSpoken,
-            services: servicesOffered,
+            languages,
+            services,
             fees_enabled: feesEnabled,
-            specific_fields: institution?.institution_type === "pharmacy"
-                ? {
-                    type_of_pharmacy: typeOfPharmacy,
-                    pharmacy_phone_number: pharmacyPhoneNumber,
-                    weekday_traffic_patients: Number(weekdayTrafficPatients) || 0,
-                    weekend_traffic_patients: Number(weekendTrafficPatients) || 0,
-                    number_of_pharmacists: Number(number_of_pharmacists) || 0,
-                    number_of_assistants: Number(number_of_assistants) || 0,
-                    additional_information: additional_information,
-                }
-                : {
-                    type_of_clinic: typeOfClinic,
-                    clinic_phone_number: clinicPhoneNumber,
-                    charting_systems: chartingSystems,
-                    ultrasonic_types: ultrasonicTypes,
-                    radiography_types: radiographyTypes,
-                    parking_options: parkingOptions,
-                    number_of_current_dentists: Number(numberOfCurrentDentists) || 0,
-                    number_of_current_hygienists: Number(numberOfCurrentHygienists) || 0,
-                    traffic_in_week: Number(traffic_in_week) || 0,
-                    additional_info_visible_before: additionalInfoBeforeHiring,
-                },
         };
 
-        try {
-            console.log("Saving institution data:", currentInstitutionData);
-            const formData = new FormData();
-            if (logo instanceof File) {
-                formData.append("upload_logo", logo);
+        const formData = new FormData();
+        if (uploadLogo instanceof File) {
+            formData.append("upload_logo", uploadLogo);
+        }
+        for (const [key, value] of Object.entries(institutionData)) {
+            if (value !== null && value !== undefined) {
+                if (Array.isArray(value)) {
+                    formData.append(key, JSON.stringify(value));
+                } else {
+                    formData.append(key, String(value));
+                }
             }
-            formData.append("institution_type", currentInstitutionData.institution_type || "");
-            formData.append("business_legal_name", currentInstitutionData.business_legal_name || "");
-            formData.append("institution_name", currentInstitutionData.institution_name || "");
-            formData.append("type_of_contract", JSON.stringify(currentInstitutionData.type_of_contract));
-            formData.append("address", currentInstitutionData.address || "");
-            formData.append("city", currentInstitutionData.city || "");
-            formData.append("province", currentInstitutionData.province || "");
-            formData.append("postal_code", currentInstitutionData.postal_code || "");
-            formData.append("software", JSON.stringify(currentInstitutionData.software));
-            formData.append("languages", JSON.stringify(currentInstitutionData.languages));
-            formData.append("services", JSON.stringify(currentInstitutionData.services));
-            formData.append("specific_fields", JSON.stringify(currentInstitutionData.specific_fields));
-            formData.append("fees_enabled", String(currentInstitutionData.fees_enabled));
+        }
+
+        // Add pharmacy_fields as individual fields
+        if (institution.institution_type === "pharmacy") {
+            if (typeOfPharmacy) formData.append("type_of_pharmacy", typeOfPharmacy);
+            if (pharmacyPhoneNumber) formData.append("pharmacy_phone_number", pharmacyPhoneNumber);
+            if (weekdayTrafficPatients) formData.append("weekday_traffic_patients", weekdayTrafficPatients);
+            if (weekendTrafficPatients) formData.append("weekend_traffic_patients", weekendTrafficPatients);
+            if (numberOfPharmacists) formData.append("number_of_pharmacists", numberOfPharmacists);
+            if (numberOfAssistants) formData.append("number_of_assistants", numberOfAssistants);
+            if (additionalInformation) formData.append("additional_information", additionalInformation);
+        }
+
+        // Add dental_fields if applicable
+        if (institution.institution_type === "DentalClinic") {
+            const dentalFields = {
+                type_of_clinic: typeOfClinic,
+                clinic_phone_number: clinicPhoneNumber,
+                charting_systems: chartingSystems,
+                ultrasonic_types: ultrasonicTypes,
+                radiography_types: radiographyTypes,
+                parking_options: parkingOptions,
+                number_of_current_dentists: numberOfCurrentDentists ? Number(numberOfCurrentDentists) : null,
+                number_of_current_hygienists: numberOfCurrentHygienists ? Number(numberOfCurrentHygienists) : null,
+                traffic_in_week: trafficInWeek ? Number(trafficInWeek) : null,
+                additional_information: additionalInformation,
+            };
+            formData.append("dental_fields", JSON.stringify(dentalFields));
+        }
+
+        try {
+            for (const [key, value] of formData.entries()) {
+                console.log(`FormData: ${key}=${value}`);
+            }
 
             await updateInstitution(institution.institution_id, formData, closeModal);
-            setInstitutionsObj(currentInstitutionData);
             toast.success("Institution updated successfully");
+            resetForm();
+            setFilteredCities([]);
+            setNeighborhoods([]);
+            setIsLoadingNeighborhoods(false);
+            setNeighborhoodError(null);
+            setShowCustomAddressInput(false);
+            closeModal();
         } catch (error) {
-            console.log("Error saving institution:", error);
-            toast.error(`Failed to save institution: ${error?.response?.data?.detail || "Unknown error"}`);
+            console.error("Error updating institution:", error);
+            toast.error(`Failed to update institution: ${error?.response?.data?.detail || "Unknown error"}`);
         }
     };
-    console.log('ins', institution)
+    const isFormValid = validateForm().length === 0;
 
 
     return (
@@ -470,13 +508,15 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                 <div className="custom-scrollbar h-[500px] overflow-y-auto px-2 pb-3">
                     <div className="mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
                         <div className="flex justify-between items-center mb-4">
-                            <h5 className="text-lg font-medium text-gray-800 dark:text-white/90">Update {institution?.institution_name}</h5>
+                            <h5 className="text-lg font-medium text-gray-800 dark:text-white/90">
+                                Update {institution?.institution_type === "pharmacy" ? "Pharmacy" : "Clinic"}
+                            </h5>
                         </div>
 
                         <div className="mt-7">
                             <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                                 <div className="col-span-2 lg:col-span-1">
-                                    <Label>Business Legal Name</Label>
+                                    <Label>Business Legal Name <span className="text-red-500">*</span></Label>
                                     <Input
                                         type="text"
                                         value={businessLegalName}
@@ -485,26 +525,50 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                                             setBusinessLegalName(e.target.value);
                                         }}
                                         placeholder="Business Name..."
+                                        className={
+                                            validateForm().includes("Business legal name is required") && !businessLegalName
+                                                ? "border-red-500"
+                                                : ""
+                                        }
+                                        aria-invalid={validateForm().includes("Business legal name is required") && !businessLegalName}
+                                        aria-describedby="business-legal-name-error"
                                     />
+                                    {validateForm().includes("Business legal name is required") && !businessLegalName && (
+                                        <p id="business-legal-name-error" className="text-red-500 text-sm mt-1">
+                                            Business legal name is required
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="col-span-2 lg:col-span-1">
-                                    <Label>{institution?.institution_type === "pharmacy" ? "Name of Pharmacy" : "Name of Clinic"}</Label>
+                                    <Label>{institution?.institution_type === "pharmacy" ? "Name of Pharmacy" : "Name of Clinic"} <span className="text-red-500">*</span></Label>
                                     <Input
                                         type="text"
                                         placeholder={institution?.institution_type === "pharmacy" ? "Pharmacy Name..." : "Clinic Name..."}
-                                        value={pharmacyOrClinicName}
+                                        value={institutionName}
                                         onChange={(e) => {
-                                            console.log("Updating pharmacyOrClinicName:", e.target.value);
-                                            setPharmacyOrClinicName(e.target.value);
+                                            console.log("Updating institutionName:", e.target.value);
+                                            setInstitutionName(e.target.value);
                                         }}
+                                        className={
+                                            validateForm().includes("Institution name is required") && !institutionName
+                                                ? "border-red-500"
+                                                : ""
+                                        }
+                                        aria-invalid={validateForm().includes("Institution name is required") && !institutionName}
+                                        aria-describedby="institution-name-error"
                                     />
+                                    {validateForm().includes("Institution name is required") && !institutionName && (
+                                        <p id="institution-name-error" className="text-red-500 text-sm mt-1">
+                                            Institution name is required
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="col-span-2 lg:col-span-1">
                                     <div className="flex flex-col gap-2">
                                         <DropdownWithCheckbox
-                                            label="Select Contract Types"
+                                            label="Select Contract Types *"
                                             options={mapToOptions(typeContractList)}
                                             selectedValues={typeOfContract}
                                             onChange={(values) => {
@@ -513,6 +577,9 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                                             }}
                                             className="z-999"
                                         />
+                                        {validateForm().includes("At least one contract type is required") && !typeOfContract.length && (
+                                            <p className="text-red-500 text-sm mt-1">At least one contract type is required</p>
+                                        )}
                                     </div>
                                 </div>
 
@@ -523,10 +590,11 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                                         aria-describedby="file_input_help"
                                         id="file_input"
                                         type="file"
+                                        accept="image/*"
                                         onChange={(e) => {
                                             const file = e.target.files?.[0];
                                             console.log("Updating logo:", file);
-                                            setLogo(file || null);
+                                            setUploadLogo(file || null);
                                         }}
                                     />
                                 </div>
@@ -540,9 +608,13 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                                         }))}
                                         placeholder="Select Province"
                                         value={province}
-                                        onChange={(option) => handleProvinceChange(option.value)}
+                                        onChange={handleProvinceChange} // Pass the string value directly
                                         className="dark:bg-dark-900"
+                                        required={true} // Enforce selection
                                     />
+                                    {validateForm().includes("Province is required") && !province && (
+                                        <p className="text-red-500 text-sm mt-1">Province is required</p>
+                                    )}
                                 </div>
 
                                 <div className="col-span-2 lg:col-span-1">
@@ -554,10 +626,14 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                                         }))}
                                         placeholder={province ? "Select City" : "Select Province First"}
                                         value={city}
-                                        onChange={(option) => handleCityChange(option.value)}
+                                        onChange={handleCityChange}
                                         isDisabled={!province}
                                         className="dark:bg-dark-900"
+                                        required={true}
                                     />
+                                    {validateForm().includes("City is required") && !city && (
+                                        <p className="text-red-500 text-sm mt-1">City is required</p>
+                                    )}
                                 </div>
 
                                 <div className="col-span-2">
@@ -629,6 +705,9 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                                             className={validateForm().includes("Address is required") && !address ? "border-red-500" : ""}
                                         />
                                     )}
+                                    {validateForm().includes("Address is required") && !address && (
+                                        <p className="text-red-500 text-sm mt-1">Address is required</p>
+                                    )}
                                     {neighborhoodError && (
                                         <div className="mt-1 text-sm text-yellow-600">⚠️ {neighborhoodError}</div>
                                     )}
@@ -641,7 +720,7 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                                 </div>
 
                                 <div className="col-span-2 lg:col-span-1">
-                                    <Label>Postal Code</Label>
+                                    <Label>Postal Code <span className="text-red-500">*</span></Label>
                                     <Input
                                         type="text"
                                         value={postalCode}
@@ -650,15 +729,22 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                                             setPostalCode(e.target.value);
                                         }}
                                         placeholder="Postal Code..."
+                                        className={validateForm().includes("Postal code is required") && !postalCode ? "border-red-500" : ""}
                                     />
+                                    {validateForm().includes("Postal code is required") && !postalCode && (
+                                        <p className="text-red-500 text-sm mt-1">Postal code is required</p>
+                                    )}
                                 </div>
 
                                 <div className="col-span-2 lg:col-span-1 z-99999">
                                     <DropdownWithCheckbox
                                         label="Software (Optional)"
-                                        options={businessLegalName === "pharmacy" ? pharmacySoftwareList : dentalSoftwareList}
+                                        options={institution.institution_type === "pharmacy" ? pharmacySoftwareList : dentalSoftwareList}
                                         selectedValues={software}
-                                        onChange={setSoftware}
+                                        onChange={(values) => {
+                                            console.log("Updating software:", values);
+                                            setSoftware(values);
+                                        }}
                                         className="z-[99999]"
                                     />
                                 </div>
@@ -667,27 +753,29 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                                     <DropdownWithCheckbox
                                         label="Languages Spoken (Optional)"
                                         options={mapToOptions(languagesList)}
-                                        selectedValues={languagesSpoken}
+                                        selectedValues={languages}
                                         onChange={(values) => {
-                                            console.log("Updating languagesSpoken:", values);
-                                            setLanguagesSpoken(values);
+                                            console.log("Updating languages:", values);
+                                            setLanguages(values);
                                         }}
                                         className="z-9999"
                                     />
                                 </div>
 
-                                <div className="col-span-2 z-999">
-                                    <DropdownWithCheckbox
-                                        label="Services Offered"
-                                        options={mapToOptions(clinicServicesList)}
-                                        selectedValues={servicesOffered}
-                                        onChange={(values) => {
-                                            console.log("Updating servicesOffered:", values);
-                                            setServicesOffered(values);
-                                        }}
-                                        className="z-999"
-                                    />
-                                </div>
+                                {institution.institution_type === "DentalClinic" && (
+                                    <div className="col-span-2 z-999">
+                                        <DropdownWithCheckbox
+                                            label="Services Offered"
+                                            options={mapToOptions(clinicServicesList)}
+                                            selectedValues={services}
+                                            onChange={(values) => {
+                                                console.log("Updating services:", values);
+                                                setServices(values);
+                                            }}
+                                            className="z-999"
+                                        />
+                                    </div>
+                                )}
 
                                 <div className="col-span-2 flex justify-between">
                                     <Switch
@@ -724,21 +812,25 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                                 {institution?.institution_type === "pharmacy" ? (
                                     <>
                                         <div className="col-span-2 lg:col-span-1">
-                                            <Label>Type of Pharmacy</Label>
+                                            <Label>Type of Pharmacy <span className="text-red-500">*</span></Label>
                                             <Select
                                                 options={typePharmacyInstitutionList}
                                                 placeholder="Select Option"
                                                 value={typeOfPharmacy}
-                                                onChange={(value) => {
+                                                onChange={(value: string) => {
                                                     console.log("Updating typeOfPharmacy:", value);
                                                     setTypeOfPharmacy(value);
                                                 }}
                                                 className="dark:bg-dark-900"
+                                                required={true} // Enforce selection
                                             />
+                                            {validateForm().includes("Type of pharmacy is required") && !typeOfPharmacy && (
+                                                <p className="text-red-500 text-sm mt-1">Type of pharmacy is required</p>
+                                            )}
                                         </div>
 
                                         <div className="col-span-2 lg:col-span-1">
-                                            <Label>Pharmacy Phone Number</Label>
+                                            <Label>Pharmacy Phone Number <span className="text-red-500">*</span></Label>
                                             <Input
                                                 type="text"
                                                 value={pharmacyPhoneNumber}
@@ -755,10 +847,10 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                                             <Label>Weekday Traffic Patients</Label>
                                             <Input
                                                 type="number"
-                                                value={weekdayTrafficPatients}
+                                                value={weekdayTrafficPatients ?? ""}
                                                 onChange={(e) => {
                                                     console.log("Updating weekdayTrafficPatients:", e.target.value);
-                                                    setWeekdayTrafficPatients(e.target.value);
+                                                    setWeekdayTrafficPatients(e.target.value ? Number(e.target.value) : null);
                                                 }}
                                                 placeholder="e.g., 100"
                                             />
@@ -768,10 +860,10 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                                             <Label>Weekend Traffic Patients</Label>
                                             <Input
                                                 type="number"
-                                                value={weekendTrafficPatients}
+                                                value={weekendTrafficPatients ?? ""}
                                                 onChange={(e) => {
                                                     console.log("Updating weekendTrafficPatients:", e.target.value);
-                                                    setWeekendTrafficPatients(e.target.value);
+                                                    setWeekendTrafficPatients(e.target.value ? Number(e.target.value) : null);
                                                 }}
                                                 placeholder="e.g., 50"
                                             />
@@ -781,12 +873,12 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                                             <Label>Number of Pharmacists</Label>
                                             <Input
                                                 type="number"
-                                                value={number_of_pharmacists}
+                                                value={numberOfPharmacists ?? ""}
                                                 onChange={(e) => {
-                                                    console.log("Updating number_of_pharmacists:", e.target.value);
-                                                    setNumber_of_pharmacists(e.target.value);
+                                                    console.log("Updating numberOfPharmacists:", e.target.value);
+                                                    setNumberOfPharmacists(e.target.value ? Number(e.target.value) : null);
                                                 }}
-                                                placeholder="e.g., 200"
+                                                placeholder="e.g., 5"
                                             />
                                         </div>
 
@@ -794,32 +886,33 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                                             <Label>Number of Assistants</Label>
                                             <Input
                                                 type="number"
-                                                value={number_of_assistants}
+                                                value={numberOfAssistants ?? ""}
                                                 onChange={(e) => {
-                                                    console.log("Updating number_of_assistants:", e.target.value);
-                                                    setNumber_of_assistants(e.target.value);
+                                                    console.log("Updating numberOfAssistants:", e.target.value);
+                                                    setNumberOfAssistants(e.target.value ? Number(e.target.value) : null);
                                                 }}
-                                                placeholder="e.g., 50"
+                                                placeholder="e.g., 3"
                                             />
                                         </div>
 
                                         <div className="col-span-2">
                                             <Label>Additional Information (Optional)</Label>
-                                            <Input
-                                                type="text"
-                                                value={additional_information}
-                                                onChange={(e) => {
-                                                    console.log("Updating additional_information:", e.target.value);
-                                                    setAdditional_information(e.target.value);
-                                                }}
+                                            <textarea
+                                                rows={4}
+                                                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden dark:bg-gray-900 dark:text-gray-500/90 dark:placeholder:text-white/30"
                                                 placeholder="e.g., Additional Information"
+                                                value={additionalInformation}
+                                                onChange={(e) => {
+                                                    console.log("Updating additionalInformation:", e.target.value);
+                                                    setAdditionalInformation(e.target.value);
+                                                }}
                                             />
                                         </div>
                                     </>
-                                ) : (
+                                ) : institution?.institution_type === "DentalClinic" ? (
                                     <>
                                         <div className="col-span-2 lg:col-span-1">
-                                            <Label>Type of Clinic</Label>
+                                            <Label>Type of Clinic <span className="text-red-500">*</span></Label>
                                             <Select
                                                 options={typeClinicInstitutionList}
                                                 placeholder="Select Option"
@@ -830,18 +923,21 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                                                 }}
                                                 className="dark:bg-dark-900"
                                             />
+                                            {validateForm().includes("Type of clinic is required") && !typeOfClinic && (
+                                                <p className="text-red-500 text-sm mt-1">Type of clinic is required</p>
+                                            )}
                                         </div>
 
                                         <div className="col-span-2 lg:col-span-1">
-                                            <Label>Clinic Phone Number</Label>
+                                            <Label>Clinic Phone Number <span className="text-red-500">*</span></Label>
                                             <Input
                                                 type="text"
                                                 value={clinicPhoneNumber}
                                                 onChange={(e) => handlePhoneChange(e, "clinic")}
-                                                placeholder="e.g., +1 123 456 7890"
+                                                placeholder="e.g., +1 555 555 5555"
                                                 className={phoneError ? "border-red-500" : ""}
                                             />
-                                            {phoneError && institution?.institution_type === "dental_clinic" && (
+                                            {phoneError && institution?.institution_type === "DentalClinic" && (
                                                 <p className="text-red-500 text-sm mt-1">{phoneError}</p>
                                             )}
                                         </div>
@@ -902,10 +998,10 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                                             <Label>Number of Current Dentists</Label>
                                             <Input
                                                 type="number"
-                                                value={numberOfCurrentDentists}
+                                                value={numberOfCurrentDentists ?? ""}
                                                 onChange={(e) => {
                                                     console.log("Updating numberOfCurrentDentists:", e.target.value);
-                                                    setNumberOfCurrentDentists(e.target.value);
+                                                    setNumberOfCurrentDentists(e.target.value ? Number(e.target.value) : null);
                                                 }}
                                                 placeholder="e.g., 5"
                                             />
@@ -915,40 +1011,43 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                                             <Label>Number of Current Hygienists</Label>
                                             <Input
                                                 type="number"
-                                                value={numberOfCurrentHygienists}
+                                                value={numberOfCurrentHygienists ?? ""}
                                                 onChange={(e) => {
                                                     console.log("Updating numberOfCurrentHygienists:", e.target.value);
-                                                    setNumberOfCurrentHygienists(e.target.value);
+                                                    setNumberOfCurrentHygienists(e.target.value ? Number(e.target.value) : null);
                                                 }}
                                                 placeholder="e.g., 3"
+                                            />
+                                        </div>
+
+                                        <div className="col-span-2 lg:col-span-1">
+                                            <Label>Traffic in Week</Label>
+                                            <Input
+                                                type="number"
+                                                value={trafficInWeek ?? ""}
+                                                onChange={(e) => {
+                                                    console.log("Updating trafficInWeek:", e.target.value);
+                                                    setTrafficInWeek(e.target.value ? Number(e.target.value) : null);
+                                                }}
+                                                placeholder="e.g., 100"
                                             />
                                         </div>
 
                                         <div className="col-span-2">
-                                            <Switch
-                                                label="Additional Info Visible Before Hiring"
-                                                checked={additionalInfoBeforeHiring}
-                                                onChange={(value) => {
-                                                    console.log("Updating additionalInfoBeforeHiring:", value);
-                                                    setAdditionalInfoBeforeHiring(value);
-                                                }}
-                                            />
-                                        </div>
-
-                                        <div className="col-span-1 lg:col-span-2">
-                                            <Label>Traffic in Week</Label>
-                                            <Input
-                                                type="number"
-                                                value={traffic_in_week}
+                                            <Label>Additional Information (Optional)</Label>
+                                            <textarea
+                                                rows={4}
+                                                className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden dark:bg-gray-900 dark:text-gray-500/90 dark:placeholder:text-white/30"
+                                                placeholder="e.g., Additional Information"
+                                                value={additionalInformation}
                                                 onChange={(e) => {
-                                                    console.log("Updating traffic_in_week:", e.target.value);
-                                                    setTraffic_in_week(e.target.value);
+                                                    console.log("Updating additionalInformation:", e.target.value);
+                                                    setAdditionalInformation(e.target.value);
                                                 }}
-                                                placeholder="e.g., 3"
                                             />
                                         </div>
                                     </>
-                                )}
+                                ) : null}
                             </div>
                         </div>
                     </div>
@@ -957,7 +1056,7 @@ export function ClientInstitutionUpdate({ isOpen, closeModal, institution }) {
                     <Button size="sm" variant="outline" onClick={closeModal}>
                         Close
                     </Button>
-                    <Button size="sm" onClick={handleSave}>
+                    <Button size="sm" onClick={handleSave} disabled={!isFormValid}>
                         Save Changes
                     </Button>
                 </div>

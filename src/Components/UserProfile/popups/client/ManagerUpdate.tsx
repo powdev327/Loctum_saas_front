@@ -1,9 +1,9 @@
-import useManagerForm from "../../../hooks/owner/useManagerHook.ts";
-import {useManager} from "../../../context/owner/ManagerContext.tsx";
-import {Modal} from "../../ui/modal";
-import Label from "../../form/Label.tsx";
-import Input from "../../form/input/InputField.tsx";
-import Button from "../../ui/button/Button.tsx";
+import useManagerForm from "../../../../hooks/owner/useManagerHook.ts";
+import {useManager} from "../../../../context/owner/ManagerContext.tsx";
+import {Modal} from "../../../ui/modal";
+import Label from "../../../form/Label.tsx";
+import Input from "../../../form/input/InputField.tsx";
+import Button from "../../../ui/button/Button.tsx";
 import {useEffect} from "react";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
