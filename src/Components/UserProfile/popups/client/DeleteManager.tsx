@@ -1,6 +1,6 @@
-import {Modal} from "../../ui/modal";
-import Button from "../../ui/button/Button.tsx";
-import {useManager} from "../../../context/owner/ManagerContext.tsx";
+import {Modal} from "../../../ui/modal";
+import Button from "../../../ui/button/Button.tsx";
+import {useManager} from "../../../../context/owner/ManagerContext.tsx";
 
 export function DeleteManager({ isOpen, closeModal, selectedManager }) {
     const {deleteManager} = useManager();

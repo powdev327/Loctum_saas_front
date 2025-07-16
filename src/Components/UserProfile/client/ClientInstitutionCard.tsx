@@ -3,13 +3,20 @@ import { Modal } from "../../ui/modal";
 import { useModal } from "../../../hooks/useModal.ts";
 import { useState } from "react";
 import { useClient } from "../../../context/owner/ClientContext.tsx";
-import { ClientInstitutionUpdate } from "../popups/ClientInstitutionUpdate.tsx";
+import { ClientInstitutionUpdate } from "../popups/client/ClientInstitutionUpdate.tsx";
+import {ClientAddManager} from "../popups/client/ClientAddManager.tsx";
 
 export default function ClientInstitutionCard({ institutions }) {
     const {
         isOpen: isEditModalOpen,
         openModal: openEditModal,
         closeModal: closeEditModal,
+    } = useModal();
+
+    const {
+        isOpen: isStoreModalOpen,
+        openModal: openStoreModal,
+        closeModal: closeStoreModal,
     } = useModal();
 
     const {
@@ -25,130 +32,130 @@ export default function ClientInstitutionCard({ institutions }) {
         openDeleteModal();
     };
 
+    const handleOpenStoreModal = (id, name) => {
+        setSelectedInstitution({ id, name });
+        openStoreModal();
+    };
+
     const handleOpenEditModal = (institution) => {
-        // Normalize institution_type to match expected value in ClientInstitutionUpdate
+        
         const normalizedInstitution = {
             ...institution,
-            institution_type: institution.institution_type === "DentalClinic" ? "dental_clinic" : institution.institution_type,
+            institution_type: institution.institution_type === "DentalClinic" ? "DentalClinic" : institution.institution_type,
         };
         setSelectedInstitution(normalizedInstitution);
         openEditModal();
     };
 
     const renderSpecificFieldsDisplay = (institution) => {
-        if (!institution?.specific_fields) return null;
-        const { specific_fields, institution_type } = institution;
-
-        if (institution_type === "pharmacy") {
+        if (institution.institution_type === "pharmacy" && institution.pharmacy_fields) {
             return (
                 <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     <div>
                         <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Type of Pharmacy</p>
                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {specific_fields.type_of_pharmacy || "N/A"}
+                            {institution.pharmacy_fields.type_of_pharmacy || "N/A"}
                         </p>
                     </div>
                     <div>
                         <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Pharmacy Phone Number</p>
                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {specific_fields.pharmacy_phone_number || "N/A"}
+                            {institution.pharmacy_fields.pharmacy_phone_number || "N/A"}
                         </p>
                     </div>
                     <div>
                         <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Weekday Traffic Patients</p>
                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {specific_fields.weekday_traffic_patients ?? "N/A"}
+                            {institution.pharmacy_fields.weekday_traffic_patients ?? "N/A"}
                         </p>
                     </div>
                     <div>
                         <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Weekend Traffic Patients</p>
                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {specific_fields.weekend_traffic_patients ?? "N/A"}
+                            {institution.pharmacy_fields.weekend_traffic_patients ?? "N/A"}
                         </p>
                     </div>
                     <div>
                         <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Number of Pharmacists</p>
                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {specific_fields.number_of_pharmacists ?? "N/A"}
+                            {institution.pharmacy_fields.number_of_pharmacists ?? "N/A"}
                         </p>
                     </div>
                     <div>
                         <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Number of Assistants</p>
                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {specific_fields.number_of_assistants ?? "N/A"}
+                            {institution.pharmacy_fields.number_of_assistants ?? "N/A"}
                         </p>
                     </div>
                     <div>
                         <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Additional Information</p>
                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {specific_fields.additional_information ?? "N/A"}
+                            {institution.pharmacy_fields.additional_information ?? "N/A"}
                         </p>
                     </div>
                 </div>
             );
-        } else if (institution_type === "DentalClinic") {
+        } else if ((institution.institution_type === "DentalClinic" || institution.institution_type === "dental_clinic") && institution.dental_fields) {
             return (
                 <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     <div>
                         <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Type of Clinic</p>
                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {specific_fields.type_of_clinic || "N/A"}
+                            {institution.dental_fields.type_of_clinic || "N/A"}
                         </p>
                     </div>
                     <div>
                         <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Clinic Phone Number</p>
                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {specific_fields.clinic_phone_number || "N/A"}
+                            {institution.dental_fields.clinic_phone_number || "N/A"}
                         </p>
                     </div>
                     <div>
                         <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Charting Systems</p>
                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {specific_fields.charting_systems?.join(", ") || "N/A"}
+                            {institution.dental_fields.charting_systems?.join(", ") || "N/A"}
                         </p>
                     </div>
                     <div>
                         <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Ultrasonic Types</p>
                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {specific_fields.ultrasonic_types?.join(", ") || "N/A"}
+                            {institution.dental_fields.ultrasonic_types?.join(", ") || "N/A"}
                         </p>
                     </div>
                     <div>
                         <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Radiography Types</p>
                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {specific_fields.radiography_types?.join(", ") || "N/A"}
+                            {institution.dental_fields.radiography_types?.join(", ") || "N/A"}
                         </p>
                     </div>
                     <div>
                         <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Parking Options</p>
                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {specific_fields.parking_options?.join(", ") || "N/A"}
+                            {institution.dental_fields.parking_options?.join(", ") || "N/A"}
                         </p>
                     </div>
                     <div>
                         <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Number of Current Dentists</p>
                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {specific_fields.number_of_current_dentists ?? "N/A"}
+                            {institution.dental_fields.number_of_current_dentists ?? "N/A"}
                         </p>
                     </div>
                     <div>
                         <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Number of Current Hygienists</p>
                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {specific_fields.number_of_current_hygienists ?? "N/A"}
+                            {institution.dental_fields.number_of_current_hygienists ?? "N/A"}
                         </p>
                     </div>
                     <div>
                         <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Traffic in Week</p>
                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {specific_fields.traffic_in_week ?? "N/A"}
+                            {institution.dental_fields.traffic_in_week ?? "N/A"}
                         </p>
                     </div>
                     <div>
-                        <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                            Additional Info Visible Before
-                        </p>
+                        <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Additional Information</p>
                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {specific_fields.additional_info_visible_before ? "Yes" : "No"}
+                            {institution.dental_fields.additional_information ?? "N/A"}
                         </p>
                     </div>
                 </div>
@@ -168,7 +175,7 @@ export default function ClientInstitutionCard({ institutions }) {
                             <div key={index} className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800">
                                 <div className="flex justify-between items-center">
                                     <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 mb-4">
-                                        <span className="font-extrabold">{institution.institution_name || "N/A"}</span> Institution
+                                        <span className="font-extrabold">{institution.institution_name || "N/A"}</span>
                                     </h4>
                                     <div className="flex items-center gap-7">
                                         <button
@@ -192,6 +199,15 @@ export default function ClientInstitutionCard({ institutions }) {
                                             </svg>
                                             Edit
                                         </button>
+
+                                        <button
+                                            onClick={() => handleOpenStoreModal(institution)}
+                                            className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 lg:inline-flex lg:w-auto"
+                                        >
+
+                                            Add Manager
+                                        </button>
+
 
                                         <button
                                             onClick={() =>
@@ -218,7 +234,7 @@ export default function ClientInstitutionCard({ institutions }) {
                                     <div>
                                         <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">Institution Type</p>
                                         <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                                            {institution.institution_type || "N/A"}
+                                            {institution.institution_type === "DentalClinic" ? "Dental Clinic" : institution.institution_type || "N/A"}
                                         </p>
                                     </div>
 
@@ -293,6 +309,7 @@ export default function ClientInstitutionCard({ institutions }) {
                                 {renderSpecificFieldsDisplay(institution)}
                             </div>
                         ))}
+
                     </div>
                 </div>
             </div>
@@ -328,6 +345,8 @@ export default function ClientInstitutionCard({ institutions }) {
                     institution={selectedInstitution}
                 />
             )}
+
+            {isStoreModalOpen && <ClientAddManager institution={selectedInstitution} isOpen={isStoreModalOpen} openModal={openStoreModal} closeModal={closeStoreModal}/>}
         </div>
     );
 }
