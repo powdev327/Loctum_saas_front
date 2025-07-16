@@ -42,9 +42,6 @@ export const ClientProvider = ({ children }) => {
     const updateInstitution = async (institution_id, data, closeEditModal) => {
         await institutionService.updateInstitution(institution_id, data);
         await getClient();
-        const updatedInstitution = await institutionService.getInstitution_by_id(institution_id);
-        setInstitution(updatedInstitution.data);
-        toast.success("Institution updated successfully.");
         closeEditModal();
     };
 
