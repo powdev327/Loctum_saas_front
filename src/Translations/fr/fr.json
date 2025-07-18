@@ -296,5 +296,42 @@
     "successTitle": "Réinitialisation du mot de passe réussie",
     "successMessage": "Votre mot de passe a été mis à jour avec succès.",
     "ok": "Continuer vers la connexion"
+  },
+  "client_profile": {
+    "error": {
+      "invalid_form_data": "Données de formulaire invalides",
+      "failed_save_institution": "Échec de l'enregistrement de l'institution. Veuillez réessayer."
+    },
+    "pageMeta": {
+      "profile_dashboard_title": "Tableau de bord Profil React.js | TailAdmin - Modèle d'administration Next.js",
+      "profile_dashboard_description": "Ceci est la page du tableau de bord Profil React.js pour TailAdmin - Modèle d'administration React.js Tailwind CSS"
+    },
+    "breadcrumb": {
+      "profile": "Profil"
+    },
+    "profile": {
+      "manage_your_account": "Gérez votre compte"
+    },
+    "user_info": {
+      "institution_information": "Informations de l'institution",
+      "institution_name": "Nom de l'institution",
+      "email": "Email",
+      "phone": "Téléphone",
+      "city": "Ville",
+      "full_address": "Adresse complète",
+      "province": "Province",
+      "not_available": "N/A",
+      "edit": "Modifier",
+      "add_manager": "Ajouter un gestionnaire",
+      "pharmacy": {
+        "type_of_pharmacy": "Type de pharmacie",
+        "pharmacy_phone_number": "Numéro de téléphone de la pharmacie",
+        "weekday_traffic_patients": "Nombre de patients en semaine",
+        "weekend_traffic_patients": "Nombre de patients le week-end",
+        "number_of_pharmacists": "Nombre de pharmaciens",
+        "number_of_assistants": "Nombre d'assistants",
+        "additional_information": "Informations supplémentaires"
+      }
+    }
   }
 }

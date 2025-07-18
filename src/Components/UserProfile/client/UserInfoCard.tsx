@@ -2,8 +2,12 @@ import { useModal } from "../../../hooks/useModal.ts";
 import { useClient } from "../../../context/owner/ClientContext.tsx";
 import {ClientUpdate} from "../popups/client/ClientUpdate.tsx";
 import {ClientAddManager} from "../popups/client/ClientAddManager.tsx";
+import { useTranslation } from "react-i18next";
+
 
 export default function UserInfoCard() {
+
+  const { t } = useTranslation();
   const { isOpen : isUpdateModal, openModal: isOpenUpdateModal, closeModal: isCloseUpdateModal } = useModal();
   const { isOpen : isStoringModal, openModal: isOpenStoringModal, closeModal: isCloseStoringModal } = useModal();
   const { client } = useClient();
@@ -12,7 +16,7 @@ export default function UserInfoCard() {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
-              Institution Information
+              Institution
             </h4>
 
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">

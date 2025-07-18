@@ -292,5 +292,43 @@
     "successTitle": "Réinitialisation du mot de passe réussie",
     "successMessage": "Votre mot de passe a été mis à jour avec succès.",
     "ok": "Continuer vers la connexion"
+  },
+  "client_profile": {
+    "error": {
+      "invalid_form_data": "Invalid form data",
+      "failed_save_institution": "Failed to save institution. Please try again."
+    },
+    "pageMeta": {
+      "profile_dashboard_title": "React.js Profile Dashboard | TailAdmin - Next.js Admin Dashboard Template",
+      "profile_dashboard_description": "This is React.js Profile Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
+    },
+    "breadcrumb": {
+      "profile": "Profile"
+    },
+    "profile": {
+      "manage_your_account": "Manage Your Account"
+    },
+    "user_info": {
+      "institution_information": "Institution ssss",
+      "institution_name": "Institution Name",
+      "email": "Email",
+      "phone": "Phone",
+      "city": "City",
+      "full_address": "Full Address",
+      "province": "Province",
+      "not_available": "N/A",
+      "edit": "Edit",
+      "add_manager": "Add Manager",
+      "pharmacy": {
+        "type_of_pharmacy": "Type of Pharmacy",
+        "pharmacy_phone_number": "Pharmacy Phone Number",
+        "weekday_traffic_patients": "Weekday Traffic Patients",
+        "weekend_traffic_patients": "Weekend Traffic Patients",
+        "number_of_pharmacists": "Number of Pharmacists",
+        "number_of_assistants": "Number of Assistants",
+        "additional_information": "Additional Information"
+      }
+    }
   }
+
 }

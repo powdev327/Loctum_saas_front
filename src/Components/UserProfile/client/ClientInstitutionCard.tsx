@@ -5,8 +5,10 @@ import { useState } from "react";
 import { useClient } from "../../../context/owner/ClientContext.tsx";
 import { ClientInstitutionUpdate } from "../popups/client/ClientInstitutionUpdate.tsx";
 import {ClientAddManager} from "../popups/client/ClientAddManager.tsx";
+import { useTranslation } from "react-i18next";
 
 export default function ClientInstitutionCard({ institutions }) {
+    const { t } = useTranslation();
     const {
         isOpen: isEditModalOpen,
         openModal: openEditModal,
@@ -52,47 +54,62 @@ export default function ClientInstitutionCard({ institutions }) {
             return (
                 <div className="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     <div>
-                        <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Type of Pharmacy</p>
-                        <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {institution.pharmacy_fields.type_of_pharmacy || "N/A"}
-                        </p>
+                      <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                        {t("client_profile.user_info.pharmacy.type_of_pharmacy")}
+                      </p>
+                      <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                        {institution.pharmacy_fields.type_of_pharmacy || "N/A"}
+                      </p>
                     </div>
                     <div>
-                        <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Pharmacy Phone Number</p>
-                        <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {institution.pharmacy_fields.pharmacy_phone_number || "N/A"}
-                        </p>
+                      <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                        {t("client_profile.user_info.pharmacy.pharmacy_phone_number")}
+                      </p>
+                      <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                        {institution.pharmacy_fields.pharmacy_phone_number || "N/A"}
+                      </p>
                     </div>
                     <div>
-                        <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Weekday Traffic Patients</p>
-                        <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {institution.pharmacy_fields.weekday_traffic_patients ?? "N/A"}
-                        </p>
+                      <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                        {t("client_profile.user_info.pharmacy.weekday_traffic_patients")}
+                      </p>
+                      <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                        {institution.pharmacy_fields.weekday_traffic_patients ?? "N/A"}
+                      </p>
                     </div>
                     <div>
-                        <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Weekend Traffic Patients</p>
-                        <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {institution.pharmacy_fields.weekend_traffic_patients ?? "N/A"}
-                        </p>
+                      <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                        {t("client_profile.user_info.pharmacy.weekend_traffic_patients")}
+                      </p>
+                      <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                        {institution.pharmacy_fields.weekend_traffic_patients ?? "N/A"}
+                      </p>
                     </div>
                     <div>
-                        <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Number of Pharmacists</p>
-                        <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {institution.pharmacy_fields.number_of_pharmacists ?? "N/A"}
-                        </p>
+                      <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                        {t("client_profile.user_info.pharmacy.number_of_pharmacists")}
+                      </p>
+                      <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                        {institution.pharmacy_fields.number_of_pharmacists ?? "N/A"}
+                      </p>
                     </div>
                     <div>
-                        <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Number of Assistants</p>
-                        <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {institution.pharmacy_fields.number_of_assistants ?? "N/A"}
-                        </p>
+                      <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                        {t("client_profile.user_info.pharmacy.number_of_assistants")}
+                      </p>
+                      <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                        {institution.pharmacy_fields.number_of_assistants ?? "N/A"}
+                      </p>
                     </div>
                     <div>
-                        <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">Additional Information</p>
-                        <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                            {institution.pharmacy_fields.additional_information ?? "N/A"}
-                        </p>
+                      <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                        {t("client_profile.user_info.pharmacy.additional_information")}
+                      </p>
+                      <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                        {institution.pharmacy_fields.additional_information ?? "N/A"}
+                      </p>
                     </div>
+
                 </div>
             );
         } else if ((institution.institution_type === "DentalClinic" || institution.institution_type === "dental_clinic") && institution.dental_fields) {
