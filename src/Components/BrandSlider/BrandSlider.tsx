@@ -6,8 +6,10 @@ import SliderImg4 from "../../assets/images/brands/4.png";
 import SliderImg5 from "../../assets/images/brands/5.png";
 import SliderImg6 from "../../assets/images/brands/6.png";
 import ScrollAnimate from "../ScrollAnimate";
+import {useTranslation} from "react-i18next";
 
 const BrandSlider = ({ titleClass, sliderClass }) => {
+     const { t } = useTranslation();
   const brandImages = [
     SliderImg1,
     SliderImg2,
@@ -30,7 +32,7 @@ const BrandSlider = ({ titleClass, sliderClass }) => {
           <div className="col-md-12">
             <ScrollAnimate delay={200}>
               <div className={titleClass}>
-                <h2>Big & Small business trusted us</h2>
+                <h2>{t("home.brandSlider.title")}</h2>
               </div>
             </ScrollAnimate>
             <ScrollAnimate delay={200}>

@@ -9,8 +9,10 @@ import arrowRightSvg from "../../../assets/images/icons/arrow-right.svg";
 //import heroImg from "../../../assets/images/main-demo/hero-img.png";
 import heroImg from "../../../assets/images/main-demo/hands_shake.png";
 import ScrollAnimate from "../../../Components/ScrollAnimate";
+import { useTranslation } from "react-i18next";
 
 const HomeBanner = () => {
+    const { t } = useTranslation();
   return (
     <HomeBannerStyle className="hero-section">
       <div className="bg-shape">
@@ -31,10 +33,15 @@ const HomeBanner = () => {
               <div className="hero-content-text">
                 <ScrollAnimate>
                   <h1 className="uig-banner-title white-color">
-                    The Ultimate <span className="hero-badge">Locum</span>
+                    <span style={{ whiteSpace: "nowrap" }}>
+                      <span className="title-part-1">{t("home.banner.title1")}</span>{" "}
+                      <span className="hero-badge">{t("home.banner.titleBadge")}</span>
+                    </span>
                     <br />
-                    Staffing Solution
+                    <span className="title-part-2">{t("home.banner.title2")}</span>
                   </h1>
+
+
                 </ScrollAnimate>
 
                 <ScrollAnimate delay={200}>

@@ -1,0 +1,300 @@
+{
+  "home": {
+    "welcome": "Bienvenue sur Quicklocum",
+    "description": "La solution numéro 1 au Canada pour trouver des remplaçants médicaux.",
+    "problem": {
+      "title": "Le Problème de Dotation en Personnel Médical",
+      "description": "Les établissements de santé sont confrontés à des pénuries de personnel et à des besoins urgents de remplaçants.",
+      "points": [
+        "Les cliniques et hôpitaux font face à des absences imprévues",
+        "Des conflits de planning de dernière minute",
+        "Difficulté à trouver des remplaçants qualifiés disponibles"
+      ]
+    },
+    "banner": {
+      "title1": "Solution ultime",
+      "titleBadge": "Locum",
+      "title2": "en recrutement médical",
+      "description": "QuickLocum simplifie le recrutement médical en connectant rapidement et efficacement les professionnels de santé remplaçants avec les cliniques et hôpitaux.",
+      "cta": "Commencer Gratuitement",
+      "feature1": "Aucune carte bancaire requise",
+      "feature2": "Correspondance instantanée d'emploi"
+    },
+    "brandSlider": {
+      "title": "Les grandes et petites entreprises nous font confiance"
+    },
+    "testimonials": {
+      "sectionTitle": "Témoignages",
+      "sectionSubtitle1": "Nous ",
+      "sectionSubtitle2": "les retours",
+      "review1": "Je dois vous expliquer comment cette idée erronée de dénoncer le plaisir et de louer la douleur est née. Créez des scénarios d’automatisation sur vos propres serveurs. 😍",
+      "review2": "Nous l'utilisons comme texte de remplissage pour les mises en page. La non-lisibilité est importante, mais ceux qui ne savent pas poursuivre le plaisir de manière rationnelle peuvent en subir les conséquences ❤️ ❤️",
+      "review3": "C’est le premier vrai générateur 😍 sur Internet. Il utilise un dictionnaire de mots combiné avec des structures de phrases types 👏👏",
+      "review4": "Dénoncent avec indignation ceux qui sont séduits par les charmes du plaisir, aveuglés par le désir 🥰 🤜 🤛",
+      "review5": "Encore une fois, c’est le premier vrai générateur 😍 sur Internet. En combinant dictionnaire et structures de phrases 👏👏"
+
+    },
+
+    "faq": {
+      "title1": "Questions ",
+      "title2": "fréquemment",
+      "title3": " posées",
+      "subTitle1": "Questions ",
+      "subTitle2": "réponses",
+      "dontGetAnswer": "Pas de réponse ?",
+      "answerInTime": "Nous vous répondrons en moins de 2 heures !!",
+      "leaveMessage": "Laissez-nous un message",
+
+      "question1": "Qu'est-ce que QuickLocum ?",
+      "answer1": "QuickLocum est une plateforme innovante qui met en relation les professionnels de la santé avec les institutions de santé ayant besoin de personnel temporaire. Elle permet aux propriétaires/gestionnaires de cliniques, de pharmacies et d'hôpitaux de pourvoir rapidement des postes vacants tout en offrant aux professionnels de la santé des opportunités de travail flexibles.",
+
+      "question2": "Comment les propriétaires/gestionnaires peuvent-ils embaucher un professionnel de santé via QuickLocum ?",
+      "answer2": "Les propriétaires/gestionnaires peuvent publier un poste ou une vacance sur QuickLocum, parcourir les professionnels de santé vérifiés et les réserver instantanément en fonction de leur disponibilité et de leurs qualifications. Notre plateforme garantit un processus de recrutement fluide avec une planification et une communication automatisées.",
+
+      "question3": "Comment les professionnels de santé trouvent-ils des opportunités d'emploi sur QuickLocum ?",
+      "answer3": "Les professionnels de santé peuvent créer un profil, définir leur disponibilité et parcourir les annonces d'emplois des institutions de santé. Ils peuvent postuler ou accepter des missions correspondant à leur expertise, leur localisation et leurs préférences de planning.",
+
+      "question4": "QuickLocum est-il gratuit à utiliser ?",
+      "answer4": "L'inscription sur QuickLocum est gratuite pour les professionnels de santé ainsi que pour les propriétaires/gestionnaires. Cependant, des frais de service peuvent s'appliquer lors de la réservation de missions ou du traitement des paiements. Les prix détaillés sont disponibles sur la plateforme.",
+
+      "question5": "Comment les paiements sont-ils gérés pour les professionnels de santé ?",
+      "answer5": "Les paiements sont traités de manière sécurisée via QuickLocum. Une fois qu'un professionnel de santé a terminé une mission, le propriétaire/gestionnaire approuve le travail, et les paiements sont automatiquement traités en fonction du tarif convenu. Les professionnels de santé peuvent suivre leurs gains directement dans leur compte.",
+
+      "question6": "Comment QuickLocum garantit-il la qualité des professionnels de santé ?",
+      "answer6": "Tous les professionnels de santé sur QuickLocum suivent un processus de vérification, qui inclut des contrôles de crédentialité, la validation des licences et un examen du parcours professionnel. Cela garantit que les propriétaires/gestionnaires embauchent des professionnels qualifiés et fiables.",
+
+      "question7": "Les professionnels de santé peuvent-ils fixer leurs propres tarifs ?",
+      "answer7": "Les professionnels de santé peuvent définir leur disponibilité et consulter les annonces d'emplois avec des tarifs préétablis. Dans certains cas, ils peuvent avoir la possibilité de négocier les tarifs avec l'institution embauchante en fonction de la demande et de leur expérience.",
+
+      "question8": "Les propriétaires/gestionnaires peuvent-ils programmer des missions récurrentes ?",
+      "answer8": "Oui, les propriétaires/gestionnaires peuvent planifier plusieurs missions à l'avance, créer des annonces récurrentes et automatiser l'affectation des missions pour garantir un personnel constant dans leur établissement de santé.",
+
+      "question9": "Que se passe-t-il si un professionnel de santé annule une mission réservée ?",
+      "answer9": "Si un professionnel de santé annule une mission, QuickLocum avertit immédiatement le propriétaire/gestionnaire et propose des candidats de remplacement en fonction de leur disponibilité. Nous avons également des politiques d'annulation en place pour maintenir la fiabilité et la confiance.",
+
+      "question10": "Comment puis-je obtenir de l'aide si j'ai un problème ?",
+      "answer10": "QuickLocum offre un support client 24/7 via chat, email et téléphone pour aider les propriétaires/gestionnaires ainsi que les professionnels de santé avec toute question liée aux réservations, paiements ou à l'utilisation de la plateforme."
+
+    },
+    "footer": {
+      "description": "QuickLocum est une plateforme dédiée à la gestion et à la mise en relation des professionnels de santé avec des opportunités de remplacement, aidant votre organisation de santé à se développer rapidement et efficacement",
+      "rights": "Tous droits réservés.",
+      "terms": "Conditions générales",
+      "cookies": "Cookies",
+      "privacy": "Politique de confidentialité"
+    },
+    "footerMenu": {
+      "coreFeatures": "Fonctionnalités principales 🔥",
+      "locumServices": "Services de remplacement",
+      "browseJobs": "Voir les offres d’emploi",
+      "manageProfiles": "Gérer les profils",
+      "scheduleAvailability": "Planifier la disponibilité",
+      "clientTools": "Outils pour les clients",
+      "findLocums": "Trouver des remplaçants",
+      "manageContracts": "Gérer les contrats",
+      "generateInvoices": "Générer des factures",
+      "supportServices": "Assistance & Services ❇️",
+      "helpCenter": "Centre d’aide",
+      "knowledgeBase": "Base de connaissances",
+      "faq": "FAQ",
+      "clientSuccess": "Témoignages de clients",
+      "billing": "Facturation 💳",
+      "processPayments": "Traiter les paiements",
+      "trackInvoices": "Suivre les factures",
+      "managePayroll": "Gérer la paie",
+      "about": "À propos de Quicklocum 💎",
+      "whoWeAre": "Qui sommes-nous",
+      "ourMission": "Notre mission",
+      "contact": "Contactez Quicklocum",
+      "joinTeam": "Rejoignez notre équipe",
+      "hiring": "Recrutement",
+      "whyUs": "Pourquoi nous choisir ? 🌟",
+      "testimonials": "Ce que disent nos clients",
+      "successStories": "Nos réussites"
+    },
+    "actions": {
+      "goToMessage": "Laissez-nous un message",
+      "rotateIconBtn": "Envoyez-nous un message"
+    }
+
+  ,
+    "homeMarketingSection": {
+      "section1": {
+        "subtitle": "Recrutement Efficace de Remplaçants",
+        "titleLine1": "Recrutement Sans Effort,",
+        "titleLine2": {
+          "part1": "Fiable",
+          "badge": "Personnel Médical"
+        },
+        "description": "QuickLocum connecte les pharmacies, les cliniques et les hôpitaux avec des professionnels qualifiés en remplacement en temps réel. En rationalisant le processus de recrutement, les prestataires de soins réduisent la charge administrative, évitent les pénuries de personnel et assurent une prise en charge continue des patients.",
+        "feature1": "Réservation instantanée avec des professionnels vérifiés",
+        "feature2": "Planification automatisée et optimisation de la main-d'œuvre"
+      },
+      "section2": {
+        "subtitle": "Gestion de la Main-d'Œuvre & Paie",
+        "title": "Simplifiez la Planification des Shifts et le Traitement des Paiements",
+        "description": "QuickLocum permet aux prestataires de soins de gérer les shifts, suivre la disponibilité des remplaçants et automatiser les paiements. Cela réduit la complexité du recrutement temporaire, permettant aux prestataires de se concentrer sur les soins sans stress de dernière minute.",
+        "learnMore": "En savoir plus",
+        "successRateLabel": "Réduction du temps de recrutement",
+        "staffingSuccessRate": "Taux de réussite du recrutement"
+      }
+    },
+
+    "homeFeatures": {
+      "title": "Obtenez des avantages incroyables",
+      "subtitle": "Fonctionnalités",
+      "feature1": {
+        "title": "Appariement intelligent par IA",
+        "text": "Connectez les meilleurs professionnels de santé avec les établissements médicaux leaders. La précision de l’IA garantit l’adéquation parfaite entre compétences, besoins et disponibilités — instantanément."
+      },
+      "feature2": {
+        "title": "Marketplace fluide",
+        "text": "Achetez et vendez des cliniques, hôpitaux et entreprises de santé facilement. Les analyses IA vous aident à conclure les meilleures affaires rapidement et stratégiquement."
+      },
+      "feature3": {
+        "title": "Programme de croissance & d’affiliation",
+        "text": "Développez votre activité santé avec un accompagnement expert. Acquérez, affiliez ou lancez de nouveaux projets facilement tout en assurant leur succès à long terme."
+      }
+    },
+    "homeUsabilitySlider": {
+      "easy_to_use": "Facile à utiliser",
+      "collaborative": "Collaboratif",
+      "activity_stream": "Flux d'activités",
+      "superb_usability": "Nous l'avons rendu superbe & utilisable"
+    },
+    "solution": {
+      "title": "Quicklocum : La Solution Intelligente",
+      "description": "Connectez-vous instantanément avec des médecins et infirmiers remplaçants vérifiés.",
+      "points": [
+        "Appariement basé sur l'IA pour trouver le bon remplaçant instantanément",
+        "Réservation instantanée et disponibilité en temps réel",
+        "Remplaçants vérifiés et accrédités à travers le Canada"
+      ]
+    },
+    "howItWorks": {
+      "title": "Comment Quicklocum Fonctionne",
+      "steps": [
+        {
+          "title": "Publier un Poste",
+          "description": "Publiez des postes ouverts et des besoins urgents en quelques secondes."
+        },
+        {
+          "title": "Trouver le Meilleur Remplaçant",
+          "description": "Notre IA trouve des remplaçants disponibles instantanément."
+        },
+        {
+          "title": "Confirmer et Travailler",
+          "description": "Confirmez les réservations instantanément et suivez les horaires facilement."
+        }
+      ]
+    },
+
+    "statistics": {
+      "title": "Quicklocum en Chiffres",
+      "items": [
+        {
+          "number": "500+",
+          "label": "Remplaçants Vérifiés"
+        },
+        {
+          "number": "10 000+",
+          "label": "Postes Pourvus"
+        },
+        {
+          "number": "95%",
+          "label": "Taux de Satisfaction"
+        }
+      ]
+    },
+    "cta": {
+      "title": "Trouvez Votre Remplaçant Idéal Maintenant",
+      "description": "Connectez-vous instantanément avec des remplaçants vérifiés et comblez vos postes sans effort."
+    }
+  },
+  "login": {
+    "title": "Connexion",
+    "email": "Email",
+    "password": "Mot de passe",
+    "submit": "Se connecter",
+    "loggingIn": "Connexion en cours...",
+    "selectUserType": "Veuillez sélectionner votre type d'utilisateur",
+    "locum": "Locum",
+    "client": "Client",
+    "admin": "Administrateur",
+    "back": "Retour",
+    "ownerManager": "Propriétaire/Manager",
+    "forgotPassword": "Mot de passe oublié?"
+  },
+  "signup": {
+    "title": "Inscription",
+    "name": "Nom complet",
+    "institutionName": "Nom de l'établissement",
+    "email": "Email",
+    "password": "Mot de passe",
+    "submit": "S'inscrire",
+    "creatingAccount": "Création du compte...",
+    "fieldQuestion": "Dans quel domaine travaillez-vous ou gérez-vous votre établissement?",
+    "selectField": "Sélectionnez votre domaine",
+    "pharmacy": "Pharmacie",
+    "dentalCare": "Soins dentaires",
+    "industry": "Industrie",
+    "businessSector": "Secteur d'activité",
+    "selectBusinessSector": "Sélectionnez un secteur",
+    "public": "Public",
+    "private": "Privé",
+    "publicInstitutionType": "Type d'établissement public",
+    "privateInstitutionType": "Type d'établissement privé",
+    "selectPrivateType": "Sélectionnez un type d'établissement privé",
+    "clinic": "Clinique",
+    "agency": "Agence",
+    "cabinet": "Cabinet",
+    "locum": "Remplaçant",
+    "client": "Client",
+    "completeRecaptcha": "Veuillez compléter la vérification reCAPTCHA.",
+    "signupFailed": "Échec de l'inscription. Veuillez réessayer.",
+    "return": "Retour",
+    "subtitle": "Rejoignez notre réseau professionnel de santé et maîtrisez votre carrière.",
+    "otpVerification": "Vérification OTP",
+    "otpSentTo": "Nous avons envoyé un code OTP à",
+    "enterOtp": "Entrez OTP",
+    "verifyOtp": "Vérifier OTP",
+    "verifyingOtp": "Vérification OTP...",
+    "didntReceiveOtp": "Vous n'avez pas reçu de code OTP ?",
+    "resendOtp": "Renvoyer OTP",
+    "resendingOtp": "Renvoi de l'OTP...",
+    "otpVerifiedSuccess": "Compte vérifié avec succès ! Redirection vers la connexion...",
+    "otpInvalid": "OTP invalide. Veuillez réessayer."
+  },
+  "header": {
+    "home": "Accueil",
+    "login": "Connexion",
+    "signup": "Inscription",
+    "features": "Fonctionnalités",
+    "pricing": "Tarifs",
+    "contact": "Contact"
+  },
+  "footer": {
+    "text": "© 2023 Quicklocum. Tous droits réservés."
+  },
+  "forgotPassword": {
+    "title": "Mot de Passe Oublié",
+    "emailLabel": "Adresse e-mail",
+    "sendLink": "Envoyer le lien de réinitialisation",
+    "sending": "Envoi...",
+    "success": "Vérifiez votre e-mail pour le lien de réinitialisation du mot de passe.",
+    "error": "Échec de la réinitialisation du mot de passe.",
+    "resendLink": "Vous n'avez pas reçu l'e-mail ? Cliquez ici pour le renvoyer."
+  },
+  "resetPassword": {
+    "title": "Réinitialisez votre mot de passe",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "submit": "Réinitialiser le mot de passe",
+    "error": "Une erreur est survenue. Veuillez réessayer.",
+    "minLength": "Le mot de passe doit comporter au moins 8 caractères.",
+    "noMatch": "Les mots de passe ne correspondent pas.",
+    "successTitle": "Réinitialisation du mot de passe réussie",
+    "successMessage": "Votre mot de passe a été mis à jour avec succès.",
+    "ok": "Continuer vers la connexion"
+  }
+}

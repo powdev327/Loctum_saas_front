@@ -56,6 +56,69 @@ const v2Styles = css`
     background-color: ${({ theme }) => theme.colors.whiteColor};
     box-shadow: 0px 10px 15px ${({ theme }) => theme.colors.blackColor}14;
   }
+  .language-switcher {
+    position: relative;
+  }
+
+  .language-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: transparent; /* transparent background for the toggle */
+    border: 1px solid ${({ theme }) => theme.colors.blackColor}19;
+    border-radius: 40px;
+    color: ${({ theme }) => theme.colors.title};
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: 0.3s ease;
+  }
+
+  .language-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* slight hover effect */
+  }
+
+  .language-switcher .dropdown-menu {
+    position: absolute;
+    top: 100%; /* Ensures it appears below the button */
+    right: 0;
+    width: 130px;
+    background: ${({ theme }) => theme.colors.background}; /* Match background with header */
+    border: 1px solid ${({ theme }) => theme.colors.border};
+    border-radius: 12px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+    z-index: 9999; /* Ensures it's above other elements */
+    display: none; /* Hidden by default */
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .language-switcher .dropdown-menu.active {
+    display: block; /* Makes it visible when active */
+    opacity: 1;
+    transform: translateY(0); /* Smooth dropdown animation */
+  }
+
+  .language-switcher .dropdown-menu button {
+    width: 100%;
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    text-align: left;
+    color: ${({ theme }) => theme.colors.title};
+    font-weight: 500;
+    transition: background 0.3s ease;
+    cursor: pointer;
+  }
+
+  .language-switcher .dropdown-menu button:hover {
+    background: ${({ theme }) => theme.colors.hoverBackground};
+  }
+
+  .language-switcher .dropdown-menu button:first-child {
+    border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  }
 `;
 
 const HeaderStyleWrapper = styled.header`
@@ -65,6 +128,69 @@ const HeaderStyleWrapper = styled.header`
   left: 0;
   width: 100%;
   padding: 15px 0;
+  .language-switcher {
+    position: relative;
+  }
+
+  .language-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: transparent; /* transparent background for the toggle */
+    border: 1px solid ${({ theme }) => theme.colors.blackColor}19;
+    border-radius: 40px;
+    color: ${({ theme }) => theme.colors.title};
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: 0.3s ease;
+  }
+
+  .language-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* slight hover effect */
+  }
+
+  .language-switcher .dropdown-menu {
+    position: absolute;
+    top: 100%; /* Ensures it appears below the button */
+    right: 0;
+    width: 130px;
+    background: ${({ theme }) => theme.colors.background}; /* Match background with header */
+    border: 1px solid ${({ theme }) => theme.colors.border};
+    border-radius: 12px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+    z-index: 9999; /* Ensures it's above other elements */
+    display: none; /* Hidden by default */
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .language-switcher .dropdown-menu.active {
+    display: block; /* Makes it visible when active */
+    opacity: 1;
+    transform: translateY(0); /* Smooth dropdown animation */
+  }
+
+  .language-switcher .dropdown-menu button {
+    width: 100%;
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    text-align: left;
+    color: ${({ theme }) => theme.colors.title};
+    font-weight: 500;
+    transition: background 0.3s ease;
+    cursor: pointer;
+  }
+
+  .language-switcher .dropdown-menu button:hover {
+    background: ${({ theme }) => theme.colors.hoverBackground};
+  }
+
+  .language-switcher .dropdown-menu button:first-child {
+    border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  }
 
   .logo-dark {
     display: none;

@@ -5,6 +5,8 @@ import Data from "../../assets/data/header/headerHomeMenu";
 import MegaMenu from "./MegaMenu";
 import LanguageDropdown from "./dropdown/LanguageDropdown";
 import MobileMenu from "./mobileMenu/MobileMenu";
+import LanguageSwitcher from "../../Components/LanguageSwitcher.jsx";
+import {useTranslation} from "react-i18next";
 
 //logo images
 //import LogoImg1 from "../../assets/images/logo/logo.svg";
@@ -31,7 +33,7 @@ const Header = ({ variant, ...props }) => {
   // handle mobile menu
   const [isMobileMenu, setIsMobileMenu] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-
+  const { t, i18n } = useTranslation();
   const handleMobileMenu = () => {
     const bodySection = document.body;
 
@@ -335,11 +337,16 @@ const Header = ({ variant, ...props }) => {
                         variant != "newsletter" &&
                         variant != "portfolio" &&
                         variant != "finance" && (
-                          <li>
-                            <NavLink to="/sign-in" className={`${variant}`}>
-                              Sign in
-                            </NavLink>
-                          </li>
+                          <>
+                              <li className="language-switcher">
+                                <LanguageSwitcher />
+                              </li>
+                              <li>
+                                <NavLink to="/sign-in" className={variant}>
+                                  Sign in
+                                </NavLink>
+                              </li>
+                          </>
                         )}
 
                       {variant === "v1" && (
