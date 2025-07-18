@@ -782,3 +782,20 @@ span.flatpickr-weekday,
 .simplebar-scrollbar.simplebar-visible:before {
     @apply opacity-100;
 }
+.dropdown-menu {
+  display: none;           /* Hide by default */
+  position: absolute;      /* Make it float */
+  top: 100%;               /* Just below the button */
+  left: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgb(0 0 0 / 0.1);
+  z-index: 50;             /* On top of other content */
+  min-width: 150px;
+  padding: 0.25rem 0;
+}
+
+.dropdown-menu.active {
+  display: block;          /* Show when active */
+}
