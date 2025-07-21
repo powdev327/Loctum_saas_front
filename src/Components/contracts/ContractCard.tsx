@@ -6,36 +6,73 @@ import { VerticalDotIcon } from "../../icons"
 import { DropdownItem } from "../ui/dropdown/DropdownItem.tsx"
 import { Dropdown } from "../ui/dropdown/Dropdown.tsx"
 
+interface PlacementContractFields {
+    remuneration?: string
+    benefits?: string[]
+    speciality?: string
+    urgent_need?: boolean
+    bonuses?: boolean
+    fees?: string[]
+    parking_available?: boolean
+    languages_required?: string[]
+    software_required?: string[]
+    required_experience?: string
+}
+
+interface ReplacementContractFields {
+    mission_type: string
+    working_hours?: string
+    pause_included?: boolean
+    proposed_hourly_rate?: string
+}
+
+interface AffiliationContractFields {
+    name_establishment?: string
+    percentage_generated?: string
+    percentage_payment_conditions?: string
+    software_required?: string[]
+    languages_required?: string[]
+    benefits?: string[]
+    duration_commitment?: string
+    objectives_or_quotas?: string
+}
+
 interface ContractCardProps {
-    id: number | string
-    name: string
+    contract_id: string
+    client_id?: string
+    institution_id?: string
+    contract_type: string
+    industry_type: string
+    status: string
     position_title: string
     description: string
-    contract_type: string
-    status: string
-    hourly_rate: number
     start_date: string
-    specific_contract_fields: any
-    specific_industry_fields: any
-    industry_type?: string
-    handleDeleteClick: (id: number | string, name: string) => void
+    end_date?: string
+    hourly_rate?: number
+    placement_fields?: PlacementContractFields
+    replacement_fields?: ReplacementContractFields
+    affiliation_fields?: AffiliationContractFields
+    handleDeleteClick: (id: string, name: string) => void
     onReadClick: () => void
     onDuplicateClick: () => void
     onUpdateClick: () => void
 }
 
 const ContractCard: React.FC<ContractCardProps> = ({
-                                                       id,
-                                                       name,
+                                                       contract_id,
+                                                       client_id,
+                                                       institution_id,
+                                                       contract_type,
+                                                       industry_type,
+                                                       status,
                                                        position_title,
                                                        description,
-                                                       contract_type,
-                                                       status,
-                                                       hourly_rate,
                                                        start_date,
-                                                       specific_contract_fields,
-                                                       specific_industry_fields,
-                                                       industry_type,
+                                                       end_date,
+                                                       hourly_rate,
+                                                       placement_fields,
+                                                       replacement_fields,
+                                                       affiliation_fields,
                                                        handleDeleteClick,
                                                        onReadClick,
                                                        onDuplicateClick,
@@ -46,29 +83,19 @@ const ContractCard: React.FC<ContractCardProps> = ({
     const toggleDropdown = () => setIsOpen(!isOpen)
     const closeDropdown = () => setIsOpen(false)
 
-    const workHours = () => {
-        if (!specific_industry_fields) return "N/A"
-        if (industry_type === "dental_clinic" && specific_industry_fields.work_hours) {
-            return specific_industry_fields.work_hours.length > 0 ? specific_industry_fields.work_hours.join(", ") : "N/A"
-        }
-        if (industry_type === "pharmacy" && specific_industry_fields.daily_work_hours) {
-            return specific_industry_fields.daily_work_hours.length > 0
-                ? specific_industry_fields.daily_work_hours.join(", ")
-                : "N/A"
-        }
-        return "N/A"
-    }
-
-    const experienceLevel =
-        contract_type.toUpperCase() === "PLACEMENT" && specific_contract_fields?.experience_level
-            ? specific_contract_fields.experience_level.replaceAll("_", " ")
-            : "N/A"
-
     const formattedStartDate = new Date(start_date).toLocaleDateString("en-US", {
         year: "numeric",
         month: "short",
         day: "numeric",
     })
+
+    const formattedEndDate = end_date
+        ? new Date(end_date).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+        })
+        : "N/A"
 
     const getStatusColor = () => {
         switch (status.toLowerCase()) {
@@ -83,8 +110,83 @@ const ContractCard: React.FC<ContractCardProps> = ({
         }
     }
 
-    const isAffiliation = contract_type.toLowerCase() === "affiliation"
-    const isPlacement = contract_type.toLowerCase() === "placement"
+    const renderSpecificFields = () => {
+        switch (contract_type.toLowerCase()) {
+            case "placement":
+                return (
+                    <>
+                        <div className="p-3 rounded border border-gray-100 dark:border-gray-800">
+                            <span className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 block mb-1">
+                                Experience
+                            </span>
+                            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 capitalize">
+                                {placement_fields?.required_experience?.replaceAll("_", " ") || "N/A"}
+                            </span>
+                        </div>
+                        <div className="p-3 rounded border border-gray-100 dark:border-gray-800">
+                            <span className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 block mb-1">
+                                Speciality
+                            </span>
+                            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                {placement_fields?.speciality || "N/A"}
+                            </span>
+                        </div>
+                        <div className="p-3 rounded border border-gray-100 dark:border-gray-800">
+                            <span className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 block mb-1">
+                                Languages
+                            </span>
+                            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                {placement_fields?.languages_required?.join(", ") || "N/A"}
+                            </span>
+                        </div>
+                    </>
+                )
+            case "replacement":
+                return (
+                    <>
+                        <div className="p-3 rounded border border-gray-100 dark:border-gray-800">
+                            <span className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 block mb-1">
+                                Mission Type
+                            </span>
+                            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                {replacement_fields?.mission_type || "N/A"}
+                            </span>
+                        </div>
+                        <div className="p-3 rounded border border-gray-100 dark:border-gray-800">
+                            <span className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 block mb-1">
+                                Working Hours
+                            </span>
+                            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                {replacement_fields?.working_hours || "N/A"}
+                            </span>
+                        </div>
+                    </>
+                )
+            case "affiliation":
+                return (
+                    <>
+                        <div className="p-3 rounded border border-gray-100 dark:border-gray-800">
+                            <span className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 block mb-1">
+                                Establishment
+                            </span>
+                            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                {affiliation_fields?.name_establishment || "N/A"}
+                            </span>
+                        </div>
+                        <div className="p-3 rounded border border-gray-100 dark:border-gray-800">
+                            <span className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 block mb-1">
+                                Percentage Generated
+                            </span>
+                            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                {affiliation_fields?.percentage_generated || "N/A"}
+                            </span>
+                        </div>
+                    </>
+                )
+            default:
+                return null
+        }
+    }
 
     return (
         <div className="group relative overflow-hidden rounded-lg border border-gray-200 bg-white transition-all duration-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-900">
@@ -94,12 +196,12 @@ const ContractCard: React.FC<ContractCardProps> = ({
                 <div className="flex items-start justify-between mb-4">
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-3">
-              <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                {status.charAt(0).toUpperCase() + status.slice(1)}
-              </span>
+                            <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                                {status.charAt(0).toUpperCase() + status.slice(1)}
+                            </span>
                             <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium border border-gray-200 text-gray-600 dark:border-gray-700 dark:text-gray-400">
-                {contract_type}
-              </span>
+                                {contract_type}
+                            </span>
                         </div>
 
                         <h3
@@ -108,6 +210,7 @@ const ContractCard: React.FC<ContractCardProps> = ({
                         >
                             {position_title}
                         </h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 truncate">{description}</p>
                     </div>
 
                     <div className="ml-4 flex-shrink-0">
@@ -122,7 +225,7 @@ const ContractCard: React.FC<ContractCardProps> = ({
                             <Dropdown
                                 isOpen={isOpen}
                                 onClose={closeDropdown}
-                                className="w-40 p-2 shadow-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-lg"
+                                class Name="w-40 p-2 shadow-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-lg"
                             >
                                 <DropdownItem
                                     onItemClick={() => {
@@ -150,7 +253,7 @@ const ContractCard: React.FC<ContractCardProps> = ({
                                 </DropdownItem>
                                 <DropdownItem
                                     onClick={() => {
-                                        handleDeleteClick(id, name)
+                                        handleDeleteClick(contract_id, position_title)
                                         closeDropdown()
                                     }}
                                     className="text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
@@ -164,38 +267,33 @@ const ContractCard: React.FC<ContractCardProps> = ({
 
                 <div className="grid grid-cols-2 gap-4">
                     <div className="p-3 rounded border border-gray-100 dark:border-gray-800">
-            <span className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 block mb-1">
-              {isPlacement ? "Rate" : "Hourly Rate"}
-            </span>
-                        <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">${hourly_rate || "N/A"}</span>
+                        <span className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 block mb-1">
+                            Hourly Rate
+                        </span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                            ${hourly_rate || "N/A"}
+                        </span>
                     </div>
 
                     <div className="p-3 rounded border border-gray-100 dark:border-gray-800">
-            <span className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 block mb-1">
-              Start Date
-            </span>
-                        <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">{formattedStartDate}</span>
+                        <span className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 block mb-1">
+                            Start Date
+                        </span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                            {formattedStartDate}
+                        </span>
                     </div>
 
-                    {!isAffiliation && (
-                        <div className="p-3 rounded border border-gray-100 dark:border-gray-800">
-              <span className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 block mb-1">
-                Work Hours
-              </span>
-                            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">{workHours()}</span>
-                        </div>
-                    )}
+                    <div className="p-3 rounded border border-gray-100 dark:border-gray-800">
+                        <span className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 block mb-1">
+                            End Date
+                        </span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                            {formattedEndDate}
+                        </span>
+                    </div>
 
-                    {isPlacement && (
-                        <div className="p-3 rounded border border-gray-100 dark:border-gray-800">
-              <span className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 block mb-1">
-                Experience
-              </span>
-                            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 capitalize">
-                {experienceLevel}
-              </span>
-                        </div>
-                    )}
+                    {renderSpecificFields()}
                 </div>
             </div>
         </div>

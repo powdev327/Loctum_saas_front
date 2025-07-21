@@ -1,364 +1,228 @@
 import { useState } from "react";
 
+// Enums
 type ContractType = "PLACEMENT" | "AFFILIATION" | "REMPLACEMENT";
-type IndustryType = "Dental" | "Pharmacy";
-type ContractStatus = "pending" | "active" | "completed" | "cancelled";
+type IndustryType = "DentalClinic" | "Pharmacy";
+type ContractStatus = "PENDING" | "ACTIVE" | "COMPLETED" | "CANCELLED";
+type ReplacementMissionType = "GENERAL" | "SPECIALIZED";
 
-type PlacementContract = {
-    desired_position:
-    | "General_dentist"
-    | "Specialist_dentist"
-    | "Dental_hygienist"
-    | "Dental_assistant"
-    | "Dental_receptionist";
-    specialties?: Array<"Orthodontics" | "Endodontics" | "Periodontics" | "Surgery" | "Other">;
-    contract_location: string;
+// Interface matching the DTO
+interface ContractDTO {
+    // Core Contract fields
+    contract_id?: string;
+    institution_id: string;
+    contract_type: ContractType;
+    industry_type: IndustryType;
     start_date: string;
-    experience_level:
-    | "Less_than_1_year"
-    | "1-3_years"
-    | "3-5_years"
-    | "5-10_years"
-    | "More_than_10_years"
-    | "Does_not_matter";
-    compensation: "Hourly_rate" | "Fixed_salary" | "Percentage_of_production" | "Other";
-    other_compensation?: string;
-    benefits: Array<"In_kind" | "In_cash">;
-    task_description: string;
+    end_date: string;
+    description: string;
+    position_title: string;
+    contract_location: string;
+    status: ContractStatus;
+    created_at?: string;
+    detailed_tasks?: string;
+    additional_information?: string;
+    documents_joint?: string;
+
+    // Placement Contract fields
+    remuneration?: string;
+    placement_benefits?: string[];
+    speciality?: string;
     urgent_need?: boolean;
-    bonus_or_incentives?: boolean;
-    fees?: string;
-    parking?: string;
-    languages?: string[];
-    softwares?: string[];
-    additional_information?: string;
-    attached_documents: File[];
-};
-
-type AffiliationContract = {
-    establishment_name: string;
-    position_sought: string;
-    specialties: string[];
-    affiliation_location: string;
-    revenue_percentage: string;
-    payment_conditions: string;
-    software_used: string;
-    required_languages: string;
-    advantages: string;
-    engagement_duration: string;
-    objectives_or_quotas: string;
-    attached_documents: File[];
-    specific_clauses: string;
-};
-
-type RemplacementContract = {
-    mission_type: string;
-    required_specialty: string;
-    mission_objective: string;
-    estimated_duration: string;
-    preferred_date: string;
-    proposed_rate: string;
-    equipment_or_operating_room?: string;
-    attached_documents: File[];
-};
-
-type DailyWorkHours = { [date: string]: string };
-
-type PharmacyIndustryFields = {
-    daily_work_hours: string[];
-    break_included: boolean;
-    break_duration?: number;
-    bonus_or_additional_compensation: boolean;
-    software?: string[];
-    per_day_work_hours: DailyWorkHours;
-    mission_general?: boolean;
-    mission_special?: boolean;
-    position_type?: string;
-    working_hours?: string;
-    working_hours_start?: string; // Start time for working hours
-    working_hours_end?: string;   // End time for working hours
+    placement_bonuses?: boolean;
+    fees?: any[];
+    parking_available?: boolean;
+    placement_languages_required?: string[];
+    placement_software_required?: string[];
     required_experience?: string;
-    bonuses?: boolean;
-    software_required?: string[];
-    detailed_tasks?: string;
-    additional_information?: string;
-    // Mission spécialisée fields (for consistency with DentalIndustryFields)
-    specialized_mission_type?: string;  // Type de mission
-    required_specialty?: string;        // Spécialité requise
-    mission_objective?: string;         // Objectif de la mission
-    estimated_duration?: string;        // Durée estimée
-    proposed_rate?: string;             // Taux proposé
-    equipment_required?: boolean;       // Equipement nécessaire (Oui/Non)
-    equipment_description?: string;     // Description de l'équipement
-    documents_required?: boolean;       // Documents requis (Oui/Non)
-};
 
-type DentalIndustryFields = {
-    work_hours: string[];
-    break_included?: boolean;
-    break_duration?: number;
-    bonus_or_premium?: boolean;
-    software?: string[];
-    per_day_work_hours: DailyWorkHours;
-    mission_general?: boolean;
-    mission_special?: boolean;
-    position_type?: string;
-    software_required?: string[];
-    required_experience?: string;
+    // Affiliation Contract fields
+    name_establishment?: string;
+    percentage_generated?: string;
+    percentage_payment_conditions?: string;
+    affiliation_software_required?: string[];
+    affiliation_languages_required?: string[];
+    benefits?: string[];
+    duration_commitment?: string;
+    objectives_or_quotas?: string;
+
+    // Replacement Contract fields
+    mission_type?: ReplacementMissionType;
     working_hours?: string;
-    working_hours_start?: string; // Start time for working hours
-    working_hours_end?: string;   // End time for working hours
-    bonuses?: boolean;
-    specialties?: string[];
-    detailed_tasks?: string;
-    additional_information?: string;
-    // Mission spécialisée fields
-    specialized_mission_type?: string;  // Type de mission (chirurgicale, evaluation_complexe, etc.)
-    required_specialty?: string;        // Spécialité requise
-    mission_objective?: string;         // Objectif de la mission / acte requis
-    estimated_duration?: string;        // Durée estimée
-    proposed_rate?: string;             // Taux proposé
-    equipment_required?: boolean;       // Matériel / Salle (Oui/Non)
-    equipment_description?: string;     // Description du matériel / salle
-    documents_required?: boolean;       // Documents requis / Consentement (Oui/Non)
-};
+    pause_included?: boolean;
+    proposed_hourly_rate?: string;
 
-const useContractForm = (initialContract: any = null) => {
-    const [contract_type, setContractType] = useState<ContractType | string>(
-        initialContract?.contract_type?.toLowerCase() || ""
-    );
-    // Normalize industry type from initial contract
-    const normalizeIndustryType = (type: string | undefined): string => {
-        if (!type) return "";
+    // Replacement General Mission fields
+    general_mission_bonuses?: boolean;
+    general_mission_fees?: any[];
+    general_mission_parking?: boolean;
+    general_mission_languages?: string[];
+    general_mission_software?: string[];
 
-        // Convert to lowercase for case-insensitive comparison
-        const lowercaseType = type.toLowerCase();
+    // Replacement Specialized Mission fields
+    mission_type_label?: string;
+    required_specialty?: string;
+    mission_objective?: string;
+    desired_date?: string;
+    estimated_duration?: string;
+    proposed_rate?: string;
+    material_room_required?: boolean;
+    material_room_description?: string;
+}
 
-        // Normalize dental clinic variations
-        if (lowercaseType === "dentalclinic" || lowercaseType === "dental_clinic" || lowercaseType === "dental clinic") {
-            return "dental_clinic";
-        }
+// Form state interface
+interface ContractFormState extends Omit<ContractDTO, 'start_date' | 'end_date' | 'desired_date'> {
+    start_date: Date | null;
+    end_date: Date | null;
+    desired_date?: Date | null;
+    daily_hours?: Record<string, { enabled: boolean; start_time: string; end_time: string }>;
+    attached_documents?: File[];
+}
 
-        // Normalize pharmacy variations
-        if (lowercaseType === "pharmacy") {
-            return "pharmacy";
-        }
+const useContractForm = (initialContract: Partial<ContractDTO> | null = null) => {
+    // Parse initial dates from ISO strings to Date objects
+    const parseDate = (dateString?: string) => dateString ? new Date(dateString) : null;
 
-        return type;
-    };
+    // Initialize form state
+    const [formState, setFormState] = useState<ContractFormState>({
+        contract_id: initialContract?.contract_id,
+        institution_id: initialContract?.institution_id || "",
+        contract_type: initialContract?.contract_type || "PLACEMENT",
+        industry_type: initialContract?.industry_type || "Pharmacy",
+        start_date: parseDate(initialContract?.start_date),
+        end_date: parseDate(initialContract?.end_date),
+        description: initialContract?.description || "",
+        position_title: initialContract?.position_title || "",
+        contract_location: initialContract?.contract_location || "",
+        status: initialContract?.status || "PENDING",
+        detailed_tasks: initialContract?.detailed_tasks,
+        additional_information: initialContract?.additional_information,
+        documents_joint: initialContract?.documents_joint,
 
-    const [industry_type, setRawIndustryType] = useState<IndustryType | string>(
-        normalizeIndustryType(initialContract?.industry_type)
-    );
+        // Placement fields
+        remuneration: initialContract?.remuneration,
+        placement_benefits: initialContract?.placement_benefits,
+        speciality: initialContract?.speciality,
+        urgent_need: initialContract?.urgent_need,
+        placement_bonuses: initialContract?.placement_bonuses,
+        fees: initialContract?.fees,
+        parking_available: initialContract?.parking_available,
+        placement_languages_required: initialContract?.placement_languages_required,
+        placement_software_required: initialContract?.placement_software_required,
+        required_experience: initialContract?.required_experience,
 
-    // Wrapper for setIndustryType that adds logging and normalization
-    const setIndustryType = (value: any) => {
-        const normalizedValue = normalizeIndustryType(value);
-        console.log(`Setting industry_type from ${industry_type} to ${value} (normalized: ${normalizedValue})`);
-        setRawIndustryType(normalizedValue);
-    };
-    const [status, setStatus] = useState<ContractStatus>(
-        initialContract?.status || "pending"
-    );
+        // Affiliation fields
+        name_establishment: initialContract?.name_establishment,
+        percentage_generated: initialContract?.percentage_generated,
+        percentage_payment_conditions: initialContract?.percentage_payment_conditions,
+        affiliation_software_required: initialContract?.affiliation_software_required,
+        affiliation_languages_required: initialContract?.affiliation_languages_required,
+        benefits: initialContract?.benefits,
+        duration_commitment: initialContract?.duration_commitment,
+        objectives_or_quotas: initialContract?.objectives_or_quotas,
 
-    // Removed position_title field as per requirements
-    const [description, setDescription] = useState<string>(
-        initialContract?.description || ""
-    );
-    const [start_date, setStartDate] = useState<string>(
-        initialContract?.start_date || ""
-    );
-    const [end_date, setEndDate] = useState<string>(
-        initialContract?.end_date || ""
-    );
-    const [hourly_rate, setHourlyRate] = useState<number>(
-        initialContract?.hourly_rate || 0
-    );
-    const [institution, setInstitution] = useState<string>(
-        initialContract?.institution_id || ""
-    );
-    const [feesEnabled, setFeesEnabled] = useState<boolean | null>(null);
+        // Replacement fields
+        mission_type: initialContract?.mission_type,
+        working_hours: initialContract?.working_hours,
+        pause_included: initialContract?.pause_included,
+        proposed_hourly_rate: initialContract?.proposed_hourly_rate,
 
-    const [placementFields, setPlacementFields] = useState<PlacementContract>({
-        desired_position: initialContract?.specific_contract_fields?.desired_position || "",
-        specialties: initialContract?.specific_contract_fields?.specialties || [],
-        contract_location: initialContract?.specific_contract_fields?.contract_location || "",
-        start_date: initialContract?.specific_contract_fields?.start_date || initialContract?.start_date || "",
-        experience_level: initialContract?.specific_contract_fields?.experience_level || "",
-        compensation: initialContract?.specific_contract_fields?.compensation || "",
-        other_compensation: initialContract?.specific_contract_fields?.other_compensation || "",
-        benefits: initialContract?.specific_contract_fields?.benefits || [],
-        task_description: initialContract?.specific_contract_fields?.task_description || "",
-        urgent_need: initialContract?.specific_contract_fields?.urgent_need || false,
-        bonus_or_incentives: initialContract?.specific_contract_fields?.bonus_or_incentives || false,
-        fees: initialContract?.specific_contract_fields?.fees || "",
-        parking: initialContract?.specific_contract_fields?.parking || "",
-        languages: initialContract?.specific_contract_fields?.languages || [],
-        softwares: initialContract?.specific_contract_fields?.softwares || [],
-        additional_information: initialContract?.specific_contract_fields?.additional_information || "",
-        attached_documents: [],
-    });
+        // Replacement General Mission fields
+        general_mission_bonuses: initialContract?.general_mission_bonuses,
+        general_mission_fees: initialContract?.general_mission_fees,
+        general_mission_parking: initialContract?.general_mission_parking,
+        general_mission_languages: initialContract?.general_mission_languages,
+        general_mission_software: initialContract?.general_mission_software,
 
-    const [affiliationFields, setAffiliationFields] = useState<AffiliationContract>({
-        establishment_name: initialContract?.specific_contract_fields?.establishment_name || "",
-        position_sought: initialContract?.specific_contract_fields?.position_sought || "",
-        specialties: initialContract?.specific_contract_fields?.specialties || [],
-        affiliation_location: initialContract?.specific_contract_fields?.affiliation_location || "",
-        revenue_percentage: initialContract?.specific_contract_fields?.revenue_percentage || "",
-        payment_conditions: initialContract?.specific_contract_fields?.payment_conditions || "",
-        software_used: initialContract?.specific_contract_fields?.software_used || "",
-        required_languages: initialContract?.specific_contract_fields?.required_languages || "",
-        advantages: initialContract?.specific_contract_fields?.advantages || "",
-        engagement_duration: initialContract?.specific_contract_fields?.engagement_duration || "",
-        objectives_or_quotas: initialContract?.specific_contract_fields?.objectives_or_quotas || "",
-        attached_documents: initialContract?.specific_contract_fields?.attached_documents || "",
-        specific_clauses: initialContract?.specific_contract_fields?.specific_clauses || "",
-    });
+        // Replacement Specialized Mission fields
+        mission_type_label: initialContract?.mission_type_label,
+        required_specialty: initialContract?.required_specialty,
+        mission_objective: initialContract?.mission_objective,
+        desired_date: parseDate(initialContract?.desired_date),
+        estimated_duration: initialContract?.estimated_duration,
+        proposed_rate: initialContract?.proposed_rate,
+        material_room_required: initialContract?.material_room_required,
+        material_room_description: initialContract?.material_room_description,
 
-    const [remplacementFields, setRemplacementFields] = useState<RemplacementContract>({
-        mission_type: initialContract?.specific_contract_fields?.mission_type || "",
-        required_specialty: initialContract?.specific_contract_fields?.required_specialty || "",
-        mission_objective: initialContract?.specific_contract_fields?.mission_objective || "",
-        estimated_duration: initialContract?.specific_contract_fields?.estimated_duration || "",
-        preferred_date: initialContract?.specific_contract_fields?.preferred_date || "",
-        proposed_rate: initialContract?.specific_contract_fields?.proposed_rate || "",
-        equipment_or_operating_room: initialContract?.specific_contract_fields?.equipment_or_operating_room || "",
-        attached_documents: initialContract?.specific_contract_fields?.attached_documents || [],
-    });
 
-    const [pharmacyIndustryFields, setPharmacyIndustryFields] = useState<PharmacyIndustryFields>({
-        daily_work_hours: initialContract?.specific_industry_fields?.daily_work_hours || [],
-        break_included: initialContract?.specific_industry_fields?.break_included || false,
-        break_duration: initialContract?.specific_industry_fields?.break_duration || undefined,
-        bonus_or_additional_compensation: initialContract?.specific_industry_fields?.bonus_or_premium || false,
-        software: initialContract?.specific_industry_fields?.software || [],
-        per_day_work_hours: initialContract?.specific_industry_fields?.per_day_work_hours || {},
-        working_hours: initialContract?.specific_industry_fields?.working_hours || "",
-        working_hours_start: initialContract?.specific_industry_fields?.working_hours_start || "09:00",
-        working_hours_end: initialContract?.specific_industry_fields?.working_hours_end || "17:00",
-        // Initialize specialized mission fields
-        specialized_mission_type: initialContract?.specific_industry_fields?.specialized_mission_type || "",
-        required_specialty: initialContract?.specific_industry_fields?.required_specialty || "",
-        mission_objective: initialContract?.specific_industry_fields?.mission_objective || "",
-        estimated_duration: initialContract?.specific_industry_fields?.estimated_duration || "",
-        proposed_rate: initialContract?.specific_industry_fields?.proposed_rate || "",
-        equipment_required: initialContract?.specific_industry_fields?.equipment_required || false,
-        equipment_description: initialContract?.specific_industry_fields?.equipment_description || "",
-        documents_required: initialContract?.specific_industry_fields?.documents_required || false,
-    });
-
-    const [dentalIndustryFields, setDentalIndustryFields] = useState<DentalIndustryFields>({
-        work_hours: initialContract?.specific_industry_fields?.work_hours || [],
-        break_included: initialContract?.specific_industry_fields?.break_included || false,
-        break_duration: initialContract?.specific_industry_fields?.break_duration || 30,
-        bonus_or_premium: initialContract?.specific_industry_fields?.bonus_or_premium || false,
-        software: initialContract?.specific_industry_fields?.software || [],
-        per_day_work_hours: initialContract?.specific_industry_fields?.per_day_work_hours || {},
-        mission_general: initialContract?.specific_industry_fields?.mission_general || false,
-        mission_special: initialContract?.specific_industry_fields?.mission_special || false,
-        position_type: initialContract?.specific_industry_fields?.position_type || "dentiste_generaliste",
-        software_required: initialContract?.specific_industry_fields?.software_required || [],
-        required_experience: initialContract?.specific_industry_fields?.required_experience || "Any",
-        working_hours: initialContract?.specific_industry_fields?.working_hours || "",
-        working_hours_start: initialContract?.specific_industry_fields?.working_hours_start || "09:00",
-        working_hours_end: initialContract?.specific_industry_fields?.working_hours_end || "17:00",
-        // Initialize Mission spécialisée fields
-        specialized_mission_type: initialContract?.specific_industry_fields?.specialized_mission_type || "",
-        required_specialty: initialContract?.specific_industry_fields?.required_specialty || "",
-        mission_objective: initialContract?.specific_industry_fields?.mission_objective || "",
-        estimated_duration: initialContract?.specific_industry_fields?.estimated_duration || "",
-        proposed_rate: initialContract?.specific_industry_fields?.proposed_rate || "",
-        equipment_required: initialContract?.specific_industry_fields?.equipment_required || false,
-        equipment_description: initialContract?.specific_industry_fields?.equipment_description || "",
-        documents_required: initialContract?.specific_industry_fields?.documents_required || false,
+        attached_documents: initialContract?.documents_joint
+            ? initialContract.documents_joint.split(',').map(name => new File([], name))
+            : [],
+        daily_hours: {}
     });
 
 
-    const generateDateRange = (start: string, end: string): string[] => {
+    const generateDateRange = (start: Date | null, end: Date | null): string[] => {
         if (!start || !end) return [];
-        const startDate = new Date(start);
-        const endDate = new Date(end);
-        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || startDate > endDate) return [];
+        if (start > end) return [];
 
         const dates = [];
-        let currentDate = new Date(startDate);
-        while (currentDate <= endDate) {
-            dates.push(currentDate.toISOString().split("T")[0]);
+        const currentDate = new Date(start);
+
+        while (currentDate <= end) {
+            dates.push(currentDate.toISOString().split('T')[0]);
             currentDate.setDate(currentDate.getDate() + 1);
         }
+
         return dates;
     };
 
 
-    const initializeWorkHours = (dates: string[], defaultHours: string = "08:00-16:00") => {
-        const newWorkHours: DailyWorkHours = {};
-        dates.forEach((date) => {
-            newWorkHours[date] = defaultHours;
+    const updateWorkHours = (start: Date | null, end: Date | null) => {
+        const dates = generateDateRange(start, end);
+        const defaultHours = formState.industry_type === "Pharmacy" ? "09:00-17:00" : "08:00-16:00";
+
+        setFormState(prev => ({
+            ...prev,
+            working_hours: dates.length > 0 ? defaultHours : "",
+            daily_hours: dates.reduce((acc, date) => ({
+                ...acc,
+                [date]: {
+                    enabled: true,
+                    start_time: defaultHours.split('-')[0],
+                    end_time: defaultHours.split('-')[1]
+                },
+            }), {}),
+        }));
+    };
+
+
+    const handleChange = <K extends keyof ContractFormState>(field: K, value: ContractFormState[K]) => {
+        setFormState((prev) => {
+            const newState = { ...prev, [field]: value };
+
+
+            if (field === "start_date" || field === "end_date") {
+                updateWorkHours(
+                    field === "start_date" ? (value as Date | null) : newState.start_date,
+                    field === "end_date" ? (value as Date | null) : newState.end_date
+                );
+            }
+
+            return newState;
         });
-        return newWorkHours;
     };
 
 
-    const updateWorkHours = (newStart: string, newEnd: string) => {
-        const dates = generateDateRange(newStart, newEnd);
-        const defaultHours = industry_type === "pharmacy"
-            ? pharmacyIndustryFields.daily_work_hours[0] || "09:00-17:00"
-            : dentalIndustryFields.work_hours[0] || "08:00-16:00";
+    const getContractData = (): ContractDTO => {
+        const formatDate = (date: Date | null) => date ? date.toISOString() : "";
 
-        if (industry_type === "pharmacy") {
-            setPharmacyIndustryFields((prev) => ({
-                ...prev,
-                per_day_work_hours: initializeWorkHours(dates, defaultHours),
-            }));
-        } else if (industry_type === "dental_clinic") {
-            setDentalIndustryFields((prev) => ({
-                ...prev,
-                per_day_work_hours: initializeWorkHours(dates, defaultHours),
-            }));
-        }
-    };
+        return {
+            ...formState,
+            start_date: formatDate(formState.start_date),
+            end_date: formatDate(formState.end_date),
+            desired_date: formState.desired_date ? formatDate(formState.desired_date) : undefined,
+            documents_joint: formState.attached_documents?.map(f => f.name).join(',') || undefined,
 
-    const handleStartDateChange = (value: string) => {
-        setStartDate(value);
-        updateWorkHours(value, end_date);
-    };
-
-    const handleEndDateChange = (value: string) => {
-        setEndDate(value);
-        updateWorkHours(start_date, value);
+            daily_hours: undefined,
+            attached_documents: undefined
+        } as ContractDTO;
     };
 
     return {
-        contract_type,
-        setContractType,
-        industry_type,
-        setIndustryType,
-        status,
-        setStatus,
-        // position_title and setPositionTitle removed as per requirements
-        description,
-        setDescription,
-        start_date,
-        setStartDate: handleStartDateChange,
-        end_date,
-        setEndDate: handleEndDateChange,
-        hourly_rate,
-        setHourlyRate,
-        institution,
-        setInstitution,
-        placementFields,
-        setPlacementFields,
-        affiliationFields,
-        setAffiliationFields,
-        remplacementFields,
-        setRemplacementFields,
-        feesEnabled,
-        setFeesEnabled,
-        pharmacyIndustryFields,
-        setPharmacyIndustryFields,
-        dentalIndustryFields,
-        setDentalIndustryFields,
-        generateDateRange,
+        formState,
+        handleChange,
+        getContractData,
     };
 };
 
