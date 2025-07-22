@@ -1,16 +1,16 @@
 import { useState } from "react";
 
 // Enums
-type ContractType = "PLACEMENT" | "AFFILIATION" | "REMPLACEMENT";
-type IndustryType = "DentalClinic" | "Pharmacy";
-type ContractStatus = "PENDING" | "ACTIVE" | "COMPLETED" | "CANCELLED";
-type ReplacementMissionType = "GENERAL" | "SPECIALIZED";
+export type ContractType = "PLACEMENT" | "AFFILIATION" | "REMPLACEMENT";
+export type IndustryType = "DentalClinic" | "pharmacy";
+export type ContractStatus = "PENDING" | "ACTIVE" | "COMPLETED" | "CANCELLED";
+export type ReplacementMissionType = "GENERAL" | "SPECIALIZED";
 
-// Interface matching the DTO
-interface ContractDTO {
+// DTO Interface
+export interface ContractDTO {
     // Core Contract fields
     contract_id?: string;
-    institution_id: string;
+    institution_id?: string;
     contract_type: ContractType;
     industry_type: IndustryType;
     start_date: string;
@@ -24,6 +24,16 @@ interface ContractDTO {
     additional_information?: string;
     documents_joint?: string;
 
+    // Affiliation Contract fields
+    name_establishment?: string;
+    percentage_generated?: string;
+    percentage_payment_conditions?: string;
+    affiliation_software_required?: string[];
+    affiliation_languages_required?: string[];
+    benefits?: string[];
+    duration_commitment?: string;
+    objectives_or_quotas?: string;
+
     // Placement Contract fields
     remuneration?: string;
     placement_benefits?: string[];
@@ -36,21 +46,8 @@ interface ContractDTO {
     placement_software_required?: string[];
     required_experience?: string;
 
-    // Affiliation Contract fields
-    name_establishment?: string;
-    percentage_generated?: string;
-    percentage_payment_conditions?: string;
-    affiliation_software_required?: string[];
-    affiliation_languages_required?: string[];
-    benefits?: string[];
-    duration_commitment?: string;
-    objectives_or_quotas?: string;
-
     // Replacement Contract fields
     mission_type?: ReplacementMissionType;
-    working_hours?: string;
-    pause_included?: boolean;
-    proposed_hourly_rate?: string;
 
     // Replacement General Mission fields
     general_mission_bonuses?: boolean;
@@ -58,6 +55,10 @@ interface ContractDTO {
     general_mission_parking?: boolean;
     general_mission_languages?: string[];
     general_mission_software?: string[];
+    general_mission_working_hours?: string;
+    general_mission_pause_included?: boolean;
+    general_mission_proposed_hourly_rate?: string;
+    general_mission_required_experience?: string
 
     // Replacement Specialized Mission fields
     mission_type_label?: string;
@@ -70,7 +71,6 @@ interface ContractDTO {
     material_room_description?: string;
 }
 
-// Form state interface
 interface ContractFormState extends Omit<ContractDTO, 'start_date' | 'end_date' | 'desired_date'> {
     start_date: Date | null;
     end_date: Date | null;
@@ -80,26 +80,35 @@ interface ContractFormState extends Omit<ContractDTO, 'start_date' | 'end_date' 
 }
 
 const useContractForm = (initialContract: Partial<ContractDTO> | null = null) => {
-    // Parse initial dates from ISO strings to Date objects
-    const parseDate = (dateString?: string) => dateString ? new Date(dateString) : null;
+    const parseDate = (date?: string) => (date ? new Date(date) : null);
 
-    // Initialize form state
     const [formState, setFormState] = useState<ContractFormState>({
         contract_id: initialContract?.contract_id,
         institution_id: initialContract?.institution_id || "",
         contract_type: initialContract?.contract_type || "PLACEMENT",
-        industry_type: initialContract?.industry_type || "Pharmacy",
+        industry_type: initialContract?.industry_type || "pharmacy",
         start_date: parseDate(initialContract?.start_date),
         end_date: parseDate(initialContract?.end_date),
         description: initialContract?.description || "",
         position_title: initialContract?.position_title || "",
         contract_location: initialContract?.contract_location || "",
         status: initialContract?.status || "PENDING",
+        created_at: initialContract?.created_at,
         detailed_tasks: initialContract?.detailed_tasks,
         additional_information: initialContract?.additional_information,
         documents_joint: initialContract?.documents_joint,
 
-        // Placement fields
+        // Affiliation Contract fields
+        name_establishment: initialContract?.name_establishment,
+        percentage_generated: initialContract?.percentage_generated,
+        percentage_payment_conditions: initialContract?.percentage_payment_conditions,
+        affiliation_software_required: initialContract?.affiliation_software_required,
+        affiliation_languages_required: initialContract?.affiliation_languages_required,
+        benefits: initialContract?.benefits,
+        duration_commitment: initialContract?.duration_commitment,
+        objectives_or_quotas: initialContract?.objectives_or_quotas,
+
+        // Placement Contract fields
         remuneration: initialContract?.remuneration,
         placement_benefits: initialContract?.placement_benefits,
         speciality: initialContract?.speciality,
@@ -111,28 +120,20 @@ const useContractForm = (initialContract: Partial<ContractDTO> | null = null) =>
         placement_software_required: initialContract?.placement_software_required,
         required_experience: initialContract?.required_experience,
 
-        // Affiliation fields
-        name_establishment: initialContract?.name_establishment,
-        percentage_generated: initialContract?.percentage_generated,
-        percentage_payment_conditions: initialContract?.percentage_payment_conditions,
-        affiliation_software_required: initialContract?.affiliation_software_required,
-        affiliation_languages_required: initialContract?.affiliation_languages_required,
-        benefits: initialContract?.benefits,
-        duration_commitment: initialContract?.duration_commitment,
-        objectives_or_quotas: initialContract?.objectives_or_quotas,
-
-        // Replacement fields
+        // Replacement Contract fields
         mission_type: initialContract?.mission_type,
-        working_hours: initialContract?.working_hours,
-        pause_included: initialContract?.pause_included,
-        proposed_hourly_rate: initialContract?.proposed_hourly_rate,
 
         // Replacement General Mission fields
-        general_mission_bonuses: initialContract?.general_mission_bonuses,
-        general_mission_fees: initialContract?.general_mission_fees,
-        general_mission_parking: initialContract?.general_mission_parking,
-        general_mission_languages: initialContract?.general_mission_languages,
-        general_mission_software: initialContract?.general_mission_software,
+        general_mission_bonuses: initialContract?.general_mission_bonuses ?? false,
+        general_mission_fees: initialContract?.general_mission_fees ?? [],
+        general_mission_parking: initialContract?.general_mission_parking ?? false,
+        general_mission_languages: initialContract?.general_mission_languages ?? [],
+        general_mission_software: initialContract?.general_mission_software ?? [],
+        general_mission_working_hours: initialContract?.general_mission_working_hours ?? "",
+        general_mission_pause_included: initialContract?.general_mission_pause_included ?? false,
+        general_mission_proposed_hourly_rate: initialContract?.general_mission_proposed_hourly_rate ?? "",
+        general_mission_required_experience: initialContract?.general_mission_required_experience ?? "",
+
 
         // Replacement Specialized Mission fields
         mission_type_label: initialContract?.mission_type_label,
@@ -144,76 +145,60 @@ const useContractForm = (initialContract: Partial<ContractDTO> | null = null) =>
         material_room_required: initialContract?.material_room_required,
         material_room_description: initialContract?.material_room_description,
 
-
         attached_documents: initialContract?.documents_joint
             ? initialContract.documents_joint.split(',').map(name => new File([], name))
             : [],
         daily_hours: {}
     });
 
-
     const generateDateRange = (start: Date | null, end: Date | null): string[] => {
-        if (!start || !end) return [];
-        if (start > end) return [];
-
+        if (!start || !end || start > end) return [];
         const dates = [];
-        const currentDate = new Date(start);
-
-        while (currentDate <= end) {
-            dates.push(currentDate.toISOString().split('T')[0]);
-            currentDate.setDate(currentDate.getDate() + 1);
+        const current = new Date(start);
+        while (current <= end) {
+            dates.push(current.toISOString().split("T")[0]);
+            current.setDate(current.getDate() + 1);
         }
-
         return dates;
     };
 
-
     const updateWorkHours = (start: Date | null, end: Date | null) => {
         const dates = generateDateRange(start, end);
-        const defaultHours = formState.industry_type === "Pharmacy" ? "09:00-17:00" : "08:00-16:00";
-
+        const defaultHours = formState.industry_type === "pharmacy" ? "09:00-17:00" : "08:00-16:00";
         setFormState(prev => ({
             ...prev,
-            working_hours: dates.length > 0 ? defaultHours : "",
-            daily_hours: dates.reduce((acc, date) => ({
-                ...acc,
-                [date]: {
+            working_hours: dates.length ? defaultHours : "",
+            daily_hours: Object.fromEntries(
+                dates.map(date => [date, {
                     enabled: true,
-                    start_time: defaultHours.split('-')[0],
-                    end_time: defaultHours.split('-')[1]
-                },
-            }), {}),
+                    start_time: defaultHours.split("-")[0],
+                    end_time: defaultHours.split("-")[1],
+                }])
+            )
         }));
     };
 
-
     const handleChange = <K extends keyof ContractFormState>(field: K, value: ContractFormState[K]) => {
-        setFormState((prev) => {
-            const newState = { ...prev, [field]: value };
-
-
+        setFormState(prev => {
+            const next = { ...prev, [field]: value };
             if (field === "start_date" || field === "end_date") {
                 updateWorkHours(
-                    field === "start_date" ? (value as Date | null) : newState.start_date,
-                    field === "end_date" ? (value as Date | null) : newState.end_date
+                    field === "start_date" ? (value as Date | null) : next.start_date,
+                    field === "end_date" ? (value as Date | null) : next.end_date
                 );
             }
-
-            return newState;
+            return next;
         });
     };
 
-
     const getContractData = (): ContractDTO => {
-        const formatDate = (date: Date | null) => date ? date.toISOString() : "";
-
+        const format = (date: Date | null) => date?.toISOString() || "";
         return {
             ...formState,
-            start_date: formatDate(formState.start_date),
-            end_date: formatDate(formState.end_date),
-            desired_date: formState.desired_date ? formatDate(formState.desired_date) : undefined,
+            start_date: format(formState.start_date),
+            end_date: format(formState.end_date),
+            desired_date: formState.desired_date ? format(formState.desired_date) : undefined,
             documents_joint: formState.attached_documents?.map(f => f.name).join(',') || undefined,
-
             daily_hours: undefined,
             attached_documents: undefined
         } as ContractDTO;

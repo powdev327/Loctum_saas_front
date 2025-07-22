@@ -2,6 +2,7 @@ import Input from "../../../form/input/InputField";
 import Label from "../../../form/Label";
 import Select from "../../../form/Select.tsx";
 import { useEffect } from "react";
+import TextArea from "../../../form/input/TextArea.tsx";
 
 interface BaseFieldsProps {
     formState: {
@@ -80,7 +81,7 @@ export const BaseFields = ({
     let positionOptions: Array<{ label: string; value: string }> = [];
     if (institutionType === "pharmacy") {
         positionOptions = province.includes("quebec") ? pharmacyOptionsInQuebec : pharmacyOptionsOutsideQuebec;
-    } else if (institutionType === "dental" || institutionType === "dental_clinic") {
+    } else if (institutionType === "dental" || institutionType === "DentalClinic") {
         positionOptions = dentalOptions;
     }
 
@@ -97,19 +98,7 @@ export const BaseFields = ({
 
     return (
         <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2 px-2">
-            <div className="col-span-2">
-                <Label required>Detailed Task Description</Label>
-                {submissionAttempted && !formState.description && (
-                    <span className="text-red-500 text-xs block mb-1">
-                        This field is required. Please provide a detailed description.
-                    </span>
-                )}
-                <Input
-                    value={formState.description}
-                    onChange={(e) => handleChange("description", e.target.value)}
-                    placeholder="Detail the tasks to be performed"
-                />
-            </div>
+
 
             <div>
                 <Label required>Position Title</Label>
@@ -147,7 +136,7 @@ export const BaseFields = ({
                 )}
 
                 {isReplacement &&
-                    (institutionType === "dental" || institutionType === "dental_clinic") &&
+                    (institutionType === "dental" || institutionType === "DentalClinic") &&
                     formState.position_title === "Dentiste spécialiste" && (
                         <div className="mt-2">
                             <Label required>Spécialités du dentiste</Label>
@@ -212,6 +201,20 @@ export const BaseFields = ({
                     placeholder="Select industry"
                     value={industryOptions.find((opt) => opt.value === formState.industry_type)}
                     onChange={(option) => handleChange("industry_type", option?.value || "")}
+                />
+            </div>
+
+            <div className="col-span-2">
+                <Label required>Detailed Task Description</Label>
+                {submissionAttempted && !formState.description && (
+                    <span className="text-red-500 text-xs block mb-1">
+                        This field is required. Please provide a detailed description.
+                    </span>
+                )}
+                <TextArea
+                    value={formState.description}
+                    onChange={(e) => handleChange("description", e)}
+                    placeholder="Detail the tasks to be performed"
                 />
             </div>
         </div>

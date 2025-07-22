@@ -98,7 +98,7 @@ export function CreateContractPopup({ isOpen, closeModal }) {
         }
         if (formState.contract_type === "REMPLACEMENT" &&
             (!formState.mission_type || !formState.mission_objective ||
-                !formState.desired_date || !formState.proposed_hourly_rate)) {
+                !formState.desired_date || !formState.general_mission_proposed_hourly_rate)) {
             toast.error("Missing required remplacement fields");
             return;
         }
@@ -180,10 +180,6 @@ export function CreateContractPopup({ isOpen, closeModal }) {
                                             label={option.label}
                                             checked={formState.contract_type === option.value}
                                             onChange={(value) => handleChange("contract_type", value)}
-                                            disabled={
-                                                formState.contract_type !== "" &&
-                                                formState.contract_type !== option.value
-                                            }
                                         />
                                     ))}
                                 </div>
