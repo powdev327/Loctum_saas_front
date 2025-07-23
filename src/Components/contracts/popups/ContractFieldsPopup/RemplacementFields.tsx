@@ -85,32 +85,32 @@ export const RemplacementFieldsComponent = ({
                                 Selected Active Dates
                             </h3>
                             <div className="max-h-48 overflow-y-auto space-y-2 pr-2">
-                                {activeDateRange.map((dateObj, index) => {
-                                    const dateKey = dateObj.toISOString().split("T")[0];
-                                    const isEnabled = formState.daily_hours?.[dateKey]?.enabled ?? true;
+                                {console.log("Rendering daily_hours:", formState.daily_hours)}
 
-                                    return (
-                                        <div
-                                            key={index}
-                                            className="flex items-start gap-2 border-b border-gray-100 dark:border-gray-800 pb-2"
-                                        >
-                                            <div className={`w-2 h-2 mt-1 rounded-full ${isEnabled ? "bg-green-500" : "bg-red-400"}`} />
-                                            <p
-                                                className={`text-sm ${
-                                                    isEnabled ? "text-gray-700 dark:text-white" : "text-gray-400 line-through"
-                                                }`}
-                                            >
-                                                {dateObj.toLocaleDateString("fr-CA", {
-                                                    weekday: "long",
-                                                    year: "numeric",
-                                                    month: "long",
-                                                    day: "numeric",
-                                                })}{" "}
-                                                {!isEnabled && <span className="text-xs">(Unavailable)</span>}
-                                            </p>
-                                        </div>
-                                    );
-                                })}
+                                                              {Object.entries(formState.daily_hours)
+                                                                .filter(([, day]) => day?.enabled)
+                                                                .map(([date, day]) => {
+                                                                  // Defensive fallback for start_time/end_time
+                                                                  const start = day?.start_time ?? "09:00";
+                                                                  const end = day?.end_time ?? "17:00";
+
+                                                                  const formattedDate = new Date(date).toLocaleDateString("en-US", {
+                                                                    weekday: "long",
+                                                                    year: "numeric",
+                                                                    month: "short",
+                                                                    day: "numeric",
+                                                                  });
+
+                                                                  return (
+                                                                    <div
+                                                                      key={date}
+                                                                      className="flex justify-between border-b border-gray-200 dark:border-gray-700 py-1 last:border-b-0"
+                                                                    >
+                                                                      <span className="text-gray-700 dark:text-gray-300">{formattedDate}</span>
+                                                                      <span className="text-gray-600 dark:text-gray-400">{start} - {end}</span>
+                                                                    </div>
+                                                                  );
+                                                                })}
                             </div>
 
                             <p className="mt-3 text-sm italic text-gray-500 dark:text-gray-400">
