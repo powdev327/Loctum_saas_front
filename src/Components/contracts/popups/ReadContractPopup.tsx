@@ -4,55 +4,74 @@ import Button from "../../ui/button/Button.tsx";
 import { UpdateCvSummary } from "../../UserProfile/popups/locum/UpdateCvSummary.tsx";
 import { useAuth } from "../../../context/AuthContext.tsx";
 
-export function ReadContractPopup({ isOpen, closeModal, selectedContract }) {
+interface PlacementContractFields {
+    remuneration?: string;
+    benefits?: string[];
+    speciality?: string;
+    urgent_need?: boolean;
+    bonuses?: boolean;
+    fees?: string[];
+    parking_available?: boolean;
+    languages_required?: string[];
+    software_required?: string[];
+    required_experience?: string;
+}
+
+interface ReplacementContractFields {
+    mission_type: string;
+    working_hours?: string;
+    pause_included?: boolean;
+    proposed_hourly_rate?: string;
+}
+
+interface AffiliationContractFields {
+    name_establishment?: string;
+    percentage_generated?: string;
+    percentage_payment_conditions?: string;
+    software_required?: string[];
+    languages_required?: string[];
+    benefits?: string[];
+    duration_commitment?: string;
+    objectives_or_quotas?: string;
+}
+
+interface Contract {
+    contract_id: string;
+    client_id?: string;
+    institution_id?: string;
+    contract_type: string;
+    industry_type: string;
+    status: string;
+    position_title: string;
+    description: string;
+    start_date: string;
+    end_date?: string;
+    hourly_rate?: number;
+    placement_fields?: PlacementContractFields;
+    replacement_fields?: ReplacementContractFields;
+    affiliation_fields?: AffiliationContractFields;
+}
+
+interface ReadContractPopupProps {
+    isOpen: boolean;
+    closeModal: () => void;
+    selectedContract: Contract;
+}
+
+export function ReadContractPopup({ isOpen, closeModal, selectedContract }: ReadContractPopupProps) {
     const { user } = useAuth();
     const [isCvSummaryModalOpen, setIsCvSummaryModalOpen] = useState(false);
     const latestCv = user?.cvs?.[user.cvs.length - 1];
 
-    const formatFieldName = (key) => {
+    const formatFieldName = (key: string) => {
         return key
             .split("_")
             .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
             .join(" ");
     };
 
-    const formatFieldValue = (value, key = "") => {
+    const formatFieldValue = (value: any, key: string = "") => {
         if (value === null || value === undefined) return "N/A";
-
-        if (key === "per_day_work_hours" && typeof value === "object" && !Array.isArray(value)) {
-            return (
-                <div className="mt-4 overflow-hidden rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800">
-                    <table className="w-full text-sm">
-                        <thead className="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
-                        <tr>
-                            <th className="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-200">Date</th>
-                            <th className="px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-200">Working Hours</th>
-                        </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100 dark:divide-gray-600">
-                        {Object.entries(value).map(([date, hours]) => (
-                            <tr key={date} className="hover:bg-gray-50 dark:hover:bg-gray-750">
-                                <td className="px-6 py-4 text-gray-900 dark:text-gray-100 font-medium">
-                                    {new Date(date).toLocaleDateString("en-US", {
-                                        weekday: "short",
-                                        year: "numeric",
-                                        month: "short",
-                                        day: "numeric",
-                                    })}
-                                </td>
-                                <td className="px-6 py-4 text-gray-700 dark:text-gray-300">
-                                    {typeof hours === 'object' && hours !== null ? 
-                                        `${hours.start || ''} à ${hours.end || ''}` : 
-                                        hours}
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                </div>
-            );
-        }
-
         if (Array.isArray(value)) return value.length > 0 ? value.join(", ") : "None";
         if (typeof value === "boolean") return value ? "Yes" : "No";
         if (value instanceof Date || !isNaN(Date.parse(value))) {
@@ -62,11 +81,10 @@ export function ReadContractPopup({ isOpen, closeModal, selectedContract }) {
                 day: "numeric",
             });
         }
-
         return value.toString();
     };
 
-    const getStatusBadge = (status) => {
+    const getStatusBadge = (status: string) => {
         const baseClasses = "inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold";
         switch (status.toLowerCase()) {
             case "pending":
@@ -80,9 +98,11 @@ export function ReadContractPopup({ isOpen, closeModal, selectedContract }) {
         }
     };
 
-    const renderFieldRow = (label, value, key = "", isHighlight = false) => (
+    const renderFieldRow = (label: string, value: any, key: string = "", isHighlight: boolean = false) => (
         <div
-            className={`flex justify-between items-start py-4 ${isHighlight ? "bg-blue-50 dark:bg-blue-900/10 px-4 rounded-lg" : ""}`}
+            className={`flex justify-between items-start py-4 ${
+                isHighlight ? "bg-blue-50 dark:bg-blue-900/10 px-4 rounded-lg" : ""
+            }`}
         >
             <dt className="text-sm font-medium text-gray-600 dark:text-gray-400 min-w-0 flex-shrink-0 mr-6">{label}</dt>
             <dd className="text-sm text-gray-900 dark:text-gray-100 text-right font-medium">
@@ -96,7 +116,16 @@ export function ReadContractPopup({ isOpen, closeModal, selectedContract }) {
     );
 
     const renderSpecificContractFields = () => {
-        if (!selectedContract.specific_contract_fields) {
+        const contractType = selectedContract.contract_type.toLowerCase();
+        let fields: any = {};
+
+        if (contractType === "placement" && selectedContract.placement_fields) {
+            fields = selectedContract.placement_fields;
+        } else if (contractType === "replacement" && selectedContract.replacement_fields) {
+            fields = selectedContract.replacement_fields;
+        } else if (contractType === "affiliation" && selectedContract.affiliation_fields) {
+            fields = selectedContract.affiliation_fields;
+        } else {
             return (
                 <div className="text-center py-8">
                     <p className="text-gray-500 dark:text-gray-400 italic">No additional contract fields specified</p>
@@ -104,98 +133,6 @@ export function ReadContractPopup({ isOpen, closeModal, selectedContract }) {
             );
         }
 
-        const fields = selectedContract.specific_contract_fields;
-        return (
-            <dl className="divide-y divide-gray-100 dark:divide-gray-700">
-                {Object.entries(fields).map(([key, value]) => {
-                    // Special case for per_day_work_hours - render as full width section
-                    if (key === "per_day_work_hours") {
-                        return (
-                            <div key={key} className="py-4">
-                                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-3">{formatFieldName(key)}</h3>
-                                <div className="w-full">
-                                    <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800">
-                                        <table className="w-full text-sm">
-                                            <thead className="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
-                                            <tr>
-                                                <th className="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">Date</th>
-                                                <th className="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">Working Hours</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-gray-100 dark:divide-gray-600">
-                                            {Object.entries(value).map(([date, hours]) => (
-                                                <tr key={date} className="hover:bg-gray-50 dark:hover:bg-gray-750">
-                                                    <td className="px-6 py-4 text-gray-900 dark:text-gray-100 font-medium">
-                                                        {new Date(date).toLocaleDateString("en-US", {
-                                                            weekday: "short",
-                                                            year: "numeric",
-                                                            month: "short",
-                                                            day: "numeric",
-                                                        })}
-                                                    </td>
-                                                    <td className="px-6 py-4 text-gray-700 dark:text-gray-300">
-                                                        {typeof hours === 'object' && hours !== null ? 
-                                                            `${hours.start || ''} à ${hours.end || ''}` : 
-                                                            hours}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    }
-                    
-                    // For attached documents
-                    if (key === "attached_documents") {
-                        return (
-                            <div key={key} className="py-4">
-                                <dt className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-3">{formatFieldName(key)}</dt>
-                                <dd>
-                                    {Array.isArray(value) && value.length > 0 ? (
-                                        <div className="space-y-2">
-                                            {value.map((doc, index) => (
-                                                <a
-                                                    key={index}
-                                                    href={typeof doc === "string" ? doc : "#"}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="flex items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group"
-                                                >
-                                                    <span className="text-blue-600 dark:text-blue-400 mr-3 text-lg">📄</span>
-                                                    <span className="text-sm font-medium text-blue-600 dark:text-blue-400 group-hover:underline">
-                                                        {typeof doc === "string" ? doc : `Document ${index + 1}`}
-                                                    </span>
-                                                </a>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <span className="text-sm text-gray-500 dark:text-gray-400 italic">No documents attached</span>
-                                    )}
-                                </dd>
-                            </div>
-                        );
-                    }
-                    
-                    // Default rendering for other fields
-                    return <div key={key}>{renderFieldRow(formatFieldName(key), value, key)}</div>;
-                })}
-            </dl>
-        );
-    };
-
-    const renderSpecificIndustryFields = () => {
-        if (!selectedContract.specific_industry_fields) {
-            return (
-                <div className="text-center py-8">
-                    <p className="text-gray-500 dark:text-gray-400 italic">No industry-specific fields specified</p>
-                </div>
-            );
-        }
-
-        const fields = selectedContract.specific_industry_fields;
         return (
             <dl className="divide-y divide-gray-100 dark:divide-gray-700">
                 {Object.entries(fields).map(([key, value]) => (
@@ -216,7 +153,9 @@ export function ReadContractPopup({ isOpen, closeModal, selectedContract }) {
                 <div className="relative">
                     <div className="px-8 py-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-900">
                         <div className="text-center">
-                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{selectedContract.position_title}</h1>
+                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                                {selectedContract.position_title}
+                            </h1>
                         </div>
                     </div>
 
@@ -228,13 +167,23 @@ export function ReadContractPopup({ isOpen, closeModal, selectedContract }) {
                                 </h2>
                                 <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
                                     <dl className="divide-y divide-gray-100 dark:divide-gray-700">
+                                        {renderFieldRow("Contract ID", selectedContract.contract_id)}
+                                        {selectedContract.client_id &&
+                                            renderFieldRow("Client ID", selectedContract.client_id)}
+                                        {selectedContract.institution_id &&
+                                            renderFieldRow("Institution ID", selectedContract.institution_id)}
                                         {renderFieldRow("Contract Type", formatFieldName(selectedContract.contract_type))}
                                         {renderFieldRow("Industry", formatFieldName(selectedContract.industry_type))}
                                         {renderFieldRow("Status", selectedContract.status, "status")}
                                         {renderFieldRow("Description", selectedContract.description)}
                                         {renderFieldRow("Start Date", selectedContract.start_date)}
                                         {renderFieldRow("End Date", selectedContract.end_date)}
-                                        {renderFieldRow("Hourly Rate", `$${selectedContract.hourly_rate}`, "", true)}
+                                        {renderFieldRow(
+                                            "Hourly Rate",
+                                            selectedContract.hourly_rate ? `$${selectedContract.hourly_rate}` : "N/A",
+                                            "",
+                                            true
+                                        )}
                                     </dl>
                                 </div>
                             </section>
@@ -245,15 +194,6 @@ export function ReadContractPopup({ isOpen, closeModal, selectedContract }) {
                                 </h2>
                                 <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
                                     {renderSpecificContractFields()}
-                                </div>
-                            </section>
-
-                            <section>
-                                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 pb-2">
-                                    Industry Requirements
-                                </h2>
-                                <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-                                    {renderSpecificIndustryFields()}
                                 </div>
                             </section>
                         </div>

@@ -12,7 +12,7 @@ export default function AllContractCard() {
     const { contracts } = useContract();
     const [readModalOpen, setReadModalOpen] = useState(false);
     const [selectedContractForRead, setSelectedContractForRead] = useState(null);
-
+    console.log('contracts', contracts);
     const handleReadContract = (contract) => {
         setSelectedContractForRead(contract);
         setReadModalOpen(true);
@@ -122,18 +122,21 @@ export default function AllContractCard() {
                     ) : (
                         contracts.map((item, i) => (
                             <ContractCard
-                                key={i}
-                                id={item.contract_id}
-                                name={item.position_title}
+                                key={item.contract_id}
+                                contract_id={item.contract_id}
+                                client_id={item.client_id}
+                                institution_id={item.institution_id}
+                                contract_type={item.contract_type}
+                                industry_type={item.industry_type}
+                                status={item.status}
                                 position_title={item.position_title}
                                 description={item.description}
-                                contract_type={item.contract_type}
-                                status={item.status}
-                                hourly_rate={item.hourly_rate}
                                 start_date={item.start_date}
-                                specific_contract_fields={item.specific_contract_fields}
-                                specific_industry_fields={item.specific_industry_fields}
-                                industry_type={item.industry_type}
+                                end_date={item.end_date}
+                                hourly_rate={item.hourly_rate}
+                                placement_fields={item.placement_fields}
+                                replacement_fields={item.replacement_fields}
+                                affiliation_fields={item.affiliation_fields}
                                 handleDeleteClick={handleDelete}
                                 onReadClick={() => handleReadContract(item)}
                                 onDuplicateClick={() => handleDuplicate(item)}

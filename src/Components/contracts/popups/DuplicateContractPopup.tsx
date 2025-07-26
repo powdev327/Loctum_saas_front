@@ -9,8 +9,7 @@ import { useClient } from "../../../context/owner/ClientContext.tsx";
 import { useContract } from "../../../context/owner/ContractContext.tsx";
 import toast from "react-hot-toast";
 import {BaseFields} from "./ContractFieldsPopup/BaseFields.tsx";
-import {PharmacyFields} from "./ContractFieldsPopup/PharmacyFields.tsx";
-import {DentalFields} from "./ContractFieldsPopup/DentalFields.tsx";
+
 import {PlacementFieldsComponent} from "./ContractFieldsPopup/PlacementFields.tsx";
 import {AffiliationFieldsComponent} from "./ContractFieldsPopup/AffiliationFields.tsx";
 import {RemplacementFieldsComponent} from "./ContractFieldsPopup/RemplacementFields.tsx";
@@ -303,26 +302,7 @@ export function DuplicateContractPopup({ isOpen, closeModal, selectedContract, c
                             setIndustryType={setIndustryType}
                             options={options}
                         />
-                        {industry_type === "pharmacy" && contract_type !== "affiliation" && (
-                            <PharmacyFields
-                                contract_type={contract_type}
-                                pharmacyIndustryFields={pharmacyIndustryFields}
-                                setPharmacyIndustryFields={setPharmacyIndustryFields}
-                                dateRange={dateRange}
-                                showPerDayWorkHours={showPerDayWorkHours}
-                                hourOptions={hourOptions}
-                            />
-                        )}
-                        {industry_type === "dental_clinic" && contract_type !== "affiliation" && (
-                            <DentalFields
-                                contract_type={contract_type}
-                                dentalIndustryFields={dentalIndustryFields}
-                                setDentalIndustryFields={setDentalIndustryFields}
-                                dateRange={dateRange}
-                                showPerDayWorkHours={showPerDayWorkHours}
-                                hourOptions={hourOptions}
-                            />
-                        )}
+
                         {contract_type === "placement" && placementFields && (
                             <PlacementFieldsComponent
                                 placementFields={placementFields}
