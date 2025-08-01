@@ -15,6 +15,10 @@ const useSignupForm = () => {
     const [businessSector, setBusinessSector] = useState(""); // for client
     const [customInstitutionType, setCustomInstitutionType] = useState('');
     const [institutionType, setInstitutionType] = useState(""); // for client
+    const [institutionName, setInstitutionName] = useState(""); // for client
+    const [clientType, setClientType] = useState(""); // for client
+    const [clinicSpecialties, setClinicSpecialties] = useState([]); // for private clinic
+    const [pharmacyType, setPharmacyType] = useState(""); // for pharmacy
     const [recaptchaToken, setRecaptchaToken] = useState(null);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -39,6 +43,10 @@ const useSignupForm = () => {
         businessSector, setBusinessSector,
         customInstitutionType, setCustomInstitutionType,
         institutionType, setInstitutionType,
+        institutionName, setInstitutionName,
+        clientType, setClientType,
+        clinicSpecialties, setClinicSpecialties,
+        pharmacyType, setPharmacyType,
         recaptchaToken, setRecaptchaToken,
         error, setError,
         loading, setLoading,

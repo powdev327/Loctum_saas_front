@@ -12,7 +12,7 @@ import {resendOtp, signup, verifyOtp} from "../../services/auth/signupService.js
 import OtpModal from "./OtpModal.jsx";
 import {industries, professionalRoles} from "../../config/locum/industryList.js";
 import {businessList} from "../../config/owner/businessList.js";
-import {institutionListType} from "../../config/owner/institutionList.js";
+import {institutionListType, clinicSpecialties as clinicSpecialtyOptions, pharmacyTypes} from "../../config/owner/institutionList.js";
 import toast from "react-hot-toast";
 
 const Signup = () => {
@@ -31,6 +31,10 @@ const Signup = () => {
       businessSector, setBusinessSector,
       customInstitutionType, setCustomInstitutionType,
       institutionType, setInstitutionType,
+      institutionName, setInstitutionName,
+      clientType, setClientType,
+      clinicSpecialties, setClinicSpecialties,
+      pharmacyType, setPharmacyType,
       recaptchaToken, setRecaptchaToken,
       error, setError,
       loading, setLoading,
@@ -42,6 +46,16 @@ const Signup = () => {
 
   const handleRecaptchaChange = (token) => {
     setRecaptchaToken(token);
+  };
+
+  const handleSpecialtyChange = (specialty) => {
+    setClinicSpecialties(prev => {
+      if (prev.includes(specialty)) {
+        return prev.filter(s => s !== specialty);
+      } else {
+        return [...prev, specialty];
+      }
+    });
   };
 
   const handleUserTypeSelection = (type) => {
@@ -85,9 +99,10 @@ const Signup = () => {
         professional_role: professionalRole
       }),
       ...(userType === "client" && {
-        institution_type: institutionType,
-        business_sector:
-            institutionType === "public" ? customInstitutionType : businessSector,
+        institution_name: institutionName,
+        client_type: clientType,
+        ...(clientType === "Private Clinic/Practice" && { clinic_specialties: clinicSpecialties }),
+        ...(clientType === "Pharmacy" && { pharmacy_type: pharmacyType }),
       }),
     };
     if (
@@ -98,7 +113,10 @@ const Signup = () => {
         !userType ||
         (userType === "locum" && !industryType) ||
         (userType === "locum" && !professionalRole) ||
-        (institutionType === "public" && !customInstitutionType) ||
+        (userType === "client" && !institutionName) ||
+        (userType === "client" && !clientType) ||
+        (userType === "client" && clientType === "Private Clinic/Practice" && clinicSpecialties.length === 0) ||
+        (userType === "client" && clientType === "Pharmacy" && !pharmacyType) ||
         (industryType === 'Other' && !customIndustryType)
     ) {
       toast.error("All fields are required")
@@ -195,7 +213,7 @@ const Signup = () => {
                       className="secondary-btn"
                       onClick={() => handleUserTypeSelection("client")}
                   >
-                    Sign up as an Owner/Manager
+                    Sign up as a Manager/Owner
                   </button>
                 </ScrollAnimate>
               </div>
@@ -334,53 +352,81 @@ const Signup = () => {
                     <>
                       <ScrollAnimate delay={600}>
                         <div className="form-group">
-                          <label>Institution Type</label>
+                          <label>Institution / Company Name</label>
+                          <input
+                              type="text"
+                              placeholder="e.g. ABC Medical Clinic"
+                              required
+                              value={institutionName}
+                              onChange={(e) => setInstitutionName(e.target.value)}
+                          />
+                        </div>
+                      </ScrollAnimate>
+
+                      <ScrollAnimate delay={620}>
+                        <div className="form-group">
+                          <label>Client Type</label>
                           <select
-                              value={institutionType}
-                              onChange={(e) => setInstitutionType(e.target.value)}
+                              value={clientType}
+                              onChange={(e) => {
+                                setClientType(e.target.value);
+                                setClinicSpecialties([]); // Reset specialties when type changes
+                                setPharmacyType(""); // Reset pharmacy type when type changes
+                              }}
                               required
                           >
-                            <option value="" disabled>Select institution type</option>
+                            <option value="" disabled>Choose one of:</option>
                             {institutionListType.map((type) => (
                                 <option key={type} value={type}>
-                                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                                  {type}
                                 </option>
                             ))}
                           </select>
                         </div>
                       </ScrollAnimate>
 
-                      {institutionType === "private" && (
-                          <ScrollAnimate delay={620}>
+                      {clientType === "Private Clinic/Practice" && (
+                          <ScrollAnimate delay={640}>
                             <div className="form-group">
-                              <label>Business Sector</label>
-                              <select
-                                  value={businessSector}
-                                  onChange={(e) => setBusinessSector(e.target.value)}
-                                  required
-                              >
-                                <option value="" disabled>Select business sector</option>
-                                {businessList.map((sector) => (
-                                    <option key={sector} value={sector}>
-                                      {sector.charAt(0).toUpperCase() + sector.slice(1)}
-                                    </option>
+                              <label>Specialty (Multi-Select)</label>
+                              <div className="mt-2 space-y-3">
+                                {clinicSpecialtyOptions.map((specialty) => (
+                                    <label key={specialty} className="flex items-center cursor-pointer">
+                                      <input
+                                          type="checkbox"
+                                          checked={clinicSpecialties.includes(specialty)}
+                                          onChange={() => handleSpecialtyChange(specialty)}
+                                          className="mr-3 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                      />
+                                      <span className="text-sm text-gray-700">{specialty}</span>
+                                    </label>
                                 ))}
-                              </select>
+                              </div>
+                              {clinicSpecialties.length > 0 && (
+                                <div className="mt-2 text-sm text-blue-600">
+                                  Selected: {clinicSpecialties.join(', ')}
+                                </div>
+                              )}
                             </div>
                           </ScrollAnimate>
                       )}
 
-                      {institutionType === "public" && (
+                      {clientType === "Pharmacy" && (
                           <ScrollAnimate delay={640}>
                             <div className="form-group">
-                              <label>Custom Institution Type</label>
-                              <input
-                                  type="text"
-                                  value={customInstitutionType}
-                                  onChange={(e) => setCustomInstitutionType(e.target.value)}
-                                  placeholder="Enter institution type"
+                              <label>Pharmacy Type</label>
+                              <select
+                                  value={pharmacyType}
+                                  onChange={(e) => setPharmacyType(e.target.value)}
                                   required
-                              />
+                              >
+                                <option value="" disabled>Select pharmacy type</option>
+                                {pharmacyTypes.map((type) => (
+                                    <option key={type} value={type}>
+                                      {type}
+                                    </option>
+                                ))}
+                              </select>
                             </div>
                           </ScrollAnimate>
                       )}
