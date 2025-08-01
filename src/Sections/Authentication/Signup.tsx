@@ -90,7 +90,7 @@ const Signup = () => {
 
     const formData = {
       user_type: userType,
-      full_name: fullName,
+      full_name: userType === "client" ? institutionName : fullName,
       email: trimmedEmail,
       password: trimmedPassword,
       recaptcha_token: recaptchaToken,
@@ -109,11 +109,11 @@ const Signup = () => {
         !trimmedEmail ||
         !trimmedPassword ||
         !passwordRetyping ||
-        !fullName ||
+        (userType === "locum" && !fullName) ||
+        (userType === "client" && !institutionName) ||
         !userType ||
         (userType === "locum" && !industryType) ||
         (userType === "locum" && !professionalRole) ||
-        (userType === "client" && !institutionName) ||
         (userType === "client" && !clientType) ||
         (userType === "client" && clientType === "Private Clinic/Practice" && clinicSpecialties.length === 0) ||
         (userType === "client" && clientType === "Pharmacy" && !pharmacyType) ||
@@ -213,7 +213,7 @@ const Signup = () => {
                       className="secondary-btn"
                       onClick={() => handleUserTypeSelection("client")}
                   >
-                    Sign up as a Manager/Owner
+                    Sign up as a Institution
                   </button>
                 </ScrollAnimate>
               </div>
@@ -236,13 +236,13 @@ const Signup = () => {
 
                 <ScrollAnimate delay={500}>
                   <div className="form-group">
-                    <label>Full Name</label>
+                    <label>{userType === "client" ? "Institution / Company Name" : "Full Name"}</label>
                     <input
                         type="text"
-                        placeholder="e.g. John Doe"
+                        placeholder={userType === "client" ? "e.g. ABC Medical Clinic" : "e.g. John Doe"}
                         required
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
+                        value={userType === "client" ? institutionName : fullName}
+                        onChange={(e) => userType === "client" ? setInstitutionName(e.target.value) : setFullName(e.target.value)}
                     />
                   </div>
                 </ScrollAnimate>
@@ -352,19 +352,6 @@ const Signup = () => {
                     <>
                       <ScrollAnimate delay={600}>
                         <div className="form-group">
-                          <label>Institution / Company Name</label>
-                          <input
-                              type="text"
-                              placeholder="e.g. ABC Medical Clinic"
-                              required
-                              value={institutionName}
-                              onChange={(e) => setInstitutionName(e.target.value)}
-                          />
-                        </div>
-                      </ScrollAnimate>
-
-                      <ScrollAnimate delay={620}>
-                        <div className="form-group">
                           <label>Client Type</label>
                           <select
                               value={clientType}
@@ -389,21 +376,54 @@ const Signup = () => {
                           <ScrollAnimate delay={640}>
                             <div className="form-group">
                               <label>Specialty (Multi-Select)</label>
-                              <div className="mt-2 space-y-3">
+                              <div style={{ 
+                                marginTop: '10px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexWrap: 'wrap',
+                                gap: '20px'
+                              }}>
                                 {clinicSpecialtyOptions.map((specialty) => (
-                                    <label key={specialty} className="flex items-center cursor-pointer">
+                                    <div key={specialty} style={{ 
+                                      display: 'flex', 
+                                      alignItems: 'center',
+                                      cursor: 'pointer'
+                                    }}>
+                                      <label 
+                                          onClick={() => handleSpecialtyChange(specialty)}
+                                          style={{
+                                            fontSize: '14px',
+                                            cursor: 'pointer',
+                                            margin: 0,
+                                            marginRight: '8px',
+                                            fontWeight: 'normal',
+                                            whiteSpace: 'nowrap'
+                                          }}
+                                      >
+                                        {specialty}
+                                      </label>
                                       <input
                                           type="checkbox"
                                           checked={clinicSpecialties.includes(specialty)}
                                           onChange={() => handleSpecialtyChange(specialty)}
-                                          className="mr-3 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                          style={{
+                                            width: '16px',
+                                            height: '16px',
+                                            cursor: 'pointer'
+                                          }}
                                       />
-                                      <span className="text-sm text-gray-700">{specialty}</span>
-                                    </label>
+                                    </div>
                                 ))}
                               </div>
                               {clinicSpecialties.length > 0 && (
-                                <div className="mt-2 text-sm text-blue-600">
+                                <div style={{ 
+                                  marginTop: '10px', 
+                                  fontSize: '13px', 
+                                  color: '#0066cc',
+                                  fontStyle: 'italic',
+                                  textAlign: 'center'
+                                }}>
                                   Selected: {clinicSpecialties.join(', ')}
                                 </div>
                               )}
