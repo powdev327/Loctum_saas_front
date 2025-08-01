@@ -10,7 +10,7 @@ import FacebookIcon from "../../assets/images/auth-and-utility/facebook.svg";
 import useSignupForm from "../../hooks/auth/useSignUpHook.js";
 import {resendOtp, signup, verifyOtp} from "../../services/auth/signupService.js";
 import OtpModal from "./OtpModal.jsx";
-import {industries} from "../../config/locum/industryList.js";
+import {industries, professionalRoles} from "../../config/locum/industryList.js";
 import {businessList} from "../../config/owner/businessList.js";
 import {institutionListType} from "../../config/owner/institutionList.js";
 import toast from "react-hot-toast";
@@ -26,6 +26,7 @@ const Signup = () => {
       password, setPassword,
       passwordRetyping, setPasswordRetyping,
       industryType, setIndustryType,
+      professionalRole, setProfessionalRole,
       customIndustryType, setCustomIndustryType,
       businessSector, setBusinessSector,
       customInstitutionType, setCustomInstitutionType,
@@ -79,7 +80,10 @@ const Signup = () => {
       email: trimmedEmail,
       password: trimmedPassword,
       recaptcha_token: recaptchaToken,
-      ...(userType === "locum" && { industry_type: industryType === 'Other' ? customIndustryType : industryType }),
+      ...(userType === "locum" && { 
+        industry_type: industryType === 'Other' ? customIndustryType : industryType,
+        professional_role: professionalRole
+      }),
       ...(userType === "client" && {
         institution_type: institutionType,
         business_sector:
@@ -92,6 +96,8 @@ const Signup = () => {
         !passwordRetyping ||
         !fullName ||
         !userType ||
+        (userType === "locum" && !industryType) ||
+        (userType === "locum" && !professionalRole) ||
         (institutionType === "public" && !customInstitutionType) ||
         (industryType === 'Other' && !customIndustryType)
     ) {
@@ -268,13 +274,16 @@ const Signup = () => {
                     <>
                     <ScrollAnimate delay={620}>
                       <div className="form-group">
-                        <label>Industry Type</label>
+                        <label>Professional Industry / Sector</label>
                         <select
                             value={industryType}
-                            onChange={(e) => setIndustryType(e.target.value)}
+                            onChange={(e) => {
+                              setIndustryType(e.target.value);
+                              setProfessionalRole(""); // Reset role when industry changes
+                            }}
                             required
                         >
-                          <option value="" disabled>Select your industry</option>
+                          <option value="" disabled>Choose one industry from:</option>
                           {industries.map((industry) => (
                               <option key={industry} value={industry}>
                                 {industry}
@@ -283,6 +292,26 @@ const Signup = () => {
                         </select>
                       </div>
                     </ScrollAnimate>
+
+                    {industryType && (
+                        <ScrollAnimate delay={640}>
+                          <div className="form-group">
+                            <label>Professional Role / Type</label>
+                            <select
+                                value={professionalRole}
+                                onChange={(e) => setProfessionalRole(e.target.value)}
+                                required
+                            >
+                              <option value="" disabled>Select your professional role</option>
+                              {professionalRoles[industryType]?.map((role) => (
+                                  <option key={role} value={role}>
+                                    {role}
+                                  </option>
+                              ))}
+                            </select>
+                          </div>
+                        </ScrollAnimate>
+                    )}
 
                     {industryType === 'Other' && (
                         <ScrollAnimate delay={620}>
@@ -359,7 +388,7 @@ const Signup = () => {
                 )}
 
 
-                <ScrollAnimate delay={650}>
+                <ScrollAnimate delay={680}>
                   <div className="flex justify-center">
                     <ReCAPTCHA
                         ref={recaptchaRef}
@@ -369,7 +398,7 @@ const Signup = () => {
                   </div>
                 </ScrollAnimate>
 
-                <ScrollAnimate delay={700}>
+                <ScrollAnimate delay={720}>
                   {error && <p className="text-red-500">{error}</p>}
                   <button
                       type="submit"
@@ -383,7 +412,7 @@ const Signup = () => {
               </form>
           )}
 
-          <ScrollAnimate delay={750}>
+          <ScrollAnimate delay={770}>
             <p className="mt-5">
               Already have an account? <NavLink to="/sign-in">Log in now!</NavLink>
             </p>

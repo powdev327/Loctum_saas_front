@@ -10,6 +10,7 @@ const useSignupForm = () => {
     const [password, setPassword] = useState("");
     const [passwordRetyping, setPasswordRetyping] = useState("");
     const [industryType, setIndustryType] = useState(""); // for locum
+    const [professionalRole, setProfessionalRole] = useState(""); // for locum
     const [customIndustryType, setCustomIndustryType] = useState("");
     const [businessSector, setBusinessSector] = useState(""); // for client
     const [customInstitutionType, setCustomInstitutionType] = useState('');
@@ -33,6 +34,7 @@ const useSignupForm = () => {
         password, setPassword,
         passwordRetyping, setPasswordRetyping,
         industryType, setIndustryType,
+        professionalRole, setProfessionalRole,
         customIndustryType, setCustomIndustryType,
         businessSector, setBusinessSector,
         customInstitutionType, setCustomInstitutionType,
