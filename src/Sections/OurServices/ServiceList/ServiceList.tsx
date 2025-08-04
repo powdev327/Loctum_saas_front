@@ -1,10 +1,28 @@
 import ServiceListStyle from "./ServiceList.style";
-import { serviceItems } from "../../../assets/data/OurServicesData/ServiceData";
 import ScrollAnimate from "../../../Components/ScrollAnimate";
 import { useTranslation } from "react-i18next";
 
 const ServiceList = () => {
   const { t } = useTranslation();
+
+  const serviceItems = [
+    {
+      delay: 200,
+      serviceKey: 'service1'
+    },
+    {
+      delay: 250,
+      serviceKey: 'service2'
+    },
+    {
+      delay: 300,
+      serviceKey: 'service3'
+    },
+    {
+      delay: 350,
+      serviceKey: 'service4'
+    }
+  ];
 
   return (
     <ServiceListStyle className="service-section">
@@ -15,12 +33,12 @@ const ServiceList = () => {
               <ScrollAnimate delay={item.delay}>
               <div className={`service-content item-${index + 1}`}>
                 <div className="service-content-title">
-                  <h3>{item.title}</h3>
-                  <h2>{item.subtitle1}</h2>
-                  <h2>{item.subtitle2}</h2>
+                  <h3>{t(`services.serviceList.${item.serviceKey}.title`)}</h3>
+                  <h2>{t(`services.serviceList.${item.serviceKey}.subtitle1`)}</h2>
+                  <h2>{t(`services.serviceList.${item.serviceKey}.subtitle2`)}</h2>
                 </div>
                 <ul className="service-content-list">
-                  {item.contentList.map((content, contentIndex) => (
+                  {t(`services.serviceList.${item.serviceKey}.contentList`, { returnObjects: true }).map((content, contentIndex) => (
                     <li key={contentIndex}>{content}</li>
                   ))}
                 </ul>

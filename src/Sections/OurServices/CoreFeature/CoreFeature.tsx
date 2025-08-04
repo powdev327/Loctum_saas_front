@@ -1,6 +1,11 @@
 import CoreFeatureStyle from "./CoreFeature.style";
 import TitleStyleWrapper from "../../../Components/Title/Title.style";
-import { coreFeatures } from "../../../assets/data/OurServicesData/CoreFeatureData";
+
+// Import images
+import icon1 from '../../../assets/images/services/1.svg';
+import icon2 from '../../../assets/images/services/2.svg';
+import icon3 from '../../../assets/images/services/3.svg';
+import icon4 from '../../../assets/images/services/4.svg';
 
 import layoutIcon from "../../../assets/images/icons/layout.svg";
 import shapeLayoutIcon from "../../../assets/images/icons/shape-layout.svg";
@@ -10,6 +15,29 @@ import { useTranslation } from "react-i18next";
 
 const CoreFeature = () => {
   const { t } = useTranslation();
+
+  const coreFeatures = [
+    {
+      iconSrc: icon1,
+      featureKey: "feature1",
+      delay: 100,
+    },
+    {
+      iconSrc: icon2,
+      featureKey: "feature2",
+      delay: 150,
+    },
+    {
+      iconSrc: icon3,
+      featureKey: "feature3",
+      delay: 200,
+    },
+    {
+      iconSrc: icon4,
+      featureKey: "feature4",
+      delay: 250,
+    },
+  ];
 
   const coreFeatureRef = useRef(null);
   const rotateIconRef = useRef(null);
@@ -42,16 +70,14 @@ const CoreFeature = () => {
             <div className="core-feature-content">
               <ScrollAnimate delay={200}>
                 <TitleStyleWrapper>
-                  <span className="sub-title">Fonctionnalités Clés</span>
+                  <span className="sub-title">{t('services.coreFeatures.subtitle')}</span>
                   <h2 className="title xl-mb-40 md-mb-20">
-                    Nos Services
+                    {t('services.coreFeatures.title')}
                     <br />
-                    Notre meilleur service
+                    {t('services.coreFeatures.titleLine2')}
                   </h2>
                   <p>
-                    QuickLocum facilite la mise en relation entre professionnels de santé
-                    et établissements médicaux à travers des outils intuitifs, performants
-                    et sécurisés.
+                    {t('services.coreFeatures.description')}
                   </p>
 
                 </TitleStyleWrapper>
@@ -90,8 +116,8 @@ const CoreFeature = () => {
                         <img src={feature.iconSrc} alt="core-feature-icon" />
                       </div>
                       <div className="core-feature-item-text">
-                        <h5>{feature.title}</h5>
-                        <p>{feature.description}</p>
+                        <h5>{t(`services.coreFeatures.features.${feature.featureKey}.title`)}</h5>
+                        <p>{t(`services.coreFeatures.features.${feature.featureKey}.description`)}</p>
                       </div>
                     </div>
                   </ScrollAnimate>

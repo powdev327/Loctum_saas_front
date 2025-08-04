@@ -3,13 +3,20 @@ import TitleStyleWrapper from "../../../Components/Title/Title.style";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { easeQuadInOut } from "d3-ease"; // Update path accordingly
-import { skillsData } from "../../../assets/data/OurServicesData/SkilData";
 
 import skillsImg from "../../../assets/images/services/skills-img.svg";
 import AnimatedProgressProvider from "./../../../Components/AnimatedProgressProvider";
 import ScrollAnimate from "../../../Components/ScrollAnimate";
+import { useTranslation } from "react-i18next";
 
 const OurSkil = () => {
+  const { t } = useTranslation();
+
+  const skillsData = [
+    { skillKey: "intelligentMatching", percentage: 92, color: "#00CEC9" },
+    { skillKey: "missionManagement", percentage: 85, color: "#FEC458" },
+    { skillKey: "userExperience", percentage: 90, color: "#0095FF" },
+  ];
   return (
     <OurSkilStyle className="skills-section">
       <div className="container">
@@ -18,16 +25,12 @@ const OurSkil = () => {
             <div className="skills-content">
               <ScrollAnimate delay={200}>
                 <TitleStyleWrapper>
-                  <span className="sub-title">Nos Compétences</span>
+                  <span className="sub-title">{t('services.skills.subtitle')}</span>
                   <h2 className="title">
-                    Experts en Recrutement <br />
-                    &amp; Technologie Médicale
+                    {t('services.skills.title')}
                   </h2>
                   <p>
-                    QuickLocum combine expertise médicale et innovation digitale pour offrir une
-                    plateforme fluide, intuitive et centrée sur les besoins des professionnels de
-                    santé et des établissements. Notre mission est de simplifier chaque étape du
-                    processus de mise en relation.
+                    {t('services.skills.description')}
                   </p>
 
                 </TitleStyleWrapper>
@@ -58,7 +61,7 @@ const OurSkil = () => {
                           )}
                         </AnimatedProgressProvider>
                       </div>
-                      <p>{skill.skill}</p>
+                      <p>{t(`services.skills.skillsList.${skill.skillKey}`)}</p>
                     </div>
                   ))}
                 </div>

@@ -865,6 +865,92 @@
     "registeredUsers": "Registered Users",
     "companies": "Small & Big Companies"
   },
+  "services": {
+    "serviceList": {
+      "service1": {
+        "title": "Placement & Replacement",
+        "subtitle1": "Quick connection",
+        "subtitle2": "between professionals and institutions",
+        "contentList": [
+          "Medical/dental replacement",
+          "One-time missions",
+          "Intelligent matching",
+          "Verified profiles",
+          "Real-time availability"
+        ]
+      },
+      "service2": {
+        "title": "Simplified Management",
+        "subtitle1": "Management tools for",
+        "subtitle2": "institutions and locums",
+        "contentList": [
+          "Mission tracking",
+          "Collaboration history",
+          "Integrated messaging",
+          "Automatic notifications",
+          "Intuitive dashboard"
+        ]
+      },
+      "service3": {
+        "title": "Security & Trust",
+        "subtitle1": "A reliable and",
+        "subtitle2": "transparent digital environment",
+        "contentList": [
+          "Diploma verification",
+          "Reviews and ratings",
+          "Secure contracts",
+          "Responsive support",
+          "Medical standards compliance"
+        ]
+      },
+      "service4": {
+        "title": "Flexibility & Accessibility",
+        "subtitle1": "Find or offer",
+        "subtitle2": "missions in just a few clicks",
+        "contentList": [
+          "Mobile access",
+          "Specialty filtering",
+          "Availability management",
+          "Personalized alerts",
+          "Multilingual interface"
+        ]
+      }
+    },
+    "skills": {
+      "subtitle": "Our Skills",
+      "title": "Experts in Recruitment & Medical Technology",
+      "description": "QuickLocum combines medical expertise and digital innovation to offer a fluid, intuitive platform centered on the needs of healthcare professionals and institutions. Our mission is to simplify every step of the connection process.",
+      "skillsList": {
+        "intelligentMatching": "Intelligent Matching",
+        "missionManagement": "Mission Management",
+        "userExperience": "User Experience"
+      }
+    },
+    "coreFeatures": {
+      "subtitle": "Key Features",
+      "title": "Our Services",
+      "titleLine2": "Our best service",
+      "description": "QuickLocum facilitates the connection between healthcare professionals and medical institutions through intuitive, efficient and secure tools.",
+      "features": {
+        "feature1": {
+          "title": "Intelligent Connection",
+          "description": "A powerful algorithm to connect the right talents to the right institutions."
+        },
+        "feature2": {
+          "title": "Mission Management",
+          "description": "Plan, manage and track your missions in real time via our intuitive interface."
+        },
+        "feature3": {
+          "title": "Security & Compliance",
+          "description": "Full compliance with GDPR standards and protection of sensitive data."
+        },
+        "feature4": {
+          "title": "Dedicated Support",
+          "description": "A responsive team to support you at every step."
+        }
+      }
+    }
+  },
   "footer": {
     "description": "QuickLocum is the dedicated platform for managing and connecting healthcare professionals with locum opportunities, helping your healthcare organization grow quickly and efficiently",
     "text": "© 2023 Quicklocum. All rights reserved.",
