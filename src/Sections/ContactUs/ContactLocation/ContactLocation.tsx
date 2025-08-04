@@ -1,45 +1,51 @@
 import ContactLocationStyle from "./ContactLocation.style";
-import Data from "../../../assets/data/contact-us/location";
 import ScrollAnimate from "../../../Components/ScrollAnimate";
+import { useTranslation } from "react-i18next";
+
+// Import icons
+import Icon2 from "../../../assets/images/icons/phone.svg";
+import Icon3 from "../../../assets/images/icons/sms.svg";
 
 const ContactLocation = () => {
+  const { t } = useTranslation();
+
+  const contactData = [
+    {
+      icon: Icon2,
+      titleKey: "callUs",
+      contactKey: "mobile",
+    },
+    {
+      icon: Icon3,
+      titleKey: "mailUs",
+      contactKey: "contact",
+    },
+  ];
   return (
       <ContactLocationStyle>
         <ScrollAnimate>
           <div className="container">
             <div className="row">
                 <div className='container-title'>
-                  <h2 className='title'>Get in <span className='badge-title'>Touch</span></h2>
-                  <p className='description'>We're here to help with any questions you might have. Reach out to us using any of the contact methods below.</p>
+                  <h2 className='title'>{t('contactUs.getInTouch.title')} <span className='badge-title'>{t('contactUs.getInTouch.titleBadge')}</span></h2>
+                  <p className='description'>{t('contactUs.getInTouch.description')}</p>
                 </div>
               <div className="col-md-12">
                 <div className="cards-container">
-                  {Data?.map((location, index) => (
+                  {contactData?.map((item, index) => (
                       <ScrollAnimate key={index} delay={index * 100}>
                         <div className="contact-card">
                           <div className="card-accent"></div>
                           <div className="card-content">
                             <div className="card-header">
                               <div className="icon-container">
-                                <img src={location.icon || "/placeholder.svg"} alt="icon" />
+                                <img src={item.icon || "/placeholder.svg"} alt="icon" />
                               </div>
-                              <h4>{location.title}</h4>
+                              <h4>{t(`contactUs.getInTouch.contactInfo.${item.titleKey}`)}</h4>
                             </div>
 
                             <div className="card-details">
-{/*
-                              {location.description && <p className="address">{location.description}</p>}
-*/}
-
-                              {location.phoneNumbers &&
-                                  location.phoneNumbers?.map((phoneNumber, i) => (
-                                      <p key={i} className="contact-info phone">{phoneNumber}</p>
-                                  ))}
-
-                              {location.emails &&
-                                  location.emails?.map((email, i) => (
-                                      <p key={i} className="contact-info email">{email}</p>
-                                  ))}
+                              <p className="contact-info">{t(`contactUs.getInTouch.contactInfo.${item.contactKey}`)}</p>
                             </div>
                           </div>
                         </div>

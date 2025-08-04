@@ -40,8 +40,8 @@ const SayHello = () => {
             <div className="contact-content">
               <ScrollAnimate>
                 <SectionTitle
-                  subtitle="Say Hello!"
-                  title="We'd pleased to hear"
+                  subtitle={t('contactUs.sayHello.subtitle')}
+                  title={t('contactUs.sayHello.title')}
                 />
               </ScrollAnimate>
 
@@ -50,46 +50,46 @@ const SayHello = () => {
                   <form action="/" method="post">
                     <div className="form-input-between">
                       <div className="form-input mb-20">
-                        <label htmlFor="user-name">Your Name *</label>
+                        <label htmlFor="user-name">{t('contactUs.sayHello.form.nameLabel')}</label>
                         <input
                           type="text"
                           name="user-name"
                           id="user-name"
-                          placeholder="e.g. Roe Smith"
+                          placeholder={t('contactUs.sayHello.form.namePlaceholder')}
                           required
                         />
                       </div>
                       <div className="form-input mb-20">
-                        <label htmlFor="email-address">Email Address *</label>
+                        <label htmlFor="email-address">{t('contactUs.sayHello.form.emailLabel')}</label>
                         <input
                           type="email"
                           name="email-address"
                           id="email-address"
-                          placeholder="e.g. example@mail.com"
+                          placeholder={t('contactUs.sayHello.form.emailPlaceholder')}
                           required
                         />
                       </div>
                     </div>
                     <div className="form-input-between">
                       <div className="form-input mb-20">
-                        <label htmlFor="phone-number">Phone Number</label>
+                        <label htmlFor="phone-number">{t('contactUs.sayHello.form.phoneLabel')}</label>
                         <input
                           type="text"
                           name="phone-number"
                           id="phone-number"
-                          placeholder="e.g. +55 695 6965"
+                          placeholder={t('contactUs.sayHello.form.phonePlaceholder')}
                         />
                       </div>
 
                     </div>
                     <div className="form-input mb-30">
-                      <label htmlFor="message">Message *</label>
+                      <label htmlFor="message">{t('contactUs.sayHello.form.messageLabel')}</label>
                       <textarea
                         name="message"
                         id="message"
                         cols="30"
                         rows="5"
-                        placeholder="Type your message"
+                        placeholder={t('contactUs.sayHello.form.messagePlaceholder')}
                         required
                       ></textarea>
                     </div>
@@ -97,7 +97,7 @@ const SayHello = () => {
                       <input
                         type="submit"
                         className="template-btn primary-bg"
-                        value="Submit Message"
+                        value={t('contactUs.sayHello.form.submitButton')}
                       />
                     </div>
                   </form>

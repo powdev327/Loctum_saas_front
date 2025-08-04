@@ -951,6 +951,34 @@
       }
     }
   },
+  "contactUs": {
+    "sayHello": {
+      "subtitle": "Say Hello!",
+      "title": "We'd pleased to hear",
+      "form": {
+        "nameLabel": "Your Name *",
+        "namePlaceholder": "e.g. Roe Smith",
+        "emailLabel": "Email Address *",
+        "emailPlaceholder": "e.g. example@mail.com",
+        "phoneLabel": "Phone Number",
+        "phonePlaceholder": "e.g. +55 695 6965",
+        "messageLabel": "Message *",
+        "messagePlaceholder": "Type your message",
+        "submitButton": "Submit Message"
+      }
+    },
+    "getInTouch": {
+      "title": "Get in",
+      "titleBadge": "Touch",
+      "description": "We're here to help with any questions you might have. Reach out to us using any of the contact methods below.",
+      "contactInfo": {
+        "callUs": "Call Us",
+        "mailUs": "Mail Us",
+        "mobile": "Mobile: (+212) 587-882-6180",
+        "contact": "Contact: contact@quicklocum.ca"
+      }
+    }
+  },
   "footer": {
     "description": "QuickLocum is the dedicated platform for managing and connecting healthcare professionals with locum opportunities, helping your healthcare organization grow quickly and efficiently",
     "text": "© 2023 Quicklocum. All rights reserved.",

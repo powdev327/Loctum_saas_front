@@ -1037,6 +1037,34 @@
       }
     }
   },
+  "contactUs": {
+    "sayHello": {
+      "subtitle": "Dites Bonjour !",
+      "title": "Nous serions ravis de vous entendre",
+      "form": {
+        "nameLabel": "Votre Nom *",
+        "namePlaceholder": "ex. Jean Dupont",
+        "emailLabel": "Adresse Email *",
+        "emailPlaceholder": "ex. exemple@mail.com",
+        "phoneLabel": "Numéro de Téléphone",
+        "phonePlaceholder": "ex. +33 1 23 45 67 89",
+        "messageLabel": "Message *",
+        "messagePlaceholder": "Tapez votre message",
+        "submitButton": "Envoyer le Message"
+      }
+    },
+    "getInTouch": {
+      "title": "Entrer en",
+      "titleBadge": "Contact",
+      "description": "Nous sommes là pour vous aider avec toutes les questions que vous pourriez avoir. Contactez-nous en utilisant l'une des méthodes de contact ci-dessous.",
+      "contactInfo": {
+        "callUs": "Appelez-nous",
+        "mailUs": "Écrivez-nous",
+        "mobile": "Mobile : (+212) 587-882-6180",
+        "contact": "Contact : contact@quicklocum.ca"
+      }
+    }
+  },
   "footer": {
     "description": "QuickLocum est la plateforme dédiée à la gestion et à la connexion des professionnels de la santé avec les opportunités de remplacement, aidant votre organisation de soins de santé à croître rapidement et efficacement",
     "text": "© 2023 Quicklocum. Tous droits réservés.",
