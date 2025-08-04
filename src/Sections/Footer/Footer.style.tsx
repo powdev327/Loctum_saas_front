@@ -107,6 +107,85 @@ const FooterStyleWrapper = styled.footer`
     .footer-bottom {
       border-top: 1px solid ${({ theme }) => theme.colors.blackColor}26;
     }
+
+    .footer-language-switcher-wrapper {
+      .footer-language-switcher {
+        .relative {
+          position: relative;
+          
+          button {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: ${({ theme }) => theme.colors.textColor};
+            transition: all 0.2s ease;
+            
+            &:hover {
+              border-color: rgba(255, 255, 255, 0.4);
+              color: ${({ theme }) => theme.colors.whiteColor};
+            }
+            
+            img {
+              width: 16px;
+              height: 16px;
+              border-radius: 2px;
+            }
+            
+            span {
+              font-size: 12px;
+              font-weight: 600;
+              text-transform: uppercase;
+            }
+            
+            svg {
+              width: 12px;
+              height: 12px;
+            }
+          }
+          
+          > div {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            margin-bottom: 8px;
+            background: ${({ theme }) => theme.colors.whiteColor};
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 120px;
+            z-index: 50;
+            
+            button {
+              background: transparent;
+              border: none;
+              padding: 8px 12px;
+              color: ${({ theme }) => theme.colors.title};
+              font-size: 12px;
+              
+              &:hover {
+                background: rgba(0, 0, 0, 0.05);
+                color: ${({ theme }) => theme.colors.title};
+              }
+              
+              &:first-child {
+                border-radius: 6px 6px 0 0;
+              }
+              
+              &:last-child {
+                border-radius: 0 0 6px 6px;
+              }
+              
+              img {
+                width: 16px;
+                height: 16px;
+                border-radius: 2px;
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
   .footer-one-menu-list{

@@ -10,8 +10,11 @@ import Ellipse3Image from "../../../assets/images/main-demo/ellipse3.png";
 import Ellipse4Image from "../../../assets/images/main-demo/ellipse4.png";
 import ManImage from "../../../assets/images/main-demo/man.png";
 import ScrollAnimate from "../../../Components/ScrollAnimate";
+import { useTranslation } from "react-i18next";
 
 const HomeIntegrate = () => {
+  const { t } = useTranslation();
+  
   return (
     <HomeIntegrateStyleWrapper>
       <div className="container">
@@ -22,13 +25,10 @@ const HomeIntegrate = () => {
                 <div className="integrate-card-header">
                   <ScrollAnimate delay={240}>
                   <h3>
-                    Integrate with
-                    <br />
-                    all apps you need
+                    {t('home.homeIntegrate.section1.title')}
                   </h3>
                   <p>
-                    Great importance but because, combined with a handful of model
-                    sentence structures,
+                    {t('home.homeIntegrate.section1.description')}
                   </p>
                   </ScrollAnimate>
                 </div>
@@ -94,13 +94,10 @@ const HomeIntegrate = () => {
                 <div className="integrate-card-header">
                   <ScrollAnimate delay={270}>
                   <h3>
-                    Easy concept
-                    <br />
-                    with best usability
+                    {t('home.homeIntegrate.section2.title')}
                   </h3>
                   <p>
-                    Great importance but because, combined with a handful of model
-                    sentence structures,
+                    {t('home.homeIntegrate.section2.description')}
                   </p>
                   </ScrollAnimate>
                 </div>

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import TestimonialsStyleWrapper from "./Testimonials.style";
 import Slider from "react-slick";
-import Data from "../../assets/data/TestimonialsOne";
 import { FaHeart } from "react-icons/fa";
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 
@@ -11,8 +10,55 @@ import testimonialShape3 from "../../assets/images/shape/testimonial-shape3.png"
 import QuoteShapeImg from "../../assets/images/shape/quote-shape.svg";
 import QuoteIconImg from "../../assets/images/shape/quote-icon.png";
 import ScrollAnimate from "../../Components/ScrollAnimate";
+import { useTranslation } from "react-i18next";
+
+import Img1 from "../../assets/images/avater/testimonial1.png";
+import Img2 from "../../assets/images/avater/testimonial2.png";
+import Img3 from "../../assets/images/avater/testimonial3.png";
+import Img4 from "../../assets/images/avater/testimonial4.png";
 
 const TestimonialsOne = () => {
+  const { t } = useTranslation();
+
+  // Create testimonial data using translations
+  const testimonialData = [
+    {
+      id: 1,
+      image: Img1,
+      name: "Dr. Sarah Benhima",
+      designation: "Pharmacienne remplaçante",
+      review: t('home.testimonials.review1'),
+    },
+    {
+      id: 2,
+      image: Img2,
+      name: "Hicham El Fassi",
+      designation: "Directeur de clinique privée",
+      review: t('home.testimonials.review2'),
+    },
+    {
+      id: 3,
+      image: Img3,
+      name: "Inès Rahmani",
+      designation: "Infirmière indépendante",
+      review: t('home.testimonials.review3'),
+    },
+    {
+      id: 4,
+      image: Img4,
+      name: "Youssef Lahlou",
+      designation: "Responsable RH, Agence Médirecrut",
+      review: t('home.testimonials.review4'),
+    },
+    {
+      id: 5,
+      image: Img1,
+      name: "Sofia Mernissi",
+      designation: "Chirurgienne-dentiste remplaçante",
+      review: t('home.testimonials.review5'),
+    },
+  ];
+
   const [nav1, setNav1] = useState(null);
   const [nav2, setNav2] = useState(null);
   let sliderRef1 = useRef(null);
@@ -64,7 +110,7 @@ const TestimonialsOne = () => {
         </button>
 
         <div className="slider-counter">
-          <p>{currentSlide + 1}/5</p>
+          <p>{currentSlide + 1}/{testimonialData.length}</p>
         </div>
 
         <button className="slider-arrow right" onClick={handleSliderRight}>
@@ -143,7 +189,7 @@ const TestimonialsOne = () => {
                     asNavFor={nav1}
                     ref={(slider) => (sliderRef2 = slider)}
                   >
-                    {Data?.map((item, i) => (
+                    {testimonialData?.map((item, i) => (
                       <div className="slider-item" key={i}>
                         <img src={item.image} alt="slider-img" />
                       </div>
@@ -154,11 +200,11 @@ const TestimonialsOne = () => {
                 <div className="testimonial-card-right">
                   <ScrollAnimate delay={250}>
                     <div className="section-title">
-                      <span className="sub-title">Testimonials</span>
+                      <span className="sub-title">{t('home.testimonials.sectionTitle')}</span>
                       <h2 className="title white-color love-icon">
-                        We
+                        {t('home.testimonials.sectionSubtitle1')}
                         <FaHeart />
-                        Feedback
+                        {t('home.testimonials.sectionSubtitle2')}
                       </h2>
                     </div>
                   </ScrollAnimate>
@@ -170,7 +216,7 @@ const TestimonialsOne = () => {
                       asNavFor={nav2}
                       ref={(slider) => (sliderRef1 = slider)}
                     >
-                      {Data?.map((item, i) => (
+                      {testimonialData?.map((item, i) => (
                         <div className="slider-item" key={i}>
                           <p>{item.review}</p>
                           <div className="slider-item-user">

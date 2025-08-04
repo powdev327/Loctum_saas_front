@@ -6,12 +6,15 @@ import Breadcumbs from "../Components/Breadcumbs/Breadcumbs";
 import ServiceList from "../Sections/OurServices/ServiceList/ServiceList";
 import OurSkil from "../Sections/OurServices/OurSkil/OurSkil";
 import CoreFeature from "../Sections/OurServices/CoreFeature/CoreFeature";
+import { useTranslation } from "react-i18next";
 
 const OurServices = () => {
+  const { t } = useTranslation();
+
   return (
     <Layout pageTitle="QuickLocum - Our Services">
       <Header variant="main-header" />
-      <Breadcumbs title="Our Services" />
+      <Breadcumbs title={t('pages.ourServices')} />
       <ServiceList />
       <OurSkil />
       <CoreFeature />

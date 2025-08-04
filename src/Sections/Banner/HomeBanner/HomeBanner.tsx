@@ -46,7 +46,7 @@ const HomeBanner = () => {
 
                 <ScrollAnimate delay={200}>
                   <p>
-                    QuickLocum simplifies healthcare staffing by connecting locum professionals with clinics and hospitals in need—quickly and efficiently.
+                    {t("home.banner.description")}
                   </p>
                 </ScrollAnimate>
               </div>
@@ -54,8 +54,8 @@ const HomeBanner = () => {
                 <ScrollAnimate delay={250}>
                   <a href="/sign-up" className="bg-blue-btn">
                     <span className="btn-inner">
-                      <span className="btn-normal-text">Get Started for Free</span>
-                      <span className="btn-hover-text">Get Started for Free</span>
+                      <span className="btn-normal-text">{t("home.banner.cta")}</span>
+                      <span className="btn-hover-text">{t("home.banner.cta")}</span>
                     </span>
                   </a>
                 </ScrollAnimate>
@@ -65,13 +65,13 @@ const HomeBanner = () => {
                   <li>
                     <div className="list-item">
                       <FaCheck />
-                      <p className="wt-700">No credit card required</p>
+                      <p className="wt-700">{t("home.banner.feature1")}</p>
                     </div>
                   </li>
                   <li>
                     <div className="list-item">
                       <FaCheck />
-                      <p className="wt-700">Instant job matching</p>
+                      <p className="wt-700">{t("home.banner.feature2")}</p>
                     </div>
                   </li>
                 </ul>

@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import Slider from "react-slick";
 import BusinessChooseStyle from "./BusinessChoose.style";
 import SectionTitle from "../../../Components/SectionTitle/SectionTitle";
+import { useTranslation } from "react-i18next";
 
 import whyChoose1 from "../../../assets/images/business/why-choose1.png";
 import whyChoose2 from "../../../assets/images/business/why-choose2.png";
@@ -10,8 +11,37 @@ import whyChoose4 from "../../../assets/images/business/why-choose4.png";
 import ScrollAnimate from "../../../Components/ScrollAnimate";
 
 const BusinessChoose = () => {
+  const { t } = useTranslation();
   const sliderForRef = useRef(null);
   const sliderNavRef = useRef(null);
+
+  // Create tab content data using translations
+  const tabsData = [
+    {
+      image: whyChoose1,
+      title: t('home.whyChoose.tab1.title'),
+      description: t('home.whyChoose.tab1.description'),
+      features: t('home.whyChoose.tab1.features', { returnObjects: true })
+    },
+    {
+      image: whyChoose2,
+      title: t('home.whyChoose.tab2.title'),
+      description: t('home.whyChoose.tab2.description'),
+      features: t('home.whyChoose.tab2.features', { returnObjects: true })
+    },
+    {
+      image: whyChoose3,
+      title: t('home.whyChoose.tab3.title'),
+      description: t('home.whyChoose.tab3.description'),
+      features: t('home.whyChoose.tab3.features', { returnObjects: true })
+    },
+    {
+      image: whyChoose4,
+      title: t('home.whyChoose.tab4.title'),
+      description: t('home.whyChoose.tab4.description'),
+      features: t('home.whyChoose.tab4.features', { returnObjects: true })
+    }
+  ];
 
   const [settingsFor, setSettingsFor] = useState({
     slidesToShow: 1,
@@ -58,8 +88,8 @@ const BusinessChoose = () => {
           <div className="col-md-12">
             <ScrollAnimate delay={200}>
             <SectionTitle
-              title="Get amazing benefits"
-              subtitle="Why Choose us"
+              title={t('home.features.title')}
+              subtitle={t('home.features.subtitle')}
               alignment="center"
               parentClass="z-index-3"
             />
@@ -79,20 +109,20 @@ const BusinessChoose = () => {
                 className="tab-buttons why-chose-slider-nav"
               >
                 <button className="tab-btn">
-                  <span>01.</span> <span className="text">Clean</span>
-                  <span className="text2">Design</span>
+                  <span>01.</span> <span className="text">{t('home.whyChoose.tab1.text1')}</span>
+                  <span className="text2">{t('home.whyChoose.tab1.text2')}</span>
                 </button>
                 <button className="tab-btn">
-                  <span>02.</span> <span className="text">New</span>
-                  <span className="text2">technology</span>
+                  <span>02.</span> <span className="text">{t('home.whyChoose.tab2.text1')}</span>
+                  <span className="text2">{t('home.whyChoose.tab2.text2')}</span>
                 </button>
                 <button className="tab-btn">
-                  <span>03.</span> <span className="text">High</span>
-                  <span className="text2">Performance</span>
+                  <span>03.</span> <span className="text">{t('home.whyChoose.tab3.text1')}</span>
+                  <span className="text2">{t('home.whyChoose.tab3.text2')}</span>
                 </button>
                 <button className="tab-btn">
-                  <span>04.</span> <span className="text">Best</span>
-                  <span className="text2">usability</span>
+                  <span>04.</span> <span className="text">{t('home.whyChoose.tab4.text1')}</span>
+                  <span className="text2">{t('home.whyChoose.tab4.text2')}</span>
                 </button>
               </Slider>
               <progress max={100} value={0} />
@@ -100,158 +130,29 @@ const BusinessChoose = () => {
           </div>
 
           <Slider {...settingsFor} className="convert-visitors-slider-for why-chose-slider">
-            <div className="section">
-              <div className="tab-body">
-                <div className="tab-body-img">
-                  <img src={whyChoose1} alt="img" />
-                </div>
-                <div className="tab-body-text">
-                  <h2>No compromise with</h2>
-                  <h2>quality design</h2>
-                  <p>
-                    We use as filler text for layouts, non-readability is of
-                    great importance but because those who do not know how to
-                    pursue pleasure rationally encounter consequences that are
-                    extremely painful. Nor again is there anyone who loves or
-                    pursues or desires to obtain.
-                  </p>
-                  <ul className="list">
-                    <li>
-                      <div className="list-item">
-                        <span className="iconify" data-icon="bi:check-lg" />
-                        <p>Share multiple screen at a time</p>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="list-item">
-                        <span className="iconify" data-icon="bi:check-lg" />
-                        <p>High Quality screen</p>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="list-item">
-                        <span className="iconify" data-icon="bi:check-lg" />
-                        <p>No buffering</p>
-                      </div>
-                    </li>
-                  </ul>
+            {tabsData.map((tab, index) => (
+              <div key={index} className="section">
+                <div className="tab-body">
+                  <div className="tab-body-img">
+                    <img src={tab.image} alt="img" />
+                  </div>
+                  <div className="tab-body-text">
+                    <h2>{tab.title}</h2>
+                    <p>{tab.description}</p>
+                    <ul className="list">
+                      {tab.features && tab.features.map((feature, featureIndex) => (
+                        <li key={featureIndex}>
+                          <div className="list-item">
+                            <span className="iconify" data-icon="bi:check-lg" />
+                            <p>{feature}</p>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="section">
-              <div className="tab-body">
-                <div className="tab-body-img">
-                  <img src={whyChoose2} alt="img" />
-                </div>
-                <div className="tab-body-text">
-                  <h2>No compromise with</h2>
-                  <h2>quality design</h2>
-                  <p>
-                    We use as filler text for layouts, non-readability is of
-                    great importance but because those who do not know how to
-                    pursue pleasure rationally encounter consequences that are
-                    extremely painful. Nor again is there anyone who loves or
-                    pursues or desires to obtain.
-                  </p>
-                  <ul className="list">
-                    <li>
-                      <div className="list-item">
-                        <span className="iconify" data-icon="bi:check-lg" />
-                        <p>Share multiple screen at a time</p>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="list-item">
-                        <span className="iconify" data-icon="bi:check-lg" />
-                        <p>High Quality screen</p>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="list-item">
-                        <span className="iconify" data-icon="bi:check-lg" />
-                        <p>No buffering</p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div className="section">
-              <div className="tab-body">
-                <div className="tab-body-img">
-                  <img src={whyChoose3} alt="img" />
-                </div>
-                <div className="tab-body-text">
-                  <h2>No compromise with</h2>
-                  <h2>quality design</h2>
-                  <p>
-                    We use as filler text for layouts, non-readability is of
-                    great importance but because those who do not know how to
-                    pursue pleasure rationally encounter consequences that are
-                    extremely painful. Nor again is there anyone who loves or
-                    pursues or desires to obtain.
-                  </p>
-                  <ul className="list">
-                    <li>
-                      <div className="list-item">
-                        <span className="iconify" data-icon="bi:check-lg" />
-                        <p>Share multiple screen at a time</p>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="list-item">
-                        <span className="iconify" data-icon="bi:check-lg" />
-                        <p>High Quality screen</p>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="list-item">
-                        <span className="iconify" data-icon="bi:check-lg" />
-                        <p>No buffering</p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div className="section">
-              <div className="tab-body">
-                <div className="tab-body-img">
-                  <img src={whyChoose4} alt="img" />
-                </div>
-                <div className="tab-body-text">
-                  <h2>No compromise with</h2>
-                  <h2>quality design</h2>
-                  <p>
-                    We use as filler text for layouts, non-readability is of
-                    great importance but because those who do not know how to
-                    pursue pleasure rationally encounter consequences that are
-                    extremely painful. Nor again is there anyone who loves or
-                    pursues or desires to obtain.
-                  </p>
-                  <ul className="list">
-                    <li>
-                      <div className="list-item">
-                        <span className="iconify" data-icon="bi:check-lg" />
-                        <p>Share multiple screen at a time</p>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="list-item">
-                        <span className="iconify" data-icon="bi:check-lg" />
-                        <p>High Quality screen</p>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="list-item">
-                        <span className="iconify" data-icon="bi:check-lg" />
-                        <p>No buffering</p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
+            ))}
           </Slider>
         </div>
         </ScrollAnimate>

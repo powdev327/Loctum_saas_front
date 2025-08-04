@@ -8,12 +8,15 @@ import PeopleUsing from "../Sections/AboutUs/PeopleUsing/PeopleUsing";
 import AboutUsContent from "../Sections/AboutUs/AboutUsContent/AboutUsContent";
 import Team from "../Sections/Team/Team";
 import TestimonialsOne from "../Sections/Testimonials/TestimonialsOne";
+import { useTranslation } from "react-i18next";
 
 const AboutUs = () => {
+  const { t } = useTranslation();
+
   return (
     <Layout pageTitle="QuickLocum - About us">
       <Header variant="main-header" />
-      <Breadcumbs title="About Us" />
+      <Breadcumbs title={t('aboutUs.pageTitle')} />
       <PeopleUsing />
       <ParallaxComponent />
       <AboutUsContent />

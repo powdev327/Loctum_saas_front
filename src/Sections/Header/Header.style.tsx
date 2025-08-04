@@ -1594,72 +1594,10 @@ const HeaderStyleWrapper = styled.header`
 
   @media screen and (max-width: 991px) {
     .header-navbar-content {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 320px;
-      height: 100%;
-      background-color: black;
-      padding: 30px;
-      flex-direction: column;
-      align-items: flex-start !important;
-      justify-content: flex-start !important;
-      transition: 0.3s;
-      transform: translateX(-155%);
-      height: 100vh;
-
-      &.show {
-        transform: translateX(0%);
-      }
+      display: none !important;
     }
 
-    .main-menu {
-      flex-direction: column;
-      align-items: flex-start;
 
-      li {
-        position: relative;
-        a {
-          padding: 0px;
-        }
-        &:hover {
-          .dropdown-toggle {
-            &::after {
-              transform: rotate(0deg);
-            }
-          }
-
-          .submenu {
-            transform: translateY(10px);
-          }
-        }
-      }
-
-      .submenu {
-        display: none;
-        position: unset;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        background-color: transparent;
-        border: none;
-        box-shadow: none;
-        border-top: 0;
-        padding: 5px 0;
-        transform: translateY(10px);
-        transition: 0.3s;
-        opacity: 1;
-        visibility: visible;
-
-        li a {
-          padding: 10px 15px;
-        }
-
-        &.show {
-          display: block;
-        }
-      }
-    }
 
     .header-extra {
       margin-top: 30px;

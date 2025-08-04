@@ -23,8 +23,11 @@ import WaveShapeImage from "../../../assets/images/shape/wave-shape.svg";
 import { FaCheck } from "react-icons/fa6";
 import { GoArrowRight } from "react-icons/go";
 import ScrollAnimate from "../../../Components/ScrollAnimate";
+import { useTranslation } from "react-i18next";
 
 const HomeOneMarketingSection = () => {
+  const { t } = useTranslation();
+
   // counter up
   const sectionRef = useRef(null);
 
@@ -105,10 +108,10 @@ const HomeOneMarketingSection = () => {
                   <TitleStyleWrapper>
                     <ScrollAnimate delay={250}>
                       <div className="section-title">
-                        <span className="sub-title">Efficient Locum Staffing</span>
+                        <span className="sub-title">{t('home.marketing.section1.subtitle')}</span>
                         <h2 className="title">
-                          Seamless Hiring,
-                          <br /> Reliable <span className="marketing-badge">Healthcare Staffing</span>
+                          {t('home.marketing.section1.title1')},
+                          <br /> {t('home.marketing.section1.title2')} <span className="marketing-badge">{t('home.marketing.section1.badge')}</span>
                         </h2>
                       </div>
                     </ScrollAnimate>
@@ -117,9 +120,7 @@ const HomeOneMarketingSection = () => {
                 <div className="marketing-content-body">
                   <ScrollAnimate delay={300}>
                     <p>
-                      QuickLocum connects pharmacies, clinics, and hospitals with qualified locum professionals in real-time.
-                      By streamlining the hiring process, healthcare providers can reduce administrative overhead, minimize staffing
-                      gaps, and ensure consistent patient care.
+                      {t('home.marketing.section1.description')}
                     </p>
                   </ScrollAnimate>
                   <ScrollAnimate delay={300}>
@@ -127,13 +128,13 @@ const HomeOneMarketingSection = () => {
                       <li>
                         <div className="list-item">
                           <FaCheck />
-                          <p className="w-700">Instant locum booking with verified professionals</p>
+                          <p className="w-700">{t('home.marketing.section1.feature1')}</p>
                         </div>
                       </li>
                       <li>
                         <div className="list-item">
                           <FaCheck />
-                          <p className="w-700">Automated scheduling and workforce optimization</p>
+                          <p className="w-700">{t('home.marketing.section1.feature2')}</p>
                         </div>
                       </li>
                     </ul>
@@ -153,8 +154,8 @@ const HomeOneMarketingSection = () => {
               <div className="marketing-content">
                 <ScrollAnimate delay={200}>
                   <SectionTitle
-                    subtitle="Workforce Management & Payroll"
-                    title="Simplify Shift Planning and Payment Processing"
+                    subtitle={t('home.marketing.section2.subtitle')}
+                    title={t('home.marketing.section2.title')}
                     parentClass="md-mb-0"
                   />
                 </ScrollAnimate>
@@ -163,15 +164,13 @@ const HomeOneMarketingSection = () => {
                   <ScrollAnimate delay={250}>
                     <div className="mb-30">
                       <p>
-                        QuickLocum enables healthcare providers to manage shifts, track locum availability, and automate payroll
-                        processing. By reducing the complexities of temporary staffing, QuickLocum allows pharmacies, hospitals,
-                        and clinics to focus on delivering high-quality patient care without the stress of last-minute scheduling challenges.
+                        {t('home.marketing.section2.description')}
                       </p>
                     </div>
                   </ScrollAnimate>
                   <ScrollAnimate delay={300}>
                     <a href="#" className="text-link">
-                      <span>Learn More</span>
+                      <span>{t('common.learnMore')}</span>
                       <GoArrowRight />
                     </a>
                   </ScrollAnimate>
@@ -192,7 +191,7 @@ const HomeOneMarketingSection = () => {
                       </h2>
                       <img src={Star4Image} alt="star" />
                     </div>
-                    <p>Reduction in hiring time</p>
+                    <p>{t('home.marketing.section2.reductionText')}</p>
                   </div>
                   <div className="overlay-item success-rate">
                     <img className="rotate-icon" src={ItemShapeImage} alt="icon" />
@@ -206,7 +205,7 @@ const HomeOneMarketingSection = () => {
                           PathColor="#00CEC9"
                           TrailColor="rgba(0, 206, 201, 0.2)"
                         />
-                        <p>Staffing success rate</p>
+                        <p>{t('home.marketing.section2.successText')}</p>
                       </div>
                     </div>
                   </div>

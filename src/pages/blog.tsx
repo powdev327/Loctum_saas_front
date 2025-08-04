@@ -4,13 +4,16 @@ import Breadcumbs from "../Components/Breadcumbs/Breadcumbs";
 import StartBuildingComponent from "../Components/StartBuilding/StartBuildingComponent";
 import FooterTwo from "../Sections/Footer/FooterTwo";
 import BlogList from "../Sections/Blog/BlogList/BlogList";
+import { useTranslation } from "react-i18next";
 
 const Blog = () => {
+  const { t } = useTranslation();
+  
   return (
     <Layout pageTitle="QuickLocum - Blog">
       <div className="bg-gray">
         <Header variant="main-header" />
-        <Breadcumbs title="Latest Blogs" />
+        <Breadcumbs title={t('pages.blog')} />
         <BlogList />
         <StartBuildingComponent />
         <FooterTwo />

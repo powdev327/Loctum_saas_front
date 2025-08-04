@@ -1,13 +1,16 @@
 import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 import Data from "../../../assets/data/header/mobileMenu";
 import MobileMenuStyleWrapper from "./Menu.style";
+import { useTranslation } from "react-i18next";
 
 //logo images
-import LogoImg2 from "../../../assets/images/logo/logo-dark.svg";
+import LogoImg2 from "../../../assets/images/logo/q-logo-dark.svg";
 
 const MobileMenu = () => {
   const [openSubMenuIndex, setOpenSubMenuIndex] = useState(null);
   const [openChildSubMenuIndex, setOpenChildSubMenuIndex] = useState(null);
+  const { t } = useTranslation();
 
   const handleSubmenuOpen = (index) => {
     setOpenSubMenuIndex(openSubMenuIndex === index ? null : index);
@@ -26,9 +29,9 @@ const MobileMenu = () => {
       aria-labelledby="offcanvasStacoLabel"
     >
       <div className="offcanvas-header">
-        <a className="navbar-brand header-logo" href="/">
+        <NavLink className="navbar-brand header-logo" to="/">
           <img src={LogoImg2} alt="logo" />
-        </a>
+        </NavLink>
         <button
           type="button"
           className="btn-close"
@@ -38,89 +41,25 @@ const MobileMenu = () => {
       </div>
 
       <div className="offcanvas-body offcanvasStaco-body">
-        <ul className="nav-menu ">
-          {Data?.map((menuItem, mid) => {
-            let hasSubMenu = false;
-            if (menuItem.subMenus?.length > 0) {
-              hasSubMenu = true;
-            }
-
-            return (
-              <li key={mid} className={hasSubMenu ? "has-submenu" : ""}>
-                {hasSubMenu ? (
-                  <button
-                    className={`${hasSubMenu ? "dropdown-item" : ""} ${
-                      openSubMenuIndex === mid ? "submenu-opened" : ""
-                    }`}
-                    onClick={() => handleSubmenuOpen(mid)}
-                  >
-                    {menuItem.title}
-                  </button>
-                ) : (
-                  <a href={menuItem.url}>{menuItem.title}</a>
-                )}
-
-                {menuItem.subMenus?.length > 0 && (
-                  <ul
-                    className={`sub-menu ${
-                      openSubMenuIndex === mid ? "open" : ""
-                    }`}
-                  >
-                    {menuItem.subMenus?.map((subMenuItem, sid) => {
-                      let hasSubMenuChild = false;
-                      if (subMenuItem.subMenuChilds?.length > 0) {
-                        hasSubMenuChild = true;
-                      }
-
-                      return (
-                        <li
-                          key={sid}
-                          className={
-                            hasSubMenuChild ? "submenu-has-submenu" : ""
-                          }
-                        >
-                          {hasSubMenuChild ? (
-                            <button
-                              className={`${
-                                hasSubMenuChild ? "dropdown-item" : ""
-                              } ${
-                                openChildSubMenuIndex === sid
-                                  ? "submenu-opened"
-                                  : ""
-                              }`}
-                              onClick={() => handleSubmenuChildOpen(sid)}
-                            >
-                              {subMenuItem.title}
-                            </button>
-                          ) : (
-                            <a href={subMenuItem.url}>{subMenuItem.title}</a>
-                          )}
-
-                          {subMenuItem.subMenuChilds?.length > 0 && (
-                            <ul
-                              className={`sub-menu ${
-                                openChildSubMenuIndex === sid ? "open" : ""
-                              }`}
-                            >
-                              {subMenuItem.subMenuChilds?.map(
-                                (subMenuChild, smcid) => (
-                                  <li key={smcid}>
-                                    <a href={subMenuChild.url}>
-                                      {subMenuChild.title}
-                                    </a>
-                                  </li>
-                                )
-                              )}
-                            </ul>
-                          )}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-              </li>
-            );
-          })}
+        <ul className="nav-menu">
+          <li>
+            <NavLink to="/" data-bs-dismiss="offcanvas">{t('header.home')}</NavLink>
+          </li>
+          <li>
+            <NavLink to="/about-us" data-bs-dismiss="offcanvas">{t('header.about')}</NavLink>
+          </li>
+          <li>
+            <NavLink to="/our-services" data-bs-dismiss="offcanvas">{t('header.services')}</NavLink>
+          </li>
+          <li>
+            <NavLink to="/contact-us" data-bs-dismiss="offcanvas">{t('header.contact')}</NavLink>
+          </li>
+          <li>
+            <NavLink to="/sign-in" data-bs-dismiss="offcanvas">{t('header.login')}</NavLink>
+          </li>
+          <li>
+            <NavLink to="/sign-up" data-bs-dismiss="offcanvas">{t('header.signup')}</NavLink>
+          </li>
         </ul>
       </div>
     </MobileMenuStyleWrapper>

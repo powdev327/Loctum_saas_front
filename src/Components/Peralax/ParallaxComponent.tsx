@@ -3,8 +3,10 @@ import { Parallax } from "react-parallax";
 import ParallaxStyleWrapper from "./Parallax.style";
 import ParallaxBgImg from "../../assets/images/bg/vector-map.svg";
 import ScrollAnimate from "../ScrollAnimate";
+import { useTranslation } from "react-i18next";
 
 const ParallaxComponent = ({ parallaxTextClass }) => {
+  const { t } = useTranslation();
   // counter up
   const sectionRef = useRef(null);
 
@@ -68,7 +70,7 @@ const ParallaxComponent = ({ parallaxTextClass }) => {
                         200
                       </span>
                     </h2>
-                    <p>Countries Worldwide</p>
+                    <p>{t('parallax.countriesWorldwide')}</p>
                   </div>
                 </ScrollAnimate>
               </div>
@@ -81,7 +83,7 @@ const ParallaxComponent = ({ parallaxTextClass }) => {
                       </span>
                       K
                     </h2>
-                    <p>Registered User</p>
+                    <p>{t('parallax.registeredUsers')}</p>
                   </div>
                 </ScrollAnimate>
               </div>
@@ -94,7 +96,7 @@ const ParallaxComponent = ({ parallaxTextClass }) => {
                       </span>
                       K
                     </h2>
-                    <p>Small & Big Companies</p>
+                    <p>{t('parallax.companies')}</p>
                   </div>
                 </ScrollAnimate>
               </div>

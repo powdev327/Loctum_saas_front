@@ -1,8 +1,10 @@
 import { useEffect, useRef } from "react";
 import TeamCounterStyleWrapper from "./TeamCounter.style";
 import ScrollAnimate from "../../../Components/ScrollAnimate";
+import { useTranslation } from "react-i18next";
 
 const TeamCounter = () => {
+  const { t } = useTranslation();
   // counter up
   const sectionRef = useRef(null);
 
@@ -60,7 +62,7 @@ const TeamCounter = () => {
                       200
                     </span>
                   </h2>
-                  <p>Countries Worldwide</p>
+                  <p>{t('parallax.countriesWorldwide')}</p>
                 </ScrollAnimate>
               </div>
               <div className="counter-item md-mb-30">
@@ -71,7 +73,7 @@ const TeamCounter = () => {
                     </span>
                     K
                   </h2>
-                  <p>Registered User</p>
+                  <p>{t('parallax.registeredUsers')}</p>
                 </ScrollAnimate>
               </div>
               <div className="counter-item">
@@ -82,7 +84,7 @@ const TeamCounter = () => {
                     </span>
                     K
                   </h2>
-                  <p>Small &amp; Big Companies</p>
+                  <p>{t('parallax.companies')}</p>
                 </ScrollAnimate>
               </div>
             </div>

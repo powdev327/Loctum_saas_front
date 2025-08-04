@@ -14,6 +14,13 @@ i18n
             fr: { translation: translationFR }
         },
         fallbackLng: 'en',
+        debug: false,
+        detection: {
+            order: ['localStorage', 'navigator', 'htmlTag'],
+            caches: ['localStorage'],
+            lookupLocalStorage: 'i18nextLng',
+            checkWhitelist: true
+        },
         interpolation: {
             escapeValue: false // react s’occupe déjà de ça
         }

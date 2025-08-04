@@ -16,6 +16,62 @@ const HomeBannerStyle = styled.section`
   overflow: hidden;
   border-radius: 0px 0px 50px 50px;
 
+  .banner-language-switcher {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    z-index: 10;
+    
+    .language-switcher {
+      .language-toggle {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        
+        &:hover {
+          background: rgba(255, 255, 255, 0.15);
+          border-color: rgba(255, 255, 255, 0.3);
+        }
+      }
+      
+      .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        margin-top: 8px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        min-width: 140px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        
+        &.active {
+          opacity: 1;
+          visibility: visible;
+          transform: translateY(0);
+        }
+        
+        button {
+          color: ${({ theme }) => theme.colors.title};
+          
+          &:hover {
+            background: rgba(0, 0, 0, 0.05);
+          }
+        }
+      }
+    }
+    
+    @media (max-width: 768px) {
+      top: 20px;
+      right: 20px;
+    }
+  }
+
   .shape-img {
     position: absolute;
     z-index: -1;

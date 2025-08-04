@@ -5,8 +5,10 @@ import { GoArrowRight } from "react-icons/go";
 import CustomerImg from "../../../assets/images/about-us/customer-img.svg";
 import PlusIcon from "../../../assets/images/icons/plus-blue.svg";
 import ScrollAnimate from "../../../Components/ScrollAnimate";
+import { useTranslation } from "react-i18next";
 
 const PeopleUsing = () => {
+  const { t } = useTranslation();
   return (
     <PeopleUsingStyle>
       <div className="container">
@@ -37,17 +39,16 @@ const PeopleUsing = () => {
                   <TitleStyleWrapper>
                     <div className="section-title">
                       <h2 className="title mb-0">
-                        People using
-                        <span className="marketing-badge">QuickLocum</span> with full
-                        satisfaction
+                        {t('aboutUs.peopleUsing.title1')}
+                        <span className="marketing-badge">{t('aboutUs.peopleUsing.brand')}</span> {t('aboutUs.peopleUsing.title2')}
                       </h2>
                     </div>
                   </TitleStyleWrapper>
                   <p>
-                    QuickLocum Inc. est une plateforme digitale innovante dédiée à la mise en relation des professionnels de santé avec des établissements de santé, agences de recrutement et autres organisations ayant des besoins en placement, remplacement ou missions ponctuelles.
+                    {t('aboutUs.peopleUsing.description1')}
                   </p>
                   <p>
-                    Contrairement aux agences de placement traditionnelles, QuickLocum offre une solution technologique moderne pour faciliter et optimiser les processus de recrutement dans les secteurs des soins dentaires, pharmaceutiques et infirmiers
+                    {t('aboutUs.peopleUsing.description2')}
                   </p>
                   {/*<a href="#" className="text-link">*/}
                   {/*  <span>View Case Studies</span>*/}

@@ -2,14 +2,20 @@ import { useEffect, useRef, useState } from "react";
 import HomeFaqStyleWrapper from "./FaqHome.style";
 import TitleStyleWrapper from "../../../Components/Title/Title.style";
 import { GoArrowRight } from "react-icons/go";
-import { faqData } from "../../../assets/data/HomeData/FaqData";
+// import { faqData } from "../../../assets/data/HomeData/FaqData";
 
 import ShapeMsgImage from "../../../assets/images/icons/shape-msg.svg";
 import SmsTrackingImage from "../../../assets/images/icons/sms-tracking.svg";
 import ScrollAnimate from "../../../Components/ScrollAnimate";
+import { useTranslation } from "react-i18next";
 
 const FaqHome = () => {
+  const { t } = useTranslation();
+
   const [activeIndex, setActiveIndex] = useState(null);
+
+  // Get FAQ data from translations
+  const faqData = t('home.faq.items', { returnObjects: true }) || [];
 
   const toggleAccordion = (index) => {
     if (activeIndex === index) {
@@ -64,11 +70,11 @@ const FaqHome = () => {
             <TitleStyleWrapper>
               <ScrollAnimate delay={200}>
                 <div className="section-title md-mb-50">
-                  <span className="sub-title">Questions &amp; answers</span>
+                  <span className="sub-title">{t('home.faq.subtitle')}</span>
                   <h2 className="title">
-                    Frequently <span className="marketing-badge">asked </span>
+                    {t('home.faq.title1')} <span className="marketing-badge">{t('home.faq.title2')} </span>
                     <br />
-                    Questions
+                    {t('home.faq.title3')}
                   </h2>
                 </div>
               </ScrollAnimate>
@@ -76,12 +82,12 @@ const FaqHome = () => {
             <ScrollAnimate delay={250}>
               <div className="leave-message leave-message1">
                 <div className="mb-20">
-                  <h2>Don't get Answer?</h2>
-                  <p>We will answer you in less than 2 Hours!!</p>
+                  <h2>{t('home.faq.noAnswer')}</h2>
+                  <p>{t('home.faq.responseTime')}</p>
                 </div>
                 <div className="mb-30">
                   <a href="#" className="text-link">
-                    <span>Leave us a Message</span>
+                    <span>{t('home.faq.leaveMessage')}</span>
                     <GoArrowRight />
                   </a>
                 </div>
@@ -133,12 +139,12 @@ const FaqHome = () => {
           </div>
           <div className="leave-message leave-message2">
             <div className="mb-20">
-              <h2>Don't get Answer?</h2>
-              <h3>We will answer you in less than 2 Hours!!</h3>
+              <h2>{t('home.faq.noAnswer')}</h2>
+              <h3>{t('home.faq.responseTime')}</h3>
             </div>
             <div className="mb-30">
               <a href="#" className="text-link">
-                <span>Leave us a Message</span>
+                <span>{t('home.faq.leaveMessage')}</span>
                 <GoArrowRight />
               </a>
             </div>

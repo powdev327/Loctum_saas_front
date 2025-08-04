@@ -1,8 +1,11 @@
 import ServiceListStyle from "./ServiceList.style";
 import { serviceItems } from "../../../assets/data/OurServicesData/ServiceData";
 import ScrollAnimate from "../../../Components/ScrollAnimate";
+import { useTranslation } from "react-i18next";
 
 const ServiceList = () => {
+  const { t } = useTranslation();
+
   return (
     <ServiceListStyle className="service-section">
       <div className="container">

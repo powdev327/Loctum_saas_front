@@ -6,8 +6,11 @@ import layoutIcon from "../../../assets/images/icons/layout.svg";
 import shapeLayoutIcon from "../../../assets/images/icons/shape-layout.svg";
 import ScrollAnimate from "../../../Components/ScrollAnimate";
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 const CoreFeature = () => {
+  const { t } = useTranslation();
+
   const coreFeatureRef = useRef(null);
   const rotateIconRef = useRef(null);
 

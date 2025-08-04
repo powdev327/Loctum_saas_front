@@ -3,17 +3,69 @@ import TitleStyleWrapper from "../../../Components/Title/Title.style";
 import CustomPieProgress from "./../../../Components/CustomPieProgress";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
-import Data from "../../../assets/data/about-us/aboutUs";
+// import Data from "../../../assets/data/about-us/aboutUs";
 
 import AboutFeatureImg from "../../../assets/images/about-us/about-feature.png";
 import ItemShape from "../../../assets/images/shape/item-shape.svg";
 import Star4 from "../../../assets/images/shape/star-4.svg";
 import Wave from "../../../assets/images/about-us/wave-shape.svg";
 import ScrollAnimate from "../../../Components/ScrollAnimate";
+import { useTranslation } from "react-i18next";
 
-
+import Sustainability from "../../../assets/images/icons/sustainability.svg";
+import Intelligence from "../../../assets/images/icons/intelligence.svg";
 
 const AboutUsContent = () => {
+  const { t } = useTranslation();
+  
+  // Get data from translations
+  const Data = [
+    {
+      title: t('aboutUs.content.mission.title'),
+      subtitle: t('aboutUs.content.mission.subtitle'),
+      description: t('aboutUs.content.mission.description'),
+      featerList: [
+        {
+          title: t('aboutUs.content.features.sustainability'),
+          icon: Sustainability,
+        },
+        {
+          title: t('aboutUs.content.features.intelligence'),
+          icon: Intelligence,
+        },
+      ],
+    },
+    {
+      title: t('aboutUs.content.vision.title'),
+      subtitle: t('aboutUs.content.vision.subtitle'),
+      description: t('aboutUs.content.vision.description'),
+      featerList: [
+        {
+          title: t('aboutUs.content.features.sustainability'),
+          icon: Sustainability,
+        },
+        {
+          title: t('aboutUs.content.features.intelligence'),
+          icon: Intelligence,
+        },
+      ],
+    },
+    {
+      title: t('aboutUs.content.goal.title'),
+      subtitle: t('aboutUs.content.goal.subtitle'),
+      description: t('aboutUs.content.goal.description'),
+      featerList: [
+        {
+          title: t('aboutUs.content.features.sustainability'),
+          icon: Sustainability,
+        },
+        {
+          title: t('aboutUs.content.features.intelligence'),
+          icon: Intelligence,
+        },
+      ],
+    },
+  ];
   return (
     <AboutUsContentStyle className="about-feature-section">
       <div className="container">
@@ -22,9 +74,9 @@ const AboutUsContent = () => {
             <ScrollAnimate delay={200}>
               <TitleStyleWrapper>
                 <div className="section-title md-mb-40">
-                  <span className="sub-title">About us</span>
+                  <span className="sub-title">{t('aboutUs.content.subtitle')}</span>
                   <h2 className="title">
-                    À propos de <span className="marketing-badge">nous</span>
+                    {t('aboutUs.content.title1')} <span className="marketing-badge">{t('aboutUs.content.title2')}</span>
                   </h2>
                 </div>
               </TitleStyleWrapper>
@@ -79,21 +131,21 @@ const AboutUsContent = () => {
                         </h3>
                         <img src={Star4} alt="star" />
                       </div>
-                      <p>Reduction in time</p>
+                      <p>{t('aboutUs.content.stats.reductionTime')}</p>
                     </div>
                     <div className="overlay-item success-rate">
                       <img className="rotate-icon" src={ItemShape} alt="icon" />
                       <div className="success-rate-content">
                         <div className="progress pie_progress">
                           <CustomPieProgress
-                            Text="Success rate"
+                            Text={t('aboutUs.content.stats.successRate')}
                             TextColor="#444444"
                             Percentage={92}
                             ValueColor="#000000"
                             PathColor="#00CEC9"
                             TrailColor="rgba(0, 206, 201, 0.2)"
                           />
-                          <p>Success rate</p>
+                          <p>{t('aboutUs.content.stats.successRate')}</p>
                         </div>
                       </div>
                     </div>

@@ -11,26 +11,29 @@ import MouseCircleIcon from "../../../assets/images/main-demo/mouse-circle.png";
 import Shape1Img from "../../../assets/images/main-demo/shape1.png";
 import Shape2Img from "../../../assets/images/main-demo/shape2.png";
 import ScrollAnimate from "../../../Components/ScrollAnimate";
+import { useTranslation } from "react-i18next";
 
 const UsabilitySlider = () => {
+  const { t } = useTranslation();
+
   const slides = [
     {
       imgSrc: Img1,
       alt: "usability-img 1",
       iconSrc: EmojiHappyIcon,
-      title: "Easy to use",
+      title: t('home.homeUsabilitySlider.easy_to_use'),
     },
     {
       imgSrc: Img2,
       alt: "usability-img 2",
       iconSrc: PetIcon,
-      title: "Collaborative",
+      title: t('home.homeUsabilitySlider.collaborative'),
     },
     {
       imgSrc: Img3,
       alt: "usability-img 3",
       iconSrc: MouseCircleIcon,
-      title: "Activity Stream",
+      title: t('home.homeUsabilitySlider.activity_stream'),
     },
   ];
 
@@ -81,8 +84,7 @@ const UsabilitySlider = () => {
               <ScrollAnimate delay={200}>
                 <div className="section-title text-center md-mb-40">
                   <h2 className="white-color">
-                    We made it superb
-                    <br />& usability
+                    {t('home.homeUsabilitySlider.superb_usability')}
                   </h2>
                 </div>
               </ScrollAnimate>

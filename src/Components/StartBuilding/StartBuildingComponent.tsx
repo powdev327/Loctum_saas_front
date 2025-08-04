@@ -1,8 +1,11 @@
 import StartBuildingStyleWrapper from "./StartBuilding.style";
 import BuildingImg from "../../assets/images/about-us/building-img.svg";
 import ScrollAnimate from "../ScrollAnimate";
+import { useTranslation } from "react-i18next";
 
 const StartBuildingComponent = () => {
+  const { t } = useTranslation();
+  
   return (
     <StartBuildingStyleWrapper>
       <div className="container">
@@ -12,17 +15,15 @@ const StartBuildingComponent = () => {
               <ScrollAnimate delay={200}>
                 <div className="section-title">
                   <h2 className="title">
-                    QuickLocum Smart
-                    <br />
-                    Healthcare Staffing
+                    {t('startBuilding.title')}
                   </h2>
                 </div>
               </ScrollAnimate>
               <ScrollAnimate delay={200}>
                 <a href="/sign-up" className="bg-blue-btn">
                   <span className="btn-inner">
-                    <span className="btn-normal-text">Get Start for Free</span>
-                    <span className="btn-hover-text">Get Start for Free</span>
+                    <span className="btn-normal-text">{t('startBuilding.cta')}</span>
+                    <span className="btn-hover-text">{t('startBuilding.cta')}</span>
                   </span>
                 </a>
               </ScrollAnimate>

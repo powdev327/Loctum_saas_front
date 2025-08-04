@@ -4,8 +4,11 @@ import ShapeImg2 from "../../assets/images/shape/breadcrumb-shape2.svg";
 import BreadcrumbImg from "../../assets/images/shape/breadcrumb-img.svg";
 import { NavLink } from "react-router-dom";
 import ScrollAnimate from "../ScrollAnimate";
+import { useTranslation } from "react-i18next";
 
 const Breadcumbs = ({ title }) => {
+  const { t } = useTranslation();
+  
   return (
     <BreadcumbsStyle>
       <div className="bg-shape">
@@ -24,7 +27,7 @@ const Breadcumbs = ({ title }) => {
                 <nav aria-label="breadcrumb">
                   <ul className="breadcrumb breadcrumb-list">
                     <li className="breadcrumb-item">
-                      <NavLink to="/">Home</NavLink>
+                      <NavLink to="/">{t('header.home')}</NavLink>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
                       {title}

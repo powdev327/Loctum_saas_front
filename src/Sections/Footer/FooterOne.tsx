@@ -5,8 +5,12 @@ import FooterLogo from "../../assets/images/logo/q-logo.svg";
 import FooterOneMenuList from "./FooterOneMenuList";
 import FooterContractCard from "../../Components/FooterContractCard/FooterContractCard";
 import FooterNewsletter from '../../Components/FooterNewsletter/FooterNewsletter';
+import FooterLanguageSwitcher from '../../Components/FooterLanguageSwitcher/FooterLanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 const FooterOne = () => {
+  const { t } = useTranslation();
+  
   return (
     <FooterStyleWrapper className="footer-section home-footer">
       <div className="footer-inner">
@@ -21,9 +25,7 @@ const FooterOne = () => {
                       <img src={FooterLogo} alt="footer-logo" />
                     </a>
                     <p>
-                      QuickLocum is the dedicated platform for managing and connecting healthcare professionals with locum opportunities, helping your healthcare organization grow quickly and efficiently
-
-
+                      {t('home.footer.description')}
                     </p>
                   </div>
 
@@ -57,23 +59,28 @@ const FooterOne = () => {
         <div className="footer-bottom">
           <div className="container">
             <div className="row">
-              <div className="col-md-5 order-md-1 order-2">
+              <div className="col-md-4 order-md-1 order-3">
                 <div className="footer-copyright">
-                  <p className="mb-0">2025 <a href="#">QuickLocum</a>. All rights reserved.</p>
+                  <p className="mb-0">2025 <a href="#">QuickLocum</a>. {t('home.footer.rights')}</p>
                 </div>
               </div>
-              <div className="col-md-7 order-md-2 order-1">
+              <div className="col-md-6 order-md-2 order-1">
                 <ul className="privacy-menu">
                   <li>
-                    <a href="/terms">Terms and conditions</a>
+                    <a href="/terms">{t('home.footer.terms')}</a>
                   </li>
                   <li>
-                    <a href="#">Cookies</a>
+                    <a href="#">{t('home.footer.cookies')}</a>
                   </li>
                   <li>
-                    <a href="/privacy-policy">Privacy policy</a>
+                    <a href="/privacy-policy">{t('home.footer.privacy')}</a>
                   </li>
                 </ul>
+              </div>
+              <div className="col-md-2 order-md-3 order-2">
+                <div className="footer-language-switcher-wrapper d-flex justify-content-md-end justify-content-start">
+                  <FooterLanguageSwitcher />
+                </div>
               </div>
             </div>
           </div>

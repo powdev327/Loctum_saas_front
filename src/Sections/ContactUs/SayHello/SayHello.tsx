@@ -7,8 +7,11 @@ import ShapeImg2 from "../../../assets/images/contact/shape-2.svg";
 import SmsTrackingImg from "../../../assets/images/icons/sms-tracking-2.svg";
 import CallOutgoingImg from "../../../assets/images/icons/call-outgoing.svg";
 import ScrollAnimate from "../../../Components/ScrollAnimate";
+import { useTranslation } from "react-i18next";
 
 const SayHello = () => {
+  const { t } = useTranslation();
+
   return (
     <SayHelloStyle>
       <div className="container">

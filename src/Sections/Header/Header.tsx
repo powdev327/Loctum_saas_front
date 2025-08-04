@@ -250,81 +250,26 @@ const Header = ({ variant, ...props }) => {
                   <div className="collapse navbar-collapse header-navbar-content">
                     {/* main menu */}
                     <ul className="navbar-nav main-menu">
-                      {Data?.map((menuItem, i) => (
-                        <li
-                          key={i}
-                          className={
-                            menuItem.hasMegaMenu
-                              ? "nav-item home-nav"
-                              : "nav-item"
-                          }
-                        >
-                          <NavLink
-                            className={` ${
-                              menuItem.hasMegaMenu
-                                ? "nav-link megaTablinks"
-                                : "nav-link"
-                            }  ${
-                              menuItem.subMenus?.length > 0 ? "has-submenu" : ""
-                            }`}
-                            to={menuItem.url}
-                          >
-                            {menuItem.title}
-                          </NavLink>
-
-                          {/* megamenu */}
-                          {menuItem?.hasMegaMenu && <MegaMenu />}
-
-                          {menuItem.subMenus?.length > 0 && (
-                            <div className="submenu-box">
-                              <ul className="submenu">
-                                {menuItem.subMenus?.map((subMenuItem, i) => {
-                                  let hasSubMenuChild = false;
-                                  if (subMenuItem.subMenuChilds?.length > 0) {
-                                    hasSubMenuChild = true;
-                                  }
-                                  return (
-                                    <li
-                                      key={i}
-                                      className={
-                                        hasSubMenuChild
-                                          ? "submenu-has-submenu"
-                                          : ""
-                                      }
-                                    >
-                                      <NavLink
-                                        className="dropdown-item"
-                                        to={subMenuItem.url}
-                                      >
-                                        {subMenuItem.title}
-                                      </NavLink>
-
-                                      {subMenuItem.subMenuChilds?.length >
-                                        0 && (
-                                        <div className="submenu-box2">
-                                          <ul className="submenu submenu-submenu">
-                                            {subMenuItem.subMenuChilds?.map(
-                                              (subMenuChild, i) => (
-                                                <li key={i}>
-                                                  <NavLink
-                                                    to={subMenuChild.url}
-                                                  >
-                                                    {subMenuChild.title}
-                                                  </NavLink>
-                                                </li>
-                                              )
-                                            )}
-                                          </ul>
-                                        </div>
-                                      )}
-                                    </li>
-                                  );
-                                })}
-                              </ul>
-                            </div>
-                          )}
-                        </li>
-                      ))}
+                      <li className="nav-item">
+                        <NavLink className="nav-link" to="/">
+                          {t('header.home')}
+                        </NavLink>
+                      </li>
+                      <li className="nav-item">
+                        <NavLink className="nav-link" to="/about-us">
+                          {t('header.about')}
+                        </NavLink>
+                      </li>
+                      <li className="nav-item">
+                        <NavLink className="nav-link" to="/our-services">
+                          {t('header.services')}
+                        </NavLink>
+                      </li>
+                      <li className="nav-item">
+                        <NavLink className="nav-link" to="/contact-us">
+                          {t('header.contact')}
+                        </NavLink>
+                      </li>
                     </ul>
 
                     {/* header extra */}
@@ -343,7 +288,7 @@ const Header = ({ variant, ...props }) => {
                               </li>
                               <li>
                                 <NavLink to="/sign-in" className={variant}>
-                                  Sign in
+                                  {t("header.login")}
                                 </NavLink>
                               </li>
                           </>
@@ -354,9 +299,9 @@ const Header = ({ variant, ...props }) => {
                           <NavLink to="/sign-up" className="bg-white-btn">
                             <span className="btn-inner">
                               <span className="btn-normal-text">
-                                Start free
+                                {t("header.startFree")}
                               </span>
-                              <span className="btn-hover-text">Start free</span>
+                              <span className="btn-hover-text">{t('header.startFree')}</span>
                             </span>
                           </NavLink>
                         </li>
@@ -367,9 +312,9 @@ const Header = ({ variant, ...props }) => {
                           <NavLink to="/sign-up" className="bg-navy-btn">
                             <span className="btn-inner">
                               <span className="btn-normal-text">
-                                Free Trial
+                                {t("header.freeTrial")}
                               </span>
-                              <span className="btn-hover-text">Free Trial</span>
+                              <span className="btn-hover-text">{t("header.freeTrial")}</span>
                             </span>
                           </NavLink>
                         </li>
@@ -435,8 +380,8 @@ const Header = ({ variant, ...props }) => {
                         <li>
                           <NavLink to="/sign-up" className="bg-skyblue-btn">
                             <span className="btn-inner">
-                              <span className="btn-normal-text">Download</span>
-                              <span className="btn-hover-text">Download</span>
+                              <span className="btn-normal-text">{t("header.download")}</span>
+                              <span className="btn-hover-text">{t("header.download")}</span>
                             </span>
                           </NavLink>
                         </li>
@@ -447,9 +392,9 @@ const Header = ({ variant, ...props }) => {
                           <NavLink to="/sign-up" className="bg-skyblue-btn">
                             <span className="btn-inner">
                               <span className="btn-normal-text">
-                                Start free
+                                {t("header.startFree")}
                               </span>
-                              <span className="btn-hover-text">Start free</span>
+                              <span className="btn-hover-text">{t("header.startFree")}</span>
                             </span>
                           </NavLink>
                         </li>
@@ -460,10 +405,10 @@ const Header = ({ variant, ...props }) => {
                           <NavLink to="/sign-up" className="start-meeting-btn">
                             <span className="btn-inner">
                               <span className="btn-normal-text">
-                                Start Meeting
+                                {t("header.startMeeting")}
                               </span>
                               <span className="btn-hover-text">
-                                Start Meeting
+                                {t("header.startMeeting")}
                               </span>
                             </span>
                           </NavLink>
@@ -478,9 +423,9 @@ const Header = ({ variant, ...props }) => {
                           >
                             <span className="btn-inner">
                               <span className="btn-normal-text">
-                                Let's Talk
+                                {t("header.letsTalk")}
                               </span>
-                              <span className="btn-hover-text">Let's Talk</span>
+                              <span className="btn-hover-text">{t("header.letsTalk")}</span>
                             </span>
                           </NavLink>
                         </li>
@@ -491,9 +436,9 @@ const Header = ({ variant, ...props }) => {
                           <NavLink to="/sign-up" className="bg-pink-btn">
                             <span className="btn-inner">
                               <span className="btn-normal-text">
-                                Let's Talk
+                                {t("header.letsTalk")}
                               </span>
-                              <span className="btn-hover-text">Let's Talk</span>
+                              <span className="btn-hover-text">{t("header.letsTalk")}</span>
                             </span>
                           </NavLink>
                         </li>
@@ -504,9 +449,9 @@ const Header = ({ variant, ...props }) => {
                           <NavLink to="/contact-us" className="bg-green-btn">
                             <span className="btn-inner">
                               <span className="btn-normal-text">
-                                Let's Talk
+                                {t("header.letsTalk")}
                               </span>
-                              <span className="btn-hover-text">Let's Talk</span>
+                              <span className="btn-hover-text">{t("header.letsTalk")}</span>
                             </span>
                           </NavLink>
                         </li>
@@ -520,9 +465,9 @@ const Header = ({ variant, ...props }) => {
                           >
                             <span className="btn-inner">
                               <span className="btn-normal-text">
-                                Let's Talk
+                                {t("header.letsTalk")}
                               </span>
-                              <span className="btn-hover-text">Let's Talk</span>
+                              <span className="btn-hover-text">{t("header.letsTalk")}</span>
                             </span>
                           </NavLink>
                         </li>
@@ -536,9 +481,9 @@ const Header = ({ variant, ...props }) => {
                           >
                             <span className="btn-inner">
                               <span className="btn-normal-text">
-                                Start free
+                                {t("header.startFree")}
                               </span>
-                              <span className="btn-hover-text">Start free</span>
+                              <span className="btn-hover-text">{t("header.startFree")}</span>
                             </span>
                           </NavLink>
                         </li>
@@ -626,10 +571,10 @@ const Header = ({ variant, ...props }) => {
                               >
                                 <span className="btn-inner">
                                   <span className="btn-normal-text">
-                                    Contact Us
+                                    {t('header.contact')}
                                   </span>
                                   <span className="btn-hover-text">
-                                    Contact Us
+                                    {t('header.contact')}
                                   </span>
                                 </span>
                               </NavLink>
@@ -640,17 +585,17 @@ const Header = ({ variant, ...props }) => {
                             <>
                               <li>
                                 <NavLink to="/sign-in" className={`${variant}`}>
-                                  Sign in
+                                  {t('header.login')}
                                 </NavLink>
                               </li>
                               <li>
                                 <NavLink to="/sign-up" className="bg-olive-btn">
                                   <span className="btn-inner">
                                     <span className="btn-normal-text">
-                                      Start free
+                                      {t('common.free')}
                                     </span>
                                     <span className="btn-hover-text">
-                                      Start free
+                                      {t('common.free')}
                                     </span>
                                   </span>
                                 </NavLink>

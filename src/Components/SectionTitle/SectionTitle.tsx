@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import SectionTitleStyleWrapper from "./SectionTitle.style";
 import Splitting from "splitting";
 import ScrollOut from "scroll-out";
+import { useTranslation } from "react-i18next";
 
 const SectionTitle = ({
   title,
@@ -13,6 +14,8 @@ const SectionTitle = ({
   subtitleClass,
   titleClass,
 }) => {
+  const { t } = useTranslation();
+
   useEffect(() => {
     Splitting();
     ScrollOut({

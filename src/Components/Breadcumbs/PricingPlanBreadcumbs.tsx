@@ -3,8 +3,11 @@ import BreadcumbsStyle from "./Breadcumbs.style";
 import ShapeImg1 from "../../assets/images/shape/breadcrumb-shape1.svg";
 import ShapeImg2 from "../../assets/images/shape/breadcrumb-shape2.svg";
 import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const PricingPlanBreadcumbs = () => {
+  const { t } = useTranslation();
+  
   return (
     <BreadcumbsStyle className="breadcrumb-section pricing-plan-breadcrumb-section">
       <div className="bg-shape">
@@ -22,15 +25,15 @@ const PricingPlanBreadcumbs = () => {
               <nav aria-label="breadcrumb">
                 <ul className="breadcrumb breadcrumb-list">
                   <li className="breadcrumb-item">
-                    <NavLink to="/">Home</NavLink>
+                    <NavLink to="/">{t('header.home')}</NavLink>
                   </li>
                   <li className="breadcrumb-item active" aria-current="page">
-                    Pricing Plans
+                    {t('pages.pricingPlans')}
                   </li>
                 </ul>
               </nav>
               <div className="breadcrumb-sec">
-                <h1 className="breadcrumb-title">Pricing Plans</h1>
+                <h1 className="breadcrumb-title">{t('pages.pricingPlans')}</h1>
               </div>
             </div>
           </div>
@@ -39,7 +42,7 @@ const PricingPlanBreadcumbs = () => {
               <div className="best-pricing-selector">
                 <form action="/" method="post">
                   <button type="button" className="best-pricing-monthly-btn">
-                    Monthly
+                    {t('pricing.monthly')}
                   </button>
                   <input
                     type="checkbox"
@@ -47,7 +50,7 @@ const PricingPlanBreadcumbs = () => {
                     id="best-pricing-selector"
                   />
                   <button type="button" className="best-pricing-yearly-btn">
-                    Yearly <span>(20% Off)</span>
+                    {t('pricing.yearly')} <span>({t('pricing.discount')})</span>
                   </button>
                 </form>
               </div>
