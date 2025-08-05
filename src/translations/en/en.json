@@ -852,7 +852,20 @@
     "ourServices": "Our Services",
     "contactUs": "Contact Us",
     "blog": "Latest Blogs",
-    "pricingPlans": "Pricing Plans"
+    "pricingPlans": "Pricing Plans",
+    "terms": {
+      "title": "Terms of Service",
+      "welcome": "Welcome to",
+      "welcomeDescription": "By accessing or using our platform, you agree to comply with these Terms of Use. These terms apply to all users, visitors, and other persons who access or use the service.",
+      "agreement": "If you do not accept any part of these terms, you may not use our services. Please read them carefully before continuing. Some features may require a paid subscription, billed in advance on a recurring basis."
+    },
+    "privacyPolicy": {
+      "title": "Privacy Policy"
+    },
+    "termsAndPrivacy": {
+      "lastUpdated": "Last updated: April 7, 2025",
+      "tableOfContents": "TABLE OF CONTENTS"
+    }
   },
   "pricing": {
     "monthly": "Monthly",

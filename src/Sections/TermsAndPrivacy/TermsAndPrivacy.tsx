@@ -2,13 +2,16 @@ import TermsAndPrivacyStyleWrapper from "./TermsAndPrivacy.style";
 import AlignIcon from "../../assets/images/auth-and-utility/textalign-left.svg";
 import StickyBox from "react-sticky-box";
 import ScrollAnimate from "../../Components/ScrollAnimate";
+import { useTranslation } from "react-i18next";
 
 const TermsAndPrivacy = ({ title, data, children }) => {
+  const { t } = useTranslation();
+  
   return (
     <TermsAndPrivacyStyleWrapper>
       <div className="container">
         <ScrollAnimate delay={200}>
-          <p className="uppercase">Last updated: 7 Avril 2025</p>
+          <p className="uppercase">{t('pages.termsAndPrivacy.lastUpdated')}</p>
           {title && <h1>{title}</h1>}
         </ScrollAnimate>
 
@@ -18,7 +21,7 @@ const TermsAndPrivacy = ({ title, data, children }) => {
               <StickyBox offsetTop={20} offsetBottom={20}>
                 <ScrollAnimate delay={200}>
                   <h6 className="content-table-title dm-sans">
-                    <img src={AlignIcon} alt="icon" /> TABLEAU DE CONTENU
+                    <img src={AlignIcon} alt="icon" /> {t('pages.termsAndPrivacy.tableOfContents')}
                   </h6>
                   <ol className="terms-list">
                     {data?.map((item, i) => (

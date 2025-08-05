@@ -852,7 +852,20 @@
     "ourServices": "Nos Services",
     "contactUs": "Contactez-nous",
     "blog": "Derniers Articles",
-    "pricingPlans": "Plans Tarifaires"
+    "pricingPlans": "Plans Tarifaires",
+    "terms": {
+      "title": "Conditions d'Utilisation",
+      "welcome": "Bienvenue sur",
+      "welcomeDescription": "En accédant à notre plateforme ou en l'utilisant, vous acceptez de vous conformer aux présentes Conditions d'Utilisation. Ces conditions s'appliquent à tous les utilisateurs, visiteurs et autres personnes qui accèdent au service ou l'utilisent.",
+      "agreement": "Si vous n'acceptez pas une partie de ces conditions, vous ne pouvez pas utiliser nos services. Veuillez les lire attentivement avant de continuer. Certaines fonctionnalités peuvent nécessiter un abonnement payant, facturé à l'avance sur une base récurrente."
+    },
+    "privacyPolicy": {
+      "title": "Politique de Confidentialité"
+    },
+    "termsAndPrivacy": {
+      "lastUpdated": "Dernière mise à jour : 7 avril 2025",
+      "tableOfContents": "TABLEAU DE CONTENU"
+    }
   },
   "pricing": {
     "monthly": "Mensuel",

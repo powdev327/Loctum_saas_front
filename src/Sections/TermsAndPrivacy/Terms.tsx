@@ -1,19 +1,24 @@
 import TermsAndPrivacy from "./TermsAndPrivacy";
-import Data from "../../assets/data/terms";
+import Data from "../../assets/data/terms-multilingual";
 import ScrollAnimate from "../../Components/ScrollAnimate";
+import { useTranslation } from "react-i18next";
 
 const Terms = () => {
+    const { t, i18n } = useTranslation();
+    const currentLanguage = i18n.language || 'en';
+    const termsData = Data[currentLanguage] || Data.en;
+
     return (
-        <TermsAndPrivacy title="Terms of Service" data={Data}>
+        <TermsAndPrivacy title={t('pages.terms.title')} data={termsData}>
             <ScrollAnimate delay={200}>
                 <p>
-                    Bienvenue sur <strong>QuickLocum</strong>. En accédant à notre plateforme ou en l'utilisant, vous acceptez de vous conformer aux présentes Conditions d’Utilisation. Ces conditions s'appliquent à tous les utilisateurs, visiteurs et autres personnes qui accèdent au service ou l’utilisent.
+                    {t('pages.terms.welcome')} <strong>QuickLocum</strong>. {t('pages.terms.welcomeDescription')}
                 </p>
             </ScrollAnimate>
 
             <ScrollAnimate delay={250}>
                 <p>
-                    Si vous n'acceptez pas une partie de ces conditions, vous ne pouvez pas utiliser nos services. Veuillez les lire attentivement avant de continuer. Certaines fonctionnalités peuvent nécessiter un abonnement payant, facturé à l’avance sur une base récurrente.
+                    {t('pages.terms.agreement')}
                 </p>
             </ScrollAnimate>
 
