@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import Data from "../../../assets/data/header/mobileMenu";
 import MobileMenuStyleWrapper from "./Menu.style";
 import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../../../Components/LanguageSwitcher.jsx";
 
 //logo images
 import LogoImg2 from "../../../assets/images/logo/q-logo-dark.svg";
@@ -59,6 +60,9 @@ const MobileMenu = () => {
           </li>
           <li>
             <NavLink to="/sign-up" data-bs-dismiss="offcanvas">{t('header.signup')}</NavLink>
+          </li>
+          <li className="language-switcher-mobile">
+            <LanguageSwitcher />
           </li>
         </ul>
       </div>

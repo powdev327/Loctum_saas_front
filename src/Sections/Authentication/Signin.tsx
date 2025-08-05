@@ -8,9 +8,11 @@ import ScrollAnimate from "../../Components/ScrollAnimate";
 import login from "../../services/auth/loginService.js";
 import useLoginHook from "../../hooks/auth/useLoginHook.js";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 const Signin = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const {
     email,
@@ -45,15 +47,15 @@ const Signin = () => {
     <AuthenticationStyleWrapper>
       <AuthFormWrapper>
         <ScrollAnimate delay={200}>
-          <h2>Hi there!</h2>
-          <h4 className="dm-sans">Welcome to QuickLocum 👋</h4>
+          <h2>{t('auth.hiThere')}</h2>
+          <h4 className="dm-sans">{t('auth.welcomeToQuicklocum')}</h4>
         </ScrollAnimate>
         <form onSubmit={handleSubmit} id="commentForm">
           {/* User Type Selection */}
           <ScrollAnimate delay={200}>
             <div className="form-group flex flex-col">
               <label>
-                Account Type
+                {t('auth.accountType')}
               </label>
               <select
                 value={userType}
@@ -61,9 +63,9 @@ const Signin = () => {
                 className="w-full p-3 border rounded-md bg-white mt-2"
                 required
               >
-                <option value="" disabled>Select your role</option>
-                <option value="locum">Healthcare Professional</option>
-                <option value="client">Owner/Manager</option>
+                <option value="" disabled>{t('auth.selectRole')}</option>
+                <option value="locum">{t('auth.healthcareProfessional')}</option>
+                <option value="client">{t('auth.ownerManager')}</option>
               </select>
             </div>
           </ScrollAnimate>
@@ -71,13 +73,13 @@ const Signin = () => {
 
           <ScrollAnimate delay={250}>
             <div className="form-group">
-              <label>Email address</label>
+              <label>{t('auth.emailAddress')}</label>
               <input
                 type="email"
                 name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="e.g. example@mail.com"
+                placeholder={t('auth.emailPlaceholder')}
                 required
                 disabled={!userType} // Disable until user type is selected
                 className={`${!userType ? 'bg-gray-100 opacity-75' : ''}`}
@@ -87,11 +89,11 @@ const Signin = () => {
 
           <ScrollAnimate delay={300}>
             <div className="form-group">
-              <label>Password</label>
+              <label>{t('auth.password')}</label>
               <input
                 type="password"
                 name="password"
-                placeholder="********"
+                placeholder={t('auth.passwordPlaceholder')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -108,13 +110,13 @@ const Signin = () => {
               className="form-primary-btn"
               disabled={!userType} // Optional: disable button until selection
             >
-              Login
+              {t('auth.login')}
             </button>
           </ScrollAnimate>
 
           <ScrollAnimate delay={400}>
             <div className="or-section">
-              <p className="mb-0">or</p>
+              <p className="mb-0">{t('auth.or')}</p>
             </div>
           </ScrollAnimate>
 
@@ -123,17 +125,17 @@ const Signin = () => {
               className="secondary-btn"
               disabled={!userType} // Optional: disable social login until selection
             >
-              <img src={GoogleIcon} alt="icon" /> Log in with Google
+              <img src={GoogleIcon} alt="icon" /> {t('auth.loginWithGoogle')}
             </button>
           </ScrollAnimate>
 
           <ScrollAnimate delay={550}>
             <NavLink to="/forgot-password" className="auth-link">
-              Forgot my password
+{t('auth.forgotPassword')}
             </NavLink>
             <p className="mt-3">
               Don’t have an account ?{" "}
-              <NavLink to="/sign-up">Register now !</NavLink>
+              <NavLink to="/sign-up">{t('auth.registerNow')}</NavLink>
             </p>
             <p className="mb-0">
               By signing in, you agree to our{" "}
