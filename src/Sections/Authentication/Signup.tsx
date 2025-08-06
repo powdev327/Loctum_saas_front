@@ -14,8 +14,10 @@ import {industries, professionalRoles} from "../../config/locum/industryList.js"
 import {businessList} from "../../config/owner/businessList.js";
 import {institutionListType, clinicSpecialties as clinicSpecialtyOptions, pharmacyTypes} from "../../config/owner/institutionList.js";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 const Signup = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const {
       recaptchaRef,
@@ -74,7 +76,7 @@ const Signup = () => {
     setLoading(true);
 
     if (!recaptchaToken) {
-      toast.error("Please complete the reCAPTCHA.");
+      toast.error(t('signup.completeRecaptcha'));
       setLoading(false);
       return;
     }
@@ -194,8 +196,8 @@ const Signup = () => {
       <AuthenticationStyleWrapper>
         <AuthFormWrapper handleGoBack={handleGoBack} step={step}>
           <ScrollAnimate delay={200}>
-            <h2>Hi there!</h2>
-            <h4 className="dm-sans">Get started with your free account 🎯</h4>
+            <h2>{t('signup.greeting')}</h2>
+            <h4 className="dm-sans">{t('signup.subtitle')}</h4>
           </ScrollAnimate>
 
           {step === 1 ? (
@@ -205,7 +207,7 @@ const Signup = () => {
                       className="secondary-btn"
                       onClick={() => handleUserTypeSelection("locum")}
                   >
-                    Sign up as a Healthcare Professional
+{t('signup.signupAsHealthcare')}
                   </button>
                 </ScrollAnimate>
                 <ScrollAnimate delay={300}>
@@ -213,7 +215,7 @@ const Signup = () => {
                       className="secondary-btn"
                       onClick={() => handleUserTypeSelection("client")}
                   >
-                    Sign up as a Institution
+{t('signup.signupAsInstitution')}
                   </button>
                 </ScrollAnimate>
               </div>
@@ -221,25 +223,25 @@ const Signup = () => {
               <form onSubmit={handleSubmit}>
                 <ScrollAnimate delay={350}>
                   <button className="secondary-btn">
-                    <img src={GoogleIcon} alt="icon" /> Sign up with Google
+                    <img src={GoogleIcon} alt="icon" /> {t('signup.signupWithGoogle')}
                   </button>
                 </ScrollAnimate>
                 <ScrollAnimate delay={400}>
                   <button className="secondary-btn">
-                    <img src={FacebookIcon} alt="icon" /> Sign up with Facebook
+                    <img src={FacebookIcon} alt="icon" /> {t('signup.signupWithFacebook')}
                   </button>
                 </ScrollAnimate>
 
                 <ScrollAnimate delay={450}>
-                  <div className="or-section"><p className="mb-0">or</p></div>
+                  <div className="or-section"><p className="mb-0">{t('signup.or')}</p></div>
                 </ScrollAnimate>
 
                 <ScrollAnimate delay={500}>
                   <div className="form-group">
-                    <label>{userType === "client" ? "Institution / Company Name" : "Full Name"}</label>
+                    <label>{userType === "client" ? t('signup.institutionName') : t('signup.fullName')}</label>
                     <input
                         type="text"
-                        placeholder={userType === "client" ? "e.g. ABC Medical Clinic" : "e.g. John Doe"}
+                        placeholder={userType === "client" ? t('signup.institutionPlaceholder') : t('signup.fullNamePlaceholder')}
                         required
                         value={userType === "client" ? institutionName : fullName}
                         onChange={(e) => userType === "client" ? setInstitutionName(e.target.value) : setFullName(e.target.value)}
@@ -249,10 +251,10 @@ const Signup = () => {
 
                 <ScrollAnimate delay={500}>
                   <div className="form-group">
-                    <label>Email address</label>
+                    <label>{t('signup.email')}</label>
                     <input
                         type="email"
-                        placeholder="e.g. example@mail.com"
+                        placeholder={t('signup.emailPlaceholder')}
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -262,10 +264,10 @@ const Signup = () => {
 
                 <ScrollAnimate delay={550}>
                   <div className="form-group">
-                    <label>Password</label>
+                    <label>{t('signup.password')}</label>
                     <input
                         type="password"
-                        placeholder="********"
+                        placeholder={t('signup.passwordPlaceholder')}
                         required
                         minLength="8"
                         value={password}
@@ -276,10 +278,10 @@ const Signup = () => {
 
                 <ScrollAnimate delay={550}>
                   <div className="form-group">
-                    <label>Retyping Password</label>
+                    <label>{t('signup.retypePassword')}</label>
                     <input
                         type="password"
-                        placeholder="********"
+                        placeholder={t('signup.passwordPlaceholder')}
                         required
                         minLength="8"
                         value={passwordRetyping}
@@ -292,7 +294,7 @@ const Signup = () => {
                     <>
                     <ScrollAnimate delay={620}>
                       <div className="form-group">
-                        <label>Professional Industry / Sector</label>
+                        <label>{t('signup.professionalIndustry')}</label>
                         <select
                             value={industryType}
                             onChange={(e) => {
@@ -301,7 +303,7 @@ const Signup = () => {
                             }}
                             required
                         >
-                          <option value="" disabled>Choose one industry from:</option>
+                          <option value="" disabled>{t('signup.chooseIndustry')}</option>
                           {industries.map((industry) => (
                               <option key={industry} value={industry}>
                                 {industry}
@@ -314,13 +316,13 @@ const Signup = () => {
                     {industryType && (
                         <ScrollAnimate delay={640}>
                           <div className="form-group">
-                            <label>Professional Role / Type</label>
+                            <label>{t('signup.professionalRole')}</label>
                             <select
                                 value={professionalRole}
                                 onChange={(e) => setProfessionalRole(e.target.value)}
                                 required
                             >
-                              <option value="" disabled>Select your professional role</option>
+                              <option value="" disabled>{t('signup.selectRole')}</option>
                               {professionalRoles[industryType]?.map((role) => (
                                   <option key={role} value={role}>
                                     {role}
@@ -334,12 +336,12 @@ const Signup = () => {
                     {industryType === 'Other' && (
                         <ScrollAnimate delay={620}>
                           <div className="form-group">
-                            <label>Specific Industry</label>
+                            <label>{t('signup.specificIndustry')}</label>
                             <input
                                 type="text"
                                 value={customIndustryType}
                                 onChange={(e) => setCustomIndustryType(e.target.value)}
-                                placeholder="Enter institution type"
+                                placeholder={t('signup.enterInstitutionType')}
                                 required
                             />
                           </div>
@@ -352,7 +354,7 @@ const Signup = () => {
                     <>
                       <ScrollAnimate delay={600}>
                         <div className="form-group">
-                          <label>Client Type</label>
+                          <label>{t('signup.clientType')}</label>
                           <select
                               value={clientType}
                               onChange={(e) => {
@@ -362,7 +364,7 @@ const Signup = () => {
                               }}
                               required
                           >
-                            <option value="" disabled>Choose one of:</option>
+                            <option value="" disabled>{t('signup.selectClientType')}</option>
                             {institutionListType.map((type) => (
                                 <option key={type} value={type}>
                                   {type}
@@ -375,7 +377,10 @@ const Signup = () => {
                       {clientType === "Private Clinic/Practice" && (
                           <ScrollAnimate delay={640}>
                             <div className="form-group">
-                              <label>Specialty (Multi-Select)</label>
+                              <label>{t('signup.clinicSpecialties')}</label>
+                              <p style={{ fontSize: '14px', color: '#666', marginTop: '5px', marginBottom: '10px' }}>
+                                {t('signup.selectSpecialties')}
+                              </p>
                               <div style={{ 
                                 marginTop: '10px',
                                 display: 'flex',
@@ -424,7 +429,7 @@ const Signup = () => {
                                   fontStyle: 'italic',
                                   textAlign: 'center'
                                 }}>
-                                  Selected: {clinicSpecialties.join(', ')}
+{t('signup.selectedSpecialties')} {clinicSpecialties.join(', ')}
                                 </div>
                               )}
                             </div>
@@ -434,13 +439,13 @@ const Signup = () => {
                       {clientType === "Pharmacy" && (
                           <ScrollAnimate delay={640}>
                             <div className="form-group">
-                              <label>Pharmacy Type</label>
+                              <label>{t('signup.pharmacyType')}</label>
                               <select
                                   value={pharmacyType}
                                   onChange={(e) => setPharmacyType(e.target.value)}
                                   required
                               >
-                                <option value="" disabled>Select pharmacy type</option>
+                                <option value="" disabled>{t('signup.selectPharmacyType')}</option>
                                 {pharmacyTypes.map((type) => (
                                     <option key={type} value={type}>
                                       {type}
@@ -471,7 +476,7 @@ const Signup = () => {
                       className={`form-primary-btn ${loading ? "bg-gray-400 cursor-not-allowed" : ""}`}
                       disabled={loading}
                   >
-                    {loading ? "Processing..." : "Sign Up"}
+                    {loading ? t('signup.processing') : t('signup.submit')}
                   </button>
                 </ScrollAnimate>
 
@@ -480,11 +485,11 @@ const Signup = () => {
 
           <ScrollAnimate delay={770}>
             <p className="mt-5">
-              Already have an account? <NavLink to="/sign-in">Log in now!</NavLink>
+{t('signup.alreadyHaveAccount')} <NavLink to="/sign-in">{t('signup.loginNow')}</NavLink>
             </p>
             <p className="mb-0">
-              By signing up, you agree to our <NavLink to="/terms">Terms</NavLink> &{" "}
-              <NavLink to="/privacy-policy">Privacy Policy</NavLink>.
+{t('signup.termsAgreement')} <NavLink to="/terms">{t('signup.terms')}</NavLink> {t('signup.and')}{" "}
+              <NavLink to="/privacy-policy">{t('signup.privacyPolicy')}</NavLink>.
             </p>
           </ScrollAnimate>
         </AuthFormWrapper>

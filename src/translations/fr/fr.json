@@ -835,7 +835,31 @@
     "resendOtp": "Renvoyer OTP",
     "resendingOtp": "Renvoi de l'OTP...",
     "otpVerifiedSuccess": "Compte vérifié avec succès ! Redirection vers la connexion...",
-    "otpInvalid": "OTP invalide. Veuillez réessayer."
+    "otpInvalid": "OTP invalide. Veuillez réessayer.",
+    "completeRecaptcha": "Veuillez compléter la vérification reCAPTCHA."
+  },
+  "auth": {
+    "goBack": "Retour",
+    "hiThere": "Salut !",
+    "welcomeToQuicklocum": "Bienvenue sur QuickLocum",
+    "accountType": "Type de Compte",
+    "selectRole": "Veuillez sélectionner votre rôle",
+    "healthcareProfessional": "Professionnel de Santé",
+    "ownerManager": "Propriétaire/Gestionnaire",
+    "emailAddress": "Adresse Email",
+    "emailPlaceholder": "ex. exemple@mail.com",
+    "password": "Mot de passe",
+    "passwordPlaceholder": "********",
+    "login": "Se connecter",
+    "or": "ou",
+    "loginWithGoogle": "Se connecter avec Google",
+    "forgotPassword": "Mot de passe oublié ?",
+    "registerNow": "S'inscrire maintenant !",
+    "dontHaveAccount": "Vous n'avez pas de compte ?",
+    "bySigningIn": "En vous connectant, vous acceptez nos",
+    "terms": "Conditions",
+    "and": "et",
+    "privacyPolicy": "Politique de Confidentialité"
   },
   "header": {
     "home": "Accueil",

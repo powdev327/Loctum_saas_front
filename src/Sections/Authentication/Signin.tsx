@@ -138,8 +138,8 @@ const Signin = () => {
               <NavLink to="/sign-up">{t('auth.registerNow')}</NavLink>
             </p>
             <p className="mb-0">
-              By signing in, you agree to our{" "}
-              <NavLink to="/terms">Terms</NavLink> &{" "}
+              {t('auth.bySigningIn')}{" "}
+              <NavLink to="/terms">{	('auth.terms')}</NavLink> &{" "}
               <NavLink to="/privacy-policy">Privacy Policy.</NavLink>
             </p>
           </ScrollAnimate>
