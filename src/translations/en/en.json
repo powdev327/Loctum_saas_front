@@ -837,9 +837,55 @@
     "otpVerifiedSuccess": "Account verified successfully! Redirecting to login...",
     "otpInvalid": "Invalid OTP. Please try again."
   },
+  "industries": {
+    "nursingHomeCare": "Nursing & Home Care",
+    "generalMedicine": "General Medicine",
+    "dentalCare": "Dental Care",
+    "pharmacy": "Pharmacy",
+    "other": "Other"
+  },
+  "professionalRoles": {
+    "registeredNurse": "Registered Nurse (RN)",
+    "licensedPracticalNurse": "Licensed Practical Nurse (LPN) / Registered Practical Nurse (RPN)",
+    "nursePractitioner": "Nurse Practitioner (NP)",
+    "homeCareNurse": "Home Care Nurse",
+    "healthcareAide": "Healthcare Aide / Personal Support Worker (PSW)",
+    "familyPhysician": "Family Physician / General Practitioner",
+    "generalDentist": "General Dentist",
+    "specialistDentist": "Specialist Dentist (Orthodontist, Endodontist, Periodontist, Pediatric Dentist, Prosthodontist, Oral and Maxillofacial Surgeon)",
+    "dentalHygienist": "Dental Hygienist",
+    "dentalAssistant": "Dental Assistant",
+    "dentalSecretary": "Dental Secretary",
+    "pharmacyTechnician": "Pharmacy Technician (ATP) - Quebec only",
+    "pharmacist": "Pharmacist",
+    "assistantOutsideQuebec": "Assistant - outside Quebec Only",
+    "technicianOutsideQuebec": "Technician - outside Quebec Only",
+    "pharmacyClerk": "Pharmacy Clerk"
+  },
+  "institutionTypes": {
+    "privateClinic": "Private Clinic/Practice",
+    "pharmacy": "Pharmacy",
+    "recruitmentAgency": "Recruitment Agency"
+  },
+  "clinicSpecialties": {
+    "dental": "Dental",
+    "nursing": "Nursing",
+    "familyPhysician": "Family Physician"
+  },
+  "pharmacyTypes": {
+    "communityPharmacy": "Community pharmacy",
+    "hospitalPharmacy": "Hospital pharmacy",
+    "chainPharmacy": "Chain pharmacy"
+  },
   "auth": {
     "goBack": "Go Back",
     "hiThere": "Hi there!",
+    "welcomeBack": "Welcome back!",
+    "signInToAccount": "Sign in to your account",
+    "selectUserType": "Select User Type",
+    "chooseUserType": "Choose your user type",
+    "institution": "Institution",
+    "signIn": "Sign In",
     "welcomeToQuicklocum": "Welcome to QuickLocum",
     "accountType": "Account Type",
     "selectRole": "Please select your role",
@@ -858,7 +904,11 @@
     "bySigningIn": "By signing in, you agree to our",
     "terms": "Terms",
     "and": "&",
-    "privacyPolicy": "Privacy Policy"
+    "privacyPolicy": "Privacy Policy",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "allFieldsRequired": "All fields are required",
+    "signupFailed": "Sign up failed. Please try again.",
+    "newOtpSent": "New OTP sent successfully"
   },
   "header": {
     "home": "Home",

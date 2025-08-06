@@ -838,9 +838,95 @@
     "otpInvalid": "OTP invalide. Veuillez réessayer.",
     "completeRecaptcha": "Veuillez compléter la vérification reCAPTCHA."
   },
+  "industries": {
+    "nursingHomeCare": "Soins infirmiers et soins à domicile",
+    "generalMedicine": "Médecine générale",
+    "dentalCare": "Soins dentaires",
+    "pharmacy": "Pharmacie",
+    "other": "Autre"
+  },
+  "professionalRoles": {
+    "registeredNurse": "Infirmière autorisée (IA)",
+    "licensedPracticalNurse": "Infirmière auxiliaire autorisée (IAA) / Infirmière auxiliaire (IA)",
+    "nursePractitioner": "Infirmière praticienne (IP)",
+    "homeCareNurse": "Infirmière de soins à domicile",
+    "healthcareAide": "Aide de santé / Préposé aux bénéficiaires (PAB)",
+    "familyPhysician": "Médecin de famille / Omnipraticien",
+    "generalDentist": "Dentiste généraliste",
+    "specialistDentist": "Dentiste spécialiste (Orthodontiste, Endodontiste, Parodontiste, Dentiste pédiatrique, Prosthodontiste, Chirurgien buccal et maxillo-facial)",
+    "dentalHygienist": "Hygiéniste dentaire",
+    "dentalAssistant": "Assistant dentaire",
+    "dentalSecretary": "Secrétaire dentaire",
+    "pharmacyTechnician": "Technicien en pharmacie (ATP) - Québec seulement",
+    "pharmacist": "Pharmacien",
+    "assistantOutsideQuebec": "Assistant - hors Québec seulement",
+    "technicianOutsideQuebec": "Technicien - hors Québec seulement",
+    "pharmacyClerk": "Commis de pharmacie"
+  },
+  "institutionTypes": {
+    "privateClinic": "Clinique/Cabinet privé",
+    "pharmacy": "Pharmacie",
+    "recruitmentAgency": "Agence de recrutement"
+  },
+  "clinicSpecialties": {
+    "dental": "Dentaire",
+    "nursing": "Soins infirmiers",
+    "familyPhysician": "Médecin de famille"
+  },
+  "pharmacyTypes": {
+    "communityPharmacy": "Pharmacie communautaire",
+    "hospitalPharmacy": "Pharmacie hospitalière",
+    "chainPharmacy": "Pharmacie de chaîne"
+  },
+  "industries": {
+    "nursingHomeCare": "Soins infirmiers et soins à domicile",
+    "generalMedicine": "Médecine générale",
+    "dentalCare": "Soins dentaires",
+    "pharmacy": "Pharmacie",
+    "other": "Autre"
+  },
+  "professionalRoles": {
+    "registeredNurse": "Infirmière autorisée (IA)",
+    "licensedPracticalNurse": "Infirmière auxiliaire autorisée (IAA) / Infirmière auxiliaire (IA)",
+    "nursePractitioner": "Infirmière praticienne (IP)",
+    "homeCareNurse": "Infirmière de soins à domicile",
+    "healthcareAide": "Aide de santé / Préposé aux bénéficiaires (PAB)",
+    "familyPhysician": "Médecin de famille / Omnipraticien",
+    "generalDentist": "Dentiste généraliste",
+    "specialistDentist": "Dentiste spécialiste (Orthodontiste, Endodontiste, Parodontiste, Dentiste pédiatrique, Prosthodontiste, Chirurgien buccal et maxillo-facial)",
+    "dentalHygienist": "Hygiéniste dentaire",
+    "dentalAssistant": "Assistant dentaire",
+    "dentalSecretary": "Secrétaire dentaire",
+    "pharmacyTechnician": "Technicien en pharmacie (ATP) - Québec seulement",
+    "pharmacist": "Pharmacien",
+    "assistantOutsideQuebec": "Assistant - hors Québec seulement",
+    "technicianOutsideQuebec": "Technicien - hors Québec seulement",
+    "pharmacyClerk": "Commis de pharmacie"
+  },
+  "institutionTypes": {
+    "privateClinic": "Clinique/Cabinet privé",
+    "pharmacy": "Pharmacie",
+    "recruitmentAgency": "Agence de recrutement"
+  },
+  "clinicSpecialties": {
+    "dental": "Dentaire",
+    "nursing": "Soins infirmiers",
+    "familyPhysician": "Médecin de famille"
+  },
+  "pharmacyTypes": {
+    "communityPharmacy": "Pharmacie communautaire",
+    "hospitalPharmacy": "Pharmacie hospitalière",
+    "chainPharmacy": "Pharmacie de chaîne"
+  },
   "auth": {
     "goBack": "Retour",
     "hiThere": "Salut !",
+    "welcomeBack": "Bon retour !",
+    "signInToAccount": "Connectez-vous à votre compte",
+    "selectUserType": "Sélectionner le Type d'Utilisateur",
+    "chooseUserType": "Choisissez votre type d'utilisateur",
+    "institution": "Établissement",
+    "signIn": "Se connecter",
     "welcomeToQuicklocum": "Bienvenue sur QuickLocum",
     "accountType": "Type de Compte",
     "selectRole": "Veuillez sélectionner votre rôle",
@@ -859,7 +945,11 @@
     "bySigningIn": "En vous connectant, vous acceptez nos",
     "terms": "Conditions",
     "and": "et",
-    "privacyPolicy": "Politique de Confidentialité"
+    "privacyPolicy": "Politique de Confidentialité",
+    "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
+    "allFieldsRequired": "Tous les champs sont requis",
+    "signupFailed": "L'inscription a échoué. Veuillez réessayer.",
+    "newOtpSent": "Nouveau OTP envoyé avec succès"
   },
   "header": {
     "home": "Accueil",

@@ -46,71 +46,60 @@ const Signin = () => {
   return (
     <AuthenticationStyleWrapper>
       <AuthFormWrapper>
-        <ScrollAnimate delay={200}>
-          <h2>{t('auth.hiThere')}</h2>
-          <h4 className="dm-sans">{t('auth.welcomeToQuicklocum')}</h4>
-        </ScrollAnimate>
-        <form onSubmit={handleSubmit} id="commentForm">
-          {/* User Type Selection */}
+        <form onSubmit={handleSubmit}>
           <ScrollAnimate delay={200}>
-            <div className="form-group flex flex-col">
-              <label>
-                {t('auth.accountType')}
-              </label>
-              <select
-                value={userType}
-                onChange={(e) => setUserType(e.target.value)}
-                className="w-full p-3 border rounded-md bg-white mt-2"
-                required
-              >
-                <option value="" disabled>{t('auth.selectRole')}</option>
-                <option value="locum">{t('auth.healthcareProfessional')}</option>
-                <option value="client">{t('auth.ownerManager')}</option>
-              </select>
-            </div>
+            <h2>{t('auth.welcomeBack')}</h2>
+            <h4 className="dm-sans">{t('auth.signInToAccount')}</h4>
           </ScrollAnimate>
-
 
           <ScrollAnimate delay={250}>
             <div className="form-group">
-              <label>{t('auth.emailAddress')}</label>
-              <input
-                type="email"
-                name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={t('auth.emailPlaceholder')}
+              <label>{t('auth.selectUserType')}</label>
+              <select
+                value={userType}
+                onChange={(e) => setUserType(e.target.value)}
                 required
-                disabled={!userType} // Disable until user type is selected
-                className={`${!userType ? 'bg-gray-100 opacity-75' : ''}`}
-              />
+              >
+                <option value="" disabled>{t('auth.chooseUserType')}</option>
+                <option value="locum">{t('auth.healthcareProfessional')}</option>
+                <option value="client">{t('auth.institution')}</option>
+              </select>
             </div>
           </ScrollAnimate>
 
           <ScrollAnimate delay={300}>
             <div className="form-group">
-              <label>{t('auth.password')}</label>
+              <label>{t('auth.emailAddress')}</label>
               <input
-                type="password"
-                name="password"
-                placeholder={t('auth.passwordPlaceholder')}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                type="email"
+                placeholder={t('auth.emailPlaceholder')}
                 required
-                disabled={!userType} // Disable until user type is selected
-                className={`${!userType ? 'bg-gray-100 opacity-75' : ''}`}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
           </ScrollAnimate>
 
-
           <ScrollAnimate delay={350}>
+            <div className="form-group">
+              <label>{t('auth.password')}</label>
+              <input
+                type="password"
+                placeholder={t('auth.passwordPlaceholder')}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+          </ScrollAnimate>
+
+          <ScrollAnimate delay={400}>
             <button
               type="submit"
               className="form-primary-btn"
-              disabled={!userType} // Optional: disable button until selection
+              disabled={!userType}
             >
-              {t('auth.login')}
+              {t('auth.signIn')}
             </button>
           </ScrollAnimate>
 
@@ -131,16 +120,16 @@ const Signin = () => {
 
           <ScrollAnimate delay={550}>
             <NavLink to="/forgot-password" className="auth-link">
-{t('auth.forgotPassword')}
+              {t('auth.forgotPassword')}
             </NavLink>
             <p className="mt-3">
-              Don’t have an account ?{" "}
+              {t('auth.dontHaveAccount')}{" "}
               <NavLink to="/sign-up">{t('auth.registerNow')}</NavLink>
             </p>
             <p className="mb-0">
               {t('auth.bySigningIn')}{" "}
-              <NavLink to="/terms">{	('auth.terms')}</NavLink> &{" "}
-              <NavLink to="/privacy-policy">Privacy Policy.</NavLink>
+              <NavLink to="/terms">{t('auth.terms')}</NavLink> &{" "}
+              <NavLink to="/privacy-policy">{t('auth.privacyPolicy')}</NavLink>
             </p>
           </ScrollAnimate>
         </form>

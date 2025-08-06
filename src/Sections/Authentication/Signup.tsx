@@ -15,10 +15,29 @@ import {businessList} from "../../config/owner/businessList.js";
 import {institutionListType, clinicSpecialties as clinicSpecialtyOptions, pharmacyTypes} from "../../config/owner/institutionList.js";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import {
+  getTranslatedIndustries,
+  getTranslatedProfessionalRoles,
+  getTranslatedInstitutionTypes,
+  getTranslatedClinicSpecialties,
+  getTranslatedPharmacyTypes,
+  getOriginalIndustryValue,
+  getOriginalRoleValue,
+  getOriginalInstitutionValue,
+  getOriginalSpecialtyValue,
+  getOriginalPharmacyValue
+} from "../../utils/translationHelpers.js";
 
 const Signup = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  
+  // Get translated lists
+  const translatedIndustries = getTranslatedIndustries(t);
+  const translatedProfessionalRoles = getTranslatedProfessionalRoles(t);
+  const translatedInstitutionTypes = getTranslatedInstitutionTypes(t);
+  const translatedClinicSpecialties = getTranslatedClinicSpecialties(t);
+  const translatedPharmacyTypes = getTranslatedPharmacyTypes(t);
   const {
       recaptchaRef,
       step, setStep,
@@ -85,7 +104,7 @@ const Signup = () => {
     const trimmedPassword = password?.trim() || "";
 
     if (password !== passwordRetyping) {
-      toast.error("Passwords do not match")
+      toast.error(t('auth.passwordsDoNotMatch'));
       setLoading(false);
       return;
     }
@@ -97,14 +116,18 @@ const Signup = () => {
       password: trimmedPassword,
       recaptcha_token: recaptchaToken,
       ...(userType === "locum" && { 
-        industry_type: industryType === 'Other' ? customIndustryType : industryType,
-        professional_role: professionalRole
+        industry_type: getOriginalIndustryValue(industryType, t) === 'Other' ? customIndustryType : getOriginalIndustryValue(industryType, t),
+        professional_role: getOriginalRoleValue(professionalRole, t)
       }),
       ...(userType === "client" && {
         institution_name: institutionName,
-        client_type: clientType,
-        ...(clientType === "Private Clinic/Practice" && { clinic_specialties: clinicSpecialties }),
-        ...(clientType === "Pharmacy" && { pharmacy_type: pharmacyType }),
+        client_type: getOriginalInstitutionValue(clientType, t),
+        ...(getOriginalInstitutionValue(clientType, t) === "Private Clinic/Practice" && { 
+          clinic_specialties: clinicSpecialties.map(specialty => getOriginalSpecialtyValue(specialty, t))
+        }),
+        ...(getOriginalInstitutionValue(clientType, t) === "Pharmacy" && { 
+          pharmacy_type: getOriginalPharmacyValue(pharmacyType, t)
+        }),
       }),
     };
     if (
@@ -117,11 +140,11 @@ const Signup = () => {
         (userType === "locum" && !industryType) ||
         (userType === "locum" && !professionalRole) ||
         (userType === "client" && !clientType) ||
-        (userType === "client" && clientType === "Private Clinic/Practice" && clinicSpecialties.length === 0) ||
-        (userType === "client" && clientType === "Pharmacy" && !pharmacyType) ||
-        (industryType === 'Other' && !customIndustryType)
+        (userType === "client" && getOriginalInstitutionValue(clientType, t) === "Private Clinic/Practice" && clinicSpecialties.length === 0) ||
+        (userType === "client" && getOriginalInstitutionValue(clientType, t) === "Pharmacy" && !pharmacyType) ||
+        (getOriginalIndustryValue(industryType, t) === 'Other' && !customIndustryType)
     ) {
-      toast.error("All fields are required")
+      toast.error(t('auth.allFieldsRequired'))
       setLoading(false);
       return;
     }
@@ -136,7 +159,7 @@ const Signup = () => {
         setStep(2);
       }
     } catch (error) {
-      const message = error?.response?.data?.detail || "Signup failed. Please try again.";
+      const message = error?.response?.data?.detail || t('auth.signupFailed');
       toast.error(message);
     } finally {
       setLoading(false)
@@ -166,7 +189,7 @@ const Signup = () => {
     setResendLoading(true);
     try {
       await resendOtp(userEmail);
-      toast.success("A new OTP has been sent to your email.");
+      toast.success(t('auth.newOtpSent'));
     } catch (error) {
       toast.error(error?.response?.data?.detail);
     } finally {
@@ -304,7 +327,7 @@ const Signup = () => {
                             required
                         >
                           <option value="" disabled>{t('signup.chooseIndustry')}</option>
-                          {industries.map((industry) => (
+                          {translatedIndustries.map((industry) => (
                               <option key={industry} value={industry}>
                                 {industry}
                               </option>
@@ -313,7 +336,7 @@ const Signup = () => {
                       </div>
                     </ScrollAnimate>
 
-                    {industryType && (
+                    {getOriginalIndustryValue(industryType, t) && (
                         <ScrollAnimate delay={640}>
                           <div className="form-group">
                             <label>{t('signup.professionalRole')}</label>
@@ -323,7 +346,7 @@ const Signup = () => {
                                 required
                             >
                               <option value="" disabled>{t('signup.selectRole')}</option>
-                              {professionalRoles[industryType]?.map((role) => (
+                              {translatedProfessionalRoles[industryType]?.map((role) => (
                                   <option key={role} value={role}>
                                     {role}
                                   </option>
@@ -333,7 +356,7 @@ const Signup = () => {
                         </ScrollAnimate>
                     )}
 
-                    {industryType === 'Other' && (
+                    {getOriginalIndustryValue(industryType, t) === 'Other' && (
                         <ScrollAnimate delay={620}>
                           <div className="form-group">
                             <label>{t('signup.specificIndustry')}</label>
@@ -365,7 +388,7 @@ const Signup = () => {
                               required
                           >
                             <option value="" disabled>{t('signup.selectClientType')}</option>
-                            {institutionListType.map((type) => (
+                            {translatedInstitutionTypes.map((type) => (
                                 <option key={type} value={type}>
                                   {type}
                                 </option>
@@ -374,7 +397,7 @@ const Signup = () => {
                         </div>
                       </ScrollAnimate>
 
-                      {clientType === "Private Clinic/Practice" && (
+                      {getOriginalInstitutionValue(clientType, t) === "Private Clinic/Practice" && (
                           <ScrollAnimate delay={640}>
                             <div className="form-group">
                               <label>{t('signup.clinicSpecialties')}</label>
@@ -389,7 +412,7 @@ const Signup = () => {
                                 flexWrap: 'wrap',
                                 gap: '20px'
                               }}>
-                                {clinicSpecialtyOptions.map((specialty) => (
+                                {translatedClinicSpecialties.map((specialty) => (
                                     <div key={specialty} style={{ 
                                       display: 'flex', 
                                       alignItems: 'center',
@@ -436,7 +459,7 @@ const Signup = () => {
                           </ScrollAnimate>
                       )}
 
-                      {clientType === "Pharmacy" && (
+                      {getOriginalInstitutionValue(clientType, t) === "Pharmacy" && (
                           <ScrollAnimate delay={640}>
                             <div className="form-group">
                               <label>{t('signup.pharmacyType')}</label>
@@ -446,7 +469,7 @@ const Signup = () => {
                                   required
                               >
                                 <option value="" disabled>{t('signup.selectPharmacyType')}</option>
-                                {pharmacyTypes.map((type) => (
+                                {translatedPharmacyTypes.map((type) => (
                                     <option key={type} value={type}>
                                       {type}
                                     </option>

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import '../../assets/styles/otp-style.css';
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 const OtpModal = ({ isOpen, onClose, email, onVerify, onResend, resendLoading }) => {
+    const { t } = useTranslation();
     const [otp, setOtp] = useState(new Array(6).fill(""));
 
     const handleChange = (element, index) => {
@@ -19,7 +21,7 @@ const OtpModal = ({ isOpen, onClose, email, onVerify, onResend, resendLoading })
     const handleSubmit = async () => {
         const success = await onVerify(otp.join(""));
         if (success) {
-            toast.success('OTP has been verified');
+            toast.success(t('signup.otpVerifiedSuccess'));
             onClose();
         }
     };
@@ -32,9 +34,9 @@ const OtpModal = ({ isOpen, onClose, email, onVerify, onResend, resendLoading })
     return (
         <div className="otp-modal-overlay">
             <div className="otp-modal">
-                <h2 className="otp-title">Patient Login</h2>
+                <h2 className="otp-title">{t('signup.otpVerification')}</h2>
                 <p className="otp-subtitle">
-                    Enter the OTP sent to <span className="highlight">{email}</span>
+                    {t('signup.otpSentTo')} <span className="highlight">{email}</span>
                 </p>
 
                 <div className="otp-input-group">
@@ -56,7 +58,7 @@ const OtpModal = ({ isOpen, onClose, email, onVerify, onResend, resendLoading })
                         className="otp-link"
                         disabled={resendLoading}
                     >
-                        {resendLoading ? "Sending new OTP..." : "Didn't get OTP? Try another one!"}
+                        {resendLoading ? t('signup.resendingOtp') : t('signup.didntReceiveOtp')}
                     </button>
 
                     <button
@@ -64,7 +66,7 @@ const OtpModal = ({ isOpen, onClose, email, onVerify, onResend, resendLoading })
                         onClick={handleSubmit}
                         disabled={!isOtpComplete}
                     >
-                        Verify
+                        {t('signup.verifyOtp')}
                     </button>
                 </div>
             </div>

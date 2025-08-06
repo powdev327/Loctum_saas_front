@@ -6,11 +6,13 @@ import ScrollAnimate from "../../Components/ScrollAnimate";
 import useResetPassword from "../../hooks/auth/useResetPasswordHook.js";
 import {requestResetPassword} from "../../services/auth/forgotPasswordService.js";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const token = params.get('token');
+  const { t } = useTranslation();
   const {
     newPassword,
     setNewPassword,
@@ -27,11 +29,11 @@ const ResetPassword = () => {
 
   const validatePasswords = () => {
     if (newPassword.length < 8) {
-      setError("Password must be at least 8 characters long.");
+      setError(t('auth.passwordMinLength'));
       return false;
     }
     if (newPassword !== confirmPassword) {
-      toast.error("Passwords do not match ");
+      toast.error(t('auth.passwordsDoNotMatch'));
       return false;
     }
     return true;
@@ -41,24 +43,24 @@ const ResetPassword = () => {
   const handleReset = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
-    setButtonText("Processing...");
+    setButtonText(t('auth.processing'));
 
     if (!validatePasswords()) {
       setIsSubmitting(false);
-      setButtonText("Reset Password");
+      setButtonText(t('auth.resetPassword'));
       return;
     }
 
     try {
       await requestResetPassword(token, newPassword)
-      setButtonText("✅ Password Reset Successfully! Redirecting...");
-      toast.success("Password reset successfully!");
+      setButtonText(t('auth.passwordResetSuccess'));
+      toast.success(t('auth.passwordResetSuccessMessage'));
       setTimeout(() => {
         navigate("/sign-in");
       }, 3000);
     } catch (err) {
       toast.error(error?.response?.data?.detail);
-      setButtonText("Reset Password");
+      setButtonText(t('auth.resetPassword'));
       setIsSubmitting(false);
     }
   };
@@ -67,33 +69,33 @@ const ResetPassword = () => {
     <AuthenticationStyleWrapper>
       <AuthFormWrapper>
         <ScrollAnimate>
-          <h2>Reset Your Password</h2>
-          <h4 className="dm-sans">Enter a new password below 🔒</h4>
+          <h2>{t('auth.resetYourPassword')}</h2>
+          <h4 className="dm-sans">{t('auth.enterNewPassword')}</h4>
         </ScrollAnimate>
 
         <form onSubmit={handleReset}>
           <ScrollAnimate>
             <div className="form-group">
-              <label>New Password</label>
+              <label>{t('auth.newPassword')}</label>
               <input
                 type="password"
                 value={newPassword}
                 required
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Enter new password"
+                placeholder={t('auth.enterNewPasswordPlaceholder')}
               />
             </div>
           </ScrollAnimate>
 
           <ScrollAnimate>
             <div className="form-group">
-              <label>Confirm New Password</label>
+              <label>{t('auth.confirmNewPassword')}</label>
               <input
                 type="password"
                 value={confirmPassword}
                 required
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Re-enter new password"
+                placeholder={t('auth.reenterNewPasswordPlaceholder')}
               />
             </div>
           </ScrollAnimate>

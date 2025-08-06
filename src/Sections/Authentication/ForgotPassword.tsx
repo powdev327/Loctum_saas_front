@@ -6,8 +6,10 @@ import ScrollAnimate from "../../Components/ScrollAnimate";
 import useForgotPassword from "../../hooks/auth/useForgotPasswordHook.js";
 import {requestReset} from "../../services/auth/forgotPasswordService.js";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 const ForgotPassword = () => {
+  const { t } = useTranslation();
   const {
     email,
     setEmail,
@@ -26,7 +28,7 @@ const ForgotPassword = () => {
 
     try {
       await requestReset(email);
-      toast.success('Email sent! Please check your inbox ...', {
+      toast.success(t('auth.emailSentCheckInbox'), {
         duration: 4000,
       })
       setIsSubmitting(false);
@@ -41,21 +43,21 @@ const ForgotPassword = () => {
     <AuthenticationStyleWrapper>
       <AuthFormWrapper>
         <ScrollAnimate>
-          <h2>Hi there!</h2>
-          <h4 className="dm-sans">Reset link will be sent to your email 📨</h4>
+          <h2>{t('auth.hiThere')}</h2>
+          <h4 className="dm-sans">{t('auth.resetLinkWillBeSent')}</h4>
         </ScrollAnimate>
 
         <form onSubmit={handleForgotPasswordSubmit}>
           <ScrollAnimate>
             <div className="form-group">
-              <label>Email address</label>
+              <label>{t('auth.emailAddress')}</label>
               <input
                 value={email}
                 required
                 type="email"
                 name="email"
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="e.g. example@mail.com"
+                placeholder={t('auth.emailPlaceholder')}
               />
             </div>
           </ScrollAnimate>
@@ -69,7 +71,7 @@ const ForgotPassword = () => {
               }`}
               disabled={isSubmitting} // Disables button when submitting
             >
-              {isSubmitting ? "Processing..." : "Send me reset mail"}
+              {isSubmitting ? t('auth.processing') : t('auth.sendResetMail')}
             </button>
           </ScrollAnimate>
 
@@ -77,15 +79,15 @@ const ForgotPassword = () => {
           {showMessage && (
             <ScrollAnimate>
               <p className="text-green-600 text-sm mt-3">
-                ✅ Email sent! Please check your inbox ...
+                {t('auth.emailSentCheckInbox')}
               </p>
             </ScrollAnimate>
           )}
 
           <ScrollAnimate>
             <p className="mt-5">
-              Remember your password?&nbsp;
-              <NavLink to="/sign-in">Log in now!</NavLink>
+              {t('auth.rememberPassword')}&nbsp;
+              <NavLink to="/sign-in">{t('auth.loginNow')}</NavLink>
             </p>
           </ScrollAnimate>
         </form>
