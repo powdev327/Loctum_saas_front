@@ -1,6 +1,7 @@
 import AuthenticationStyleWrapper from "./Authentication.style";
-import AuthRightSection from "./AuthRightSection";
-import AuthFormWrapper from "./AuthFormWrapper";
+import { GoArrowLeft } from "react-icons/go";
+import LogoWhite from "../../assets/images/logo/q-logo.svg";
+import LanguageSwitcher from "../../Components/LanguageSwitcher.jsx";
 import GoogleIcon from "../../assets/images/auth-and-utility/google.svg";
 import FacebookIcon from "../../assets/images/auth-and-utility/facebook.svg";
 import {NavLink, useNavigate} from "react-router-dom";
@@ -45,12 +46,35 @@ const Signin = () => {
 
   return (
     <AuthenticationStyleWrapper>
-      <AuthFormWrapper>
-        <form onSubmit={handleSubmit}>
-          <ScrollAnimate delay={200}>
-            <h2>{t('auth.welcomeBack')}</h2>
-            <h4 className="dm-sans">{t('auth.signInToAccount')}</h4>
-          </ScrollAnimate>
+      <div className={`auth-form-section ${userType === 'locum' ? 'professional-signup' : userType === 'client' ? 'institution-signup' : 'default-signup'}`}>
+        <div className="auth-page-header">
+          <NavLink to="/" className="logo">
+            <ScrollAnimate delay={200}>
+              <img src={LogoWhite} alt="logo" />
+            </ScrollAnimate>
+          </NavLink>
+          <div className="auth-header-actions">
+            <div className="language-switcher-auth">
+              <LanguageSwitcher />
+            </div>
+            <button
+              type="button"
+              className="back-link"
+              onClick={() => navigate("/")}
+            >
+              <ScrollAnimate>
+                <GoArrowLeft />
+                {t('auth.goBack')}
+              </ScrollAnimate>
+            </button>
+          </div>
+        </div>
+        
+        <div className="auth-content">
+          <form onSubmit={handleSubmit}>
+            <ScrollAnimate delay={200}>
+              <h4 className="dm-sans">{t('auth.signInToAccount')}</h4>
+            </ScrollAnimate>
 
           <ScrollAnimate delay={250}>
             <div className="form-group">
@@ -103,22 +127,7 @@ const Signin = () => {
             </button>
           </ScrollAnimate>
 
-          <ScrollAnimate delay={400}>
-            <div className="or-section">
-              <p className="mb-0">{t('auth.or')}</p>
-            </div>
-          </ScrollAnimate>
-
           <ScrollAnimate delay={450}>
-            <button
-              className="secondary-btn"
-              disabled={!userType} // Optional: disable social login until selection
-            >
-              <img src={GoogleIcon} alt="icon" /> {t('auth.loginWithGoogle')}
-            </button>
-          </ScrollAnimate>
-
-          <ScrollAnimate delay={550}>
             <NavLink to="/forgot-password" className="auth-link">
               {t('auth.forgotPassword')}
             </NavLink>
@@ -133,9 +142,25 @@ const Signin = () => {
             </p>
           </ScrollAnimate>
         </form>
-      </AuthFormWrapper>
 
-      <AuthRightSection />
+        {/* Social Login Section */}
+        <ScrollAnimate delay={500}>
+          <div className="social-login-section">
+            <div className="social-login-label">
+              {t('auth.signInWith')}
+            </div>
+            <div className="social-buttons">
+              <button className="social-btn" disabled={!userType}>
+                <img src={GoogleIcon} alt="Google" />
+              </button>
+              <button className="social-btn" disabled={!userType}>
+                <img src={FacebookIcon} alt="Facebook" />
+              </button>
+            </div>
+          </div>
+        </ScrollAnimate>
+        </div>
+      </div>
     </AuthenticationStyleWrapper>
   );
 };

@@ -2,9 +2,10 @@ import React, {useEffect} from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import AuthenticationStyleWrapper from "./Authentication.style";
-import AuthRightSection from "./AuthRightSection";
-import AuthFormWrapper from "./AuthFormWrapper";
 import ScrollAnimate from "../../Components/ScrollAnimate";
+import { GoArrowLeft } from "react-icons/go";
+import LogoWhite from "../../assets/images/logo/q-logo.svg";
+import LanguageSwitcher from "../../Components/LanguageSwitcher.jsx";
 import GoogleIcon from "../../assets/images/auth-and-utility/google.svg";
 import FacebookIcon from "../../assets/images/auth-and-utility/facebook.svg";
 import useSignupForm from "../../hooks/auth/useSignUpHook.js";
@@ -214,52 +215,92 @@ const Signup = () => {
     }
   }, []);
 
+  // Get dynamic class name based on user type
+  const getAuthWrapperClass = () => {
+    if (step === 1) return "default-signup";
+    return userType === "locum" ? "professional-signup" : "institution-signup";
+  };
+
   return (
       <>
       <AuthenticationStyleWrapper>
-        <AuthFormWrapper handleGoBack={handleGoBack} step={step}>
-          <ScrollAnimate delay={200}>
-            <h2>{t('signup.greeting')}</h2>
-            <h4 className="dm-sans">{t('signup.subtitle')}</h4>
-          </ScrollAnimate>
-
-          {step === 1 ? (
-              <div className="space-y-4">
-                <ScrollAnimate delay={250}>
-                  <button
-                      className="secondary-btn"
-                      onClick={() => handleUserTypeSelection("locum")}
-                  >
-{t('signup.signupAsHealthcare')}
-                  </button>
-                </ScrollAnimate>
-                <ScrollAnimate delay={300}>
-                  <button
-                      className="secondary-btn"
-                      onClick={() => handleUserTypeSelection("client")}
-                  >
-{t('signup.signupAsInstitution')}
-                  </button>
-                </ScrollAnimate>
+        <div className={`auth-form-section ${getAuthWrapperClass()}`}>
+          <div className="auth-page-header">
+            <NavLink to="/" className="logo">
+              <ScrollAnimate delay={200}>
+                <img src={LogoWhite} alt="logo" />
+              </ScrollAnimate>
+            </NavLink>
+            <div className="auth-header-actions">
+              <div className="language-switcher-auth">
+                <LanguageSwitcher />
               </div>
+              <button
+                type="button"
+                className="back-link"
+                onClick={() => {
+                  if (step > 1 && handleGoBack) {
+                    handleGoBack();
+                  } else {
+                    navigate("/");
+                  }
+                }}
+              >
+                <ScrollAnimate>
+                  <GoArrowLeft />
+                  {t('auth.goBack')}
+                </ScrollAnimate>
+              </button>
+            </div>
+          </div>
+          
+          <div className="auth-content">
+            {step === 1 && (
+              <ScrollAnimate delay={200}>
+                <h4 className="dm-sans">{t('signup.subtitle')}</h4>
+              </ScrollAnimate>
+            )}
+
+            {step === 1 ? (
+                <div className="category-selection">
+                  <ScrollAnimate delay={250}>
+                    <button
+                        className="category-btn"
+                        onClick={() => handleUserTypeSelection("locum")}
+                    >
+                      <div className="category-content">
+                        <div className="category-icon">
+                          👨‍⚕️
+                        </div>
+                        <div className="category-text">
+                          <h3>{t('signup.signupAsHealthcare')}</h3>
+                          <p>Join as a healthcare professional and find opportunities</p>
+                        </div>
+                      </div>
+                      <div className="category-arrow">→</div>
+                    </button>
+                  </ScrollAnimate>
+                  <ScrollAnimate delay={300}>
+                    <button
+                        className="category-btn"
+                        onClick={() => handleUserTypeSelection("client")}
+                    >
+                      <div className="category-content">
+                        <div className="category-icon">
+                          🏥
+                        </div>
+                        <div className="category-text">
+                          <h3>{t('signup.signupAsInstitution')}</h3>
+                          <p>Register your healthcare institution and find professionals</p>
+                        </div>
+                      </div>
+                      <div className="category-arrow">→</div>
+                    </button>
+                  </ScrollAnimate>
+                </div>
           ) : (
               <form onSubmit={handleSubmit}>
                 <ScrollAnimate delay={350}>
-                  <button className="secondary-btn">
-                    <img src={GoogleIcon} alt="icon" /> {t('signup.signupWithGoogle')}
-                  </button>
-                </ScrollAnimate>
-                <ScrollAnimate delay={400}>
-                  <button className="secondary-btn">
-                    <img src={FacebookIcon} alt="icon" /> {t('signup.signupWithFacebook')}
-                  </button>
-                </ScrollAnimate>
-
-                <ScrollAnimate delay={450}>
-                  <div className="or-section"><p className="mb-0">{t('signup.or')}</p></div>
-                </ScrollAnimate>
-
-                <ScrollAnimate delay={500}>
                   <div className="form-group">
                     <label>{userType === "client" ? t('signup.institutionName') : t('signup.fullName')}</label>
                     <input
@@ -492,33 +533,43 @@ const Signup = () => {
                   </div>
                 </ScrollAnimate>
 
-                <ScrollAnimate delay={720}>
+                <ScrollAnimate delay={700}>
                   {error && <p className="text-red-500">{error}</p>}
-                  <button
-                      type="submit"
-                      className={`form-primary-btn ${loading ? "bg-gray-400 cursor-not-allowed" : ""}`}
-                      disabled={loading}
-                  >
+                  
+                  {/* Inline Social Buttons */}
+                  <div className="social-signup-inline">
+                    <button type="button" className="social-btn-inline" disabled={loading}>
+                    <img src={GoogleIcon} alt="Google" />
+                    </button>
+                    <button type="button" className="social-btn-inline" disabled={loading}>
+                      <img src={FacebookIcon} alt="Facebook" />
+                    </button>
+                      <button
+                        type="submit"
+                        className={`form-primary-btn-compact ${loading ? "bg-gray-400 cursor-not-allowed" : ""}`}
+                        disabled={loading}
+                    >
                     {loading ? t('signup.processing') : t('signup.submit')}
-                  </button>
+                      </button>
+                  </div>
                 </ScrollAnimate>
 
               </form>
           )}
 
-          <ScrollAnimate delay={770}>
-            <p className="mt-5">
-{t('signup.alreadyHaveAccount')} <NavLink to="/sign-in">{t('signup.loginNow')}</NavLink>
-            </p>
-            <p className="mb-0">
-{t('signup.termsAgreement')} <NavLink to="/terms">{t('signup.terms')}</NavLink> {t('signup.and')}{" "}
-              <NavLink to="/privacy-policy">{t('signup.privacyPolicy')}</NavLink>.
-            </p>
-          </ScrollAnimate>
-        </AuthFormWrapper>
 
-        <AuthRightSection />
 
+            <ScrollAnimate delay={770}>
+              <p className="mt-5">
+  {t('signup.alreadyHaveAccount')} <NavLink to="/sign-in">{t('signup.loginNow')}</NavLink>
+              </p>
+              <p className="mb-0">
+  {t('signup.termsAgreement')} <NavLink to="/terms">{t('signup.terms')}</NavLink> {t('signup.and')}{" "}
+                <NavLink to="/privacy-policy">{t('signup.privacyPolicy')}</NavLink>.
+              </p>
+            </ScrollAnimate>
+          </div>
+        </div>
       </AuthenticationStyleWrapper>
         {showOtpModal && (
             <OtpModal

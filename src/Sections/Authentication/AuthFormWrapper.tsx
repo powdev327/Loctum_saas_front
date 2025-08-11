@@ -1,5 +1,5 @@
 import { GoArrowLeft } from "react-icons/go";
-import LogoDark from "../../assets/images/logo/q-logo-dark.svg";
+import LogoWhite from "../../assets/images/logo/q-logo.svg";
 import { NavLink, useNavigate } from "react-router-dom";
 import ScrollAnimate from "../../Components/ScrollAnimate";
 import LanguageSwitcher from "../../Components/LanguageSwitcher.jsx";
@@ -14,7 +14,7 @@ const AuthFormWrapper = ({ children, handleGoBack, step }) => {
       <div className="auth-page-header">
         <NavLink to="/" className="logo">
           <ScrollAnimate delay={200}>
-            <img src={LogoDark} alt="logo" />
+            <img src={LogoWhite} alt="logo" />
           </ScrollAnimate>
         </NavLink>
         <div className="auth-header-actions">
