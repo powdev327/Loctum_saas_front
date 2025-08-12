@@ -65,39 +65,147 @@ const v2Styles = css`
     align-items: center;
     gap: 8px;
     padding: 10px 16px;
-    background: transparent; /* transparent background for the toggle */
-    border: 1px solid ${({ theme }) => theme.colors.blackColor}19;
+    background: transparent;
+    border: none;
     border-radius: 40px;
     color: ${({ theme }) => theme.colors.title};
-    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
     cursor: pointer;
-    transition: 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   .language-toggle:hover {
-    background-color: rgba(255, 255, 255, 0.2); /* slight hover effect */
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .language-toggle-simple {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: transparent;
+    border: 1px solid ${({ theme }) => theme.colors.blackColor}19;
+    border-radius: 8px;
+    color: ${({ theme }) => theme.colors.title};
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 100px;
+  }
+
+  .language-toggle-simple:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: ${({ theme }) => theme.colors.blackColor}33;
+    transform: translateY(-1px);
+  }
+
+  .language-toggle-simple:focus {
+    outline: none;
+    border-color: rgba(102, 126, 234, 0.6);
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+  }
+
+  /* Enhanced styling for glassmorphism theme */
+  .enhanced-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.95);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 140px;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    &:focus {
+      outline: none;
+      border-color: rgba(102, 126, 234, 0.6);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    }
+  }
+
+  .flag-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .flag-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 3px;
+  }
+
+  .language-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+  }
+
+  .language-code {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1;
+  }
+
+  .language-name {
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .dropdown-arrow {
+    width: 16px;
+    height: 16px;
+    color: rgba(255, 255, 255, 0.7);
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    
+    &.open {
+      transform: rotate(180deg);
+    }
   }
 
   .language-switcher .dropdown-menu {
     position: absolute;
-    top: 100%; /* Ensures it appears below the button */
+    top: 100%;
     right: 0;
-    width: 130px;
-    background: ${({ theme }) => theme.colors.background}; /* Match background with header */
+    width: 180px;
+    background: ${({ theme }) => theme.colors.background};
     border: 1px solid ${({ theme }) => theme.colors.border};
     border-radius: 12px;
     box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
-    z-index: 9999; /* Ensures it's above other elements */
-    display: none; /* Hidden by default */
+    z-index: 9999;
+    display: none;
     opacity: 0;
     transform: translateY(-10px);
     transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
   .language-switcher .dropdown-menu.active {
-    display: block; /* Makes it visible when active */
+    display: block;
     opacity: 1;
-    transform: translateY(0); /* Smooth dropdown animation */
+    transform: translateY(0);
   }
 
   .language-switcher .dropdown-menu button {
@@ -118,6 +226,89 @@ const v2Styles = css`
 
   .language-switcher .dropdown-menu button:first-child {
     border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  }
+
+  /* Enhanced dropdown styling for glassmorphism theme */
+  .enhanced-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 200px;
+    background: rgba(20, 25, 35, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.05);
+    z-index: 9999;
+    display: none;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    margin-top: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .enhanced-dropdown.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .language-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    &:hover {
+      background: rgba(102, 126, 234, 0.8);
+    }
+    
+    &.active {
+      background: rgba(102, 126, 234, 0.6);
+    }
+    
+    .language-info {
+      flex: 1;
+    }
+    
+    .language-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.95);
+      line-height: 1.2;
+    }
+    
+    .language-english {
+      font-size: 12px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1;
+      margin-top: 2px;
+    }
+    
+    .check-icon {
+      width: 16px;
+      height: 16px;
+      color: rgba(102, 126, 234, 1);
+      flex-shrink: 0;
+    }
   }
 `;
 
@@ -137,39 +328,147 @@ const HeaderStyleWrapper = styled.header`
     align-items: center;
     gap: 8px;
     padding: 10px 16px;
-    background: transparent; /* transparent background for the toggle */
-    border: 1px solid ${({ theme }) => theme.colors.blackColor}19;
+    background: transparent;
+    border: none;
     border-radius: 40px;
     color: ${({ theme }) => theme.colors.title};
-    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
     cursor: pointer;
-    transition: 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   .language-toggle:hover {
-    background-color: rgba(255, 255, 255, 0.2); /* slight hover effect */
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .language-toggle-simple {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: transparent;
+    border: 1px solid ${({ theme }) => theme.colors.blackColor}19;
+    border-radius: 8px;
+    color: ${({ theme }) => theme.colors.title};
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 100px;
+  }
+
+  .language-toggle-simple:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: ${({ theme }) => theme.colors.blackColor}33;
+    transform: translateY(-1px);
+  }
+
+  .language-toggle-simple:focus {
+    outline: none;
+    border-color: rgba(102, 126, 234, 0.6);
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+  }
+
+  /* Enhanced styling for glassmorphism theme */
+  .enhanced-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.95);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 140px;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    &:focus {
+      outline: none;
+      border-color: rgba(102, 126, 234, 0.6);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    }
+  }
+
+  .flag-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .flag-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 3px;
+  }
+
+  .language-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+  }
+
+  .language-code {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1;
+  }
+
+  .language-name {
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .dropdown-arrow {
+    width: 16px;
+    height: 16px;
+    color: rgba(255, 255, 255, 0.7);
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    
+    &.open {
+      transform: rotate(180deg);
+    }
   }
 
   .language-switcher .dropdown-menu {
     position: absolute;
-    top: 100%; /* Ensures it appears below the button */
+    top: 100%;
     right: 0;
-    width: 130px;
-    background: ${({ theme }) => theme.colors.background}; /* Match background with header */
+    width: 180px;
+    background: ${({ theme }) => theme.colors.background};
     border: 1px solid ${({ theme }) => theme.colors.border};
     border-radius: 12px;
     box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
-    z-index: 9999; /* Ensures it's above other elements */
-    display: none; /* Hidden by default */
+    z-index: 9999;
+    display: none;
     opacity: 0;
     transform: translateY(-10px);
     transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
   .language-switcher .dropdown-menu.active {
-    display: block; /* Makes it visible when active */
+    display: block;
     opacity: 1;
-    transform: translateY(0); /* Smooth dropdown animation */
+    transform: translateY(0);
   }
 
   .language-switcher .dropdown-menu button {
@@ -190,6 +489,89 @@ const HeaderStyleWrapper = styled.header`
 
   .language-switcher .dropdown-menu button:first-child {
     border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  }
+
+  /* Enhanced dropdown styling for glassmorphism theme */
+  .enhanced-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 200px;
+    background: rgba(20, 25, 35, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.05);
+    z-index: 9999;
+    display: none;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    margin-top: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .enhanced-dropdown.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .language-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    &:hover {
+      background: rgba(102, 126, 234, 0.8);
+    }
+    
+    &.active {
+      background: rgba(102, 126, 234, 0.6);
+    }
+    
+    .language-info {
+      flex: 1;
+    }
+    
+    .language-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.95);
+      line-height: 1.2;
+    }
+    
+    .language-english {
+      font-size: 12px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1;
+      margin-top: 2px;
+    }
+    
+    .check-icon {
+      width: 16px;
+      height: 16px;
+      color: rgba(102, 126, 234, 1);
+      flex-shrink: 0;
+    }
   }
 
   .logo-dark {

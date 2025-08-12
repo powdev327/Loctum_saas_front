@@ -1,0 +1,129 @@
+/* Language Switcher Global Styles */
+.language-switcher {
+  position: relative;
+  z-index: 1000;
+}
+
+/* Simple Toggle Button Styling */
+.language-toggle-simple {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.95);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 100px;
+  outline: none;
+}
+
+.language-toggle-simple:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.language-toggle-simple:focus {
+  border-color: rgba(102, 126, 234, 0.6);
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.language-toggle-simple:active {
+  transform: translateY(0);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Flag Container */
+.flag-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.flag-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 2px;
+  display: block;
+}
+
+/* Language Info */
+.language-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.language-code {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1;
+}
+
+.language-name {
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1;
+  margin-top: 1px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .language-toggle-simple {
+    min-width: 80px;
+    padding: 6px 10px;
+    gap: 6px;
+  }
+  
+  .flag-container {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .language-code {
+    font-size: 10px;
+  }
+  
+  .language-name {
+    font-size: 9px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .language-toggle-simple {
+    border-color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .language-code,
+  .language-name {
+    color: rgba(255, 255, 255, 1);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .language-toggle-simple {
+    transition: none;
+  }
+  
+  .language-toggle-simple:hover {
+    transform: none;
+  }
+}

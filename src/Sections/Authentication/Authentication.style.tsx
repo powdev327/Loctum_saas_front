@@ -794,51 +794,48 @@ const AuthenticationStyleWrapper = styled.section`
       gap: 20px;
       
       .language-switcher-auth {
-        transform: scale(0.85);
+        transform: scale(0.9);
         
-        .language-switcher-dropdown {
-          background: rgba(255, 255, 255, 0.08);
-          backdrop-filter: blur(15px);
-          -webkit-backdrop-filter: blur(15px);
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          border-radius: 6px;
-          box-shadow: 
-            0 3px 12px rgba(0, 0, 0, 0.2),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        /* Override default language switcher styling for auth pages */
+        .language-toggle-simple {
+          background: rgba(255, 255, 255, 0.05) !important;
+          backdrop-filter: blur(10px) !important;
+          -webkit-backdrop-filter: blur(10px) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          border-radius: 6px !important;
+          padding: 6px 10px !important;
+          min-width: 90px !important;
           
-          .dropdown-toggle {
-            color: rgba(255, 255, 255, 0.9);
-            background: transparent;
-            border: none;
-            padding: 6px 10px;
-            font-size: 13px;
-            
-            &:hover {
-              background: rgba(255, 255, 255, 0.1);
-              color: rgba(255, 255, 255, 0.95);
-            }
+          &:hover {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: rgba(255, 255, 255, 0.2) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
           }
           
-          .dropdown-menu {
-            background: rgba(30, 30, 30, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 6px;
-            box-shadow: 
-              0 6px 20px rgba(0, 0, 0, 0.3),
-              inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            
-            .dropdown-item {
-              color: rgba(255, 255, 255, 0.8);
-              font-size: 13px;
-              padding: 6px 10px;
-              
-              &:hover {
-                background: rgba(102, 126, 234, 0.2);
-                color: rgba(255, 255, 255, 0.95);
-              }
-            }
+          &:focus {
+            border-color: rgba(102, 126, 234, 0.6) !important;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2) !important;
+          }
+          
+          &:active {
+            transform: translateY(0) !important;
+            background: rgba(255, 255, 255, 0.12) !important;
+          }
+          
+          .flag-container {
+            width: 16px !important;
+            height: 16px !important;
+          }
+          
+          .language-code {
+            font-size: 10px !important;
+            font-weight: 600 !important;
+          }
+          
+          .language-name {
+            font-size: 9px !important;
+            font-weight: 400 !important;
           }
         }
       }
