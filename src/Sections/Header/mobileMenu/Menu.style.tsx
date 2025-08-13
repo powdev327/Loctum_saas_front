@@ -45,6 +45,38 @@ const MobileMenuStyleWrapper = styled.div`
       font-weight: 500;
       font-size: 15px;
     }
+
+    .nav-link-btn {
+      background: none;
+      border: none;
+      border-bottom: 1px solid ${({ theme }) => theme.colors.blackColor}26;
+      display: block;
+      text-transform: capitalize;
+      color: ${({ theme }) => theme.colors.title};
+      line-height: 20px;
+      padding: 16px 0;
+      width: 100%;
+      transition: 0.3s;
+      font-weight: 500;
+      font-size: 15px;
+      text-align: left;
+      cursor: pointer;
+      outline: none;
+
+      &:hover {
+        color: ${({ theme }) => theme.colors.primaryColor};
+        background: rgba(0, 134, 229, 0.05);
+      }
+
+      &:focus {
+        outline: none;
+        color: ${({ theme }) => theme.colors.primaryColor};
+      }
+
+      &:active {
+        color: ${({ theme }) => theme.colors.primaryColor};
+      }
+    }
     li li a,
     li li button {
       border-bottom: 1px solid transparent;
