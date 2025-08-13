@@ -110,77 +110,75 @@ const FooterStyleWrapper = styled.footer`
 
     .footer-language-switcher-wrapper {
       .footer-language-switcher {
-        .relative {
-          position: relative;
+        .footer-language-toggle {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          background: transparent;
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          border-radius: 6px;
+          padding: 8px 12px;
+          color: ${({ theme }) => theme.colors.textColor};
+          transition: all 0.3s ease;
+          cursor: pointer;
+          outline: none;
+          min-width: 100px;
           
-          button {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            padding: 8px 12px;
-            color: ${({ theme }) => theme.colors.textColor};
-            transition: all 0.2s ease;
-            
-            &:hover {
-              border-color: rgba(255, 255, 255, 0.4);
-              color: ${({ theme }) => theme.colors.whiteColor};
-            }
-            
-            img {
-              width: 16px;
-              height: 16px;
-              border-radius: 2px;
-            }
-            
-            span {
-              font-size: 12px;
-              font-weight: 600;
-              text-transform: uppercase;
-            }
-            
-            svg {
-              width: 12px;
-              height: 12px;
-            }
+          &:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+            color: ${({ theme }) => theme.colors.whiteColor};
+            transform: translateY(-1px);
           }
           
-          > div {
-            position: absolute;
-            bottom: 100%;
-            left: 0;
-            margin-bottom: 8px;
-            background: ${({ theme }) => theme.colors.whiteColor};
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            min-width: 120px;
-            z-index: 50;
+          &:focus {
+            border-color: rgba(102, 126, 234, 0.6);
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+          }
+          
+          &:active {
+            transform: translateY(0);
+            background: rgba(255, 255, 255, 0.08);
+          }
+          
+          .footer-flag-image {
+            width: 16px;
+            height: 16px;
+            border-radius: 2px;
+            object-fit: cover;
+          }
+          
+          .footer-language-code {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: ${({ theme }) => theme.colors.textColor};
+            line-height: 1;
+          }
+          
+          .footer-language-name {
+            font-size: 10px;
+            font-weight: 400;
+            color: ${({ theme }) => theme.colors.textColor}CC;
+            line-height: 1;
+          }
+          
+          @media (max-width: 768px) {
+            min-width: 80px;
+            padding: 6px 10px;
+            gap: 6px;
             
-            button {
-              background: transparent;
-              border: none;
-              padding: 8px 12px;
-              color: ${({ theme }) => theme.colors.title};
-              font-size: 12px;
-              
-              &:hover {
-                background: rgba(0, 0, 0, 0.05);
-                color: ${({ theme }) => theme.colors.title};
-              }
-              
-              &:first-child {
-                border-radius: 6px 6px 0 0;
-              }
-              
-              &:last-child {
-                border-radius: 0 0 6px 6px;
-              }
-              
-              img {
-                width: 16px;
-                height: 16px;
-                border-radius: 2px;
-              }
+            .footer-flag-image {
+              width: 14px;
+              height: 14px;
+            }
+            
+            .footer-language-code {
+              font-size: 10px;
+            }
+            
+            .footer-language-name {
+              font-size: 9px;
             }
           }
         }

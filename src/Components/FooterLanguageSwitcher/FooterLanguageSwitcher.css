@@ -1,0 +1,120 @@
+/* Footer Language Switcher Styles */
+.footer-language-switcher {
+  display: inline-block;
+}
+
+.footer-language-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+  min-width: 100px;
+}
+
+.footer-language-toggle:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.footer-language-toggle:focus {
+  border-color: rgba(102, 126, 234, 0.6);
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.footer-language-toggle:active {
+  transform: translateY(0);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.footer-flag-image {
+  width: 16px;
+  height: 16px;
+  object-fit: cover;
+  border-radius: 2px;
+  display: block;
+}
+
+.footer-language-code {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1;
+}
+
+.footer-language-name {
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1;
+}
+
+/* Light theme support */
+.footer-language-switcher.light-theme .footer-language-toggle {
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.footer-language-switcher.light-theme .footer-language-toggle:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.footer-language-switcher.light-theme .footer-language-code {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.footer-language-switcher.light-theme .footer-language-name {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .footer-language-toggle {
+    min-width: 80px;
+    padding: 6px 10px;
+    gap: 6px;
+  }
+  
+  .footer-flag-image {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .footer-language-code {
+    font-size: 10px;
+  }
+  
+  .footer-language-name {
+    font-size: 9px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .footer-language-toggle {
+    border-color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.05);
+  }
+  
+  .footer-language-code,
+  .footer-language-name {
+    color: rgba(255, 255, 255, 1);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .footer-language-toggle {
+    transition: none;
+  }
+  
+  .footer-language-toggle:hover {
+    transform: none;
+  }
+}
