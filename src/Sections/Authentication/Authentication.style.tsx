@@ -769,15 +769,9 @@ const AuthenticationStyleWrapper = styled.section`
       display: inline-block;
       padding: 6px 10px;
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
       transition: all 0.3s ease;
       
       &:hover {
-        background: rgba(255, 255, 255, 0.12);
-        border-color: rgba(255, 255, 255, 0.2);
         transform: translateY(-1px);
       }
       
@@ -853,15 +847,9 @@ const AuthenticationStyleWrapper = styled.section`
       transition: all 0.3s ease;
       padding: 6px 10px;
       border-radius: 6px;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
       cursor: pointer;
       &:hover {
         color: rgba(255, 255, 255, 0.95);
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.2);
       }
       svg {
         font-size: 16px;
