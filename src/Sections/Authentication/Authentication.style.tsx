@@ -855,6 +855,12 @@ const AuthenticationStyleWrapper = styled.section`
         font-size: 16px;
         color: inherit;
       }
+      
+      .back-link-text {
+        @media (max-width: 768px) {
+          display: none;
+        }
+      }
     }
   }
   

@@ -34,7 +34,7 @@ const AuthFormWrapper = ({ children, handleGoBack, step }) => {
           >
             <ScrollAnimate>
               <GoArrowLeft />
-              {t('auth.goBack')}
+              <span className="back-link-text">{t('auth.goBack')}</span>
             </ScrollAnimate>
           </button>
         </div>

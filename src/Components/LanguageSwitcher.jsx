@@ -48,9 +48,6 @@ const LanguageSwitcher = () => {
             }}
           />
         </div>
-        <div className="language-info">
-          <span className="language-code">{currentLanguage.code}</span>
-        </div>
       </button>
     </div>
   );
