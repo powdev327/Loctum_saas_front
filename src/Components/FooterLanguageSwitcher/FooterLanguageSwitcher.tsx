@@ -47,7 +47,6 @@ const FooterLanguageSwitcher: React.FC = () => {
           }}
         />
         <span className="footer-language-code">{currentLanguage.code}</span>
-        <span className="footer-language-name">{currentLanguage.nativeName}</span>
       </button>
     </div>
   );

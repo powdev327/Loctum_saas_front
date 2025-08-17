@@ -149,22 +149,15 @@ const FooterStyleWrapper = styled.footer`
           }
           
           .footer-language-code {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
             color: ${({ theme }) => theme.colors.textColor};
             line-height: 1;
           }
           
-          .footer-language-name {
-            font-size: 10px;
-            font-weight: 400;
-            color: ${({ theme }) => theme.colors.textColor}CC;
-            line-height: 1;
-          }
-          
           @media (max-width: 768px) {
-            min-width: 80px;
+            min-width: 60px;
             padding: 6px 10px;
             gap: 6px;
             
@@ -174,11 +167,7 @@ const FooterStyleWrapper = styled.footer`
             }
             
             .footer-language-code {
-              font-size: 10px;
-            }
-            
-            .footer-language-name {
-              font-size: 9px;
+              font-size: 11px;
             }
           }
         }
