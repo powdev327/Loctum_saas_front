@@ -469,7 +469,7 @@ const AuthenticationStyleWrapper = styled.section`
       font-size: 15px;
       line-height: 1.4;
       color: rgba(255, 255, 255, 0.95);
-      cursor: pointer;
+      cursor: pointer !important;
       transition: all 0.3s ease;
       box-shadow: 
         0 4px 15px rgba(102, 126, 234, 0.3),
@@ -477,6 +477,7 @@ const AuthenticationStyleWrapper = styled.section`
         0 0 0 1px rgba(255, 255, 255, 0.05);
       margin-top: 8px;
       &:hover {
+        cursor: pointer !important;
         transform: translateY(-2px);
         background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
         box-shadow: 
@@ -510,7 +511,7 @@ const AuthenticationStyleWrapper = styled.section`
       font-size: 14px;
       line-height: 1.4;
       color: rgba(255, 255, 255, 0.95);
-      cursor: pointer;
+      cursor: pointer !important;
       transition: all 0.3s ease;
       box-shadow: 
         0 4px 15px rgba(102, 126, 234, 0.3),
@@ -518,6 +519,7 @@ const AuthenticationStyleWrapper = styled.section`
         0 0 0 1px rgba(255, 255, 255, 0.05);
       margin-top: 0;
       &:hover {
+        cursor: pointer !important;
         transform: translateY(-2px);
         background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
         box-shadow: 
@@ -552,7 +554,7 @@ const AuthenticationStyleWrapper = styled.section`
       height: 48px;
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 10px;
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 1);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       display: flex;
@@ -560,10 +562,11 @@ const AuthenticationStyleWrapper = styled.section`
       justify-content: center;
       cursor: pointer;
       transition: all 0.3s ease;
+      opacity: 1;
       
       &:hover {
         border-color: rgba(102, 126, 234, 0.6);
-        background: rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 1);
         transform: translateY(-2px);
         box-shadow: 
           0 4px 15px rgba(102, 126, 234, 0.2),
@@ -648,7 +651,7 @@ const AuthenticationStyleWrapper = styled.section`
           height: 50px;
           border: 1px solid rgba(255, 255, 255, 0.15);
           border-radius: 12px;
-          background: rgba(255, 255, 255, 0.08);
+          background: rgba(255, 255, 255, 1);
           backdrop-filter: blur(10px);
           -webkit-backdrop-filter: blur(10px);
           display: flex;
@@ -656,10 +659,11 @@ const AuthenticationStyleWrapper = styled.section`
           justify-content: center;
           cursor: pointer;
           transition: all 0.3s ease;
+          opacity: 1;
           
           &:hover {
             border-color: rgba(102, 126, 234, 0.6);
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 1);
             transform: translateY(-2px);
             box-shadow: 
               0 4px 15px rgba(102, 126, 234, 0.2),
@@ -720,14 +724,14 @@ const AuthenticationStyleWrapper = styled.section`
       font-size: 14px;
       line-height: 1.5;
       text-decoration: none !important;
-      color: rgba(102, 126, 234, 0.8);
+      color: rgb(12 213 255 / 80%);
       margin-bottom: 20px;
       transition: all 0.3s ease;
-      text-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+      text-shadow: 0 0 10px rgb(12 213 255 / 30%);
       &:hover {
-        color: rgba(118, 75, 162, 0.9);
+        color: rgb(12 213 255 / 100%);
         text-decoration: underline !important;
-        text-shadow: 0 0 15px rgba(118, 75, 162, 0.4);
+        text-shadow: 0 0 15px rgb(12 213 255 / 50%);
       }
     }
     p {
@@ -743,14 +747,14 @@ const AuthenticationStyleWrapper = styled.section`
         font-size: 14px;
         line-height: 1.5;
         text-decoration: none !important;
-        color: rgba(102, 126, 234, 0.8);
+        color: rgb(12 213 255 / 80%);
         margin-bottom: 0px;
         transition: all 0.3s ease;
-        text-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        text-shadow: 0 0 10px rgb(12 213 255 / 30%);
         &:hover {
-          color: rgba(118, 75, 162, 0.9);
+          color: rgb(12 213 255 / 100%);
           text-decoration: underline !important;
-          text-shadow: 0 0 15px rgba(118, 75, 162, 0.4);
+          text-shadow: 0 0 15px rgb(12 213 255 / 50%);
         }
       }
     }
