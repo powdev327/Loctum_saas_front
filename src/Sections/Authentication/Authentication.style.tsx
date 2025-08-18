@@ -27,6 +27,32 @@ const AuthenticationStyleWrapper = styled.section`
       opacity: 0.8;
     }
   }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 1;
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+      opacity: 0.12;
+    }
+    33% {
+      transform: translateY(-10px) rotate(1deg);
+      opacity: 0.18;
+    }
+    66% {
+      transform: translateY(-5px) rotate(-1deg);
+      opacity: 0.15;
+    }
+  }
   
   &::before {
     content: '';
@@ -172,49 +198,78 @@ const AuthenticationStyleWrapper = styled.section`
     &.professional-signup::after {
       content: "";
       position: absolute;
-      top: 50px;
-      right: -50px;
-      width: 400px;
-      height: 400px;
-      background: linear-gradient(135deg, rgba(108, 117, 125, 0.04) 0%, rgba(173, 181, 189, 0.02) 100%);
+      top: 30px;
+      right: -80px;
+      width: 500px;
+      height: 500px;
+      background: 
+        radial-gradient(circle at 65% 45%, rgba(255, 107, 107, 0.1) 0%, transparent 30%),
+        radial-gradient(circle, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.04) 50%, transparent 100%);
       border-radius: 50%;
       pointer-events: none;
       z-index: 0;
+      animation: pulse 4s infinite ease-in-out;
     }
     
     &.professional-signup::before {
-      content: "👨‍⚕️";
+      content: "";
       position: absolute;
-      top: 180px;
-      right: 80px;
-      font-size: 140px;
-      opacity: 0.06;
+      top: 100px;
+      right: 20px;
+      width: 200px;
+      height: 200px;
+      background: 
+        radial-gradient(circle at 50% 35%, rgba(102, 126, 234, 0.3) 0%, transparent 25%),
+        radial-gradient(circle at 50% 55%, rgba(255, 255, 255, 0.8) 0%, transparent 35%),
+        radial-gradient(circle at 45% 70%, rgba(255, 107, 107, 0.4) 0%, transparent 15%),
+        radial-gradient(circle at 55% 70%, rgba(255, 107, 107, 0.4) 0%, transparent 15%),
+        linear-gradient(45deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+      border-radius: 50%;
+      opacity: 0.15;
       pointer-events: none;
-      z-index: 0;
+      z-index: 1;
+      animation: float 6s infinite ease-in-out;
     }
 
     &.institution-signup::after {
       content: "";
       position: absolute;
-      top: 50px;
-      right: -50px;
-      width: 400px;
-      height: 400px;
-      background: linear-gradient(135deg, rgba(108, 117, 125, 0.04) 0%, rgba(173, 181, 189, 0.02) 100%);
+      top: 30px;
+      right: -80px;
+      width: 500px;
+      height: 500px;
+      background: 
+        radial-gradient(circle at 75% 35%, rgba(79, 172, 254, 0.08) 0%, transparent 25%),
+        radial-gradient(circle, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.04) 50%, transparent 100%);
       border-radius: 50%;
       pointer-events: none;
       z-index: 0;
+      animation: pulse 5s infinite ease-in-out;
     }
     
     &.institution-signup::before {
-      content: "🏥";
+      content: "";
       position: absolute;
-      top: 180px;
-      right: 80px;
-      font-size: 140px;
-      opacity: 0.06;
+      top: 90px;
+      right: 30px;
+      width: 180px;
+      height: 220px;
+      background: 
+        linear-gradient(90deg, rgba(102, 126, 234, 0.2) 40%, rgba(102, 126, 234, 0.3) 60%),
+        linear-gradient(90deg, rgba(102, 126, 234, 0.15) 20%, rgba(102, 126, 234, 0.2) 30%),
+        linear-gradient(90deg, rgba(102, 126, 234, 0.15) 70%, rgba(102, 126, 234, 0.2) 80%),
+        radial-gradient(circle at 50% 25%, rgba(255, 107, 107, 0.6) 0%, transparent 8%),
+        radial-gradient(circle at 45% 25%, rgba(255, 107, 107, 0.4) 0%, transparent 5%),
+        radial-gradient(circle at 55% 25%, rgba(255, 107, 107, 0.4) 0%, transparent 5%),
+        linear-gradient(180deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+      border-radius: 8px;
+      opacity: 0.12;
       pointer-events: none;
-      z-index: 0;
+      z-index: 1;
+      animation: float 5s infinite ease-in-out;
+      box-shadow: 
+        inset 0 -2px 4px rgba(255, 255, 255, 0.1),
+        0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     &.default-signup::after {

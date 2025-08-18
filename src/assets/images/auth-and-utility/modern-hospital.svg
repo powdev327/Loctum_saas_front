@@ -1,0 +1,105 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="buildingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:0.8"/>
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:0.8"/>
+    </linearGradient>
+    <linearGradient id="modernBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4facfe;stop-opacity:0.9"/>
+      <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:0.9"/>
+    </linearGradient>
+    <linearGradient id="warmGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff9a9e;stop-opacity:0.8"/>
+      <stop offset="100%" style="stop-color:#fecfef;stop-opacity:0.8"/>
+    </linearGradient>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <circle cx="100" cy="100" r="90" fill="url(#buildingGradient)" opacity="0.1"/>
+  <circle cx="100" cy="100" r="70" fill="url(#buildingGradient)" opacity="0.05"/>
+  
+  <!-- Main Hospital Building -->
+  <rect x="70" y="80" width="60" height="90" rx="5" fill="url(#buildingGradient)" opacity="0.8"/>
+  
+  <!-- Hospital Cross -->
+  <rect x="95" y="95" width="10" height="30" fill="url(#warmGradient)" filter="url(#softGlow)"/>
+  <rect x="85" y="105" width="30" height="10" fill="url(#warmGradient)" filter="url(#softGlow)"/>
+  
+  <!-- Modern Windows -->
+  <rect x="75" y="85" width="8" height="8" rx="2" fill="url(#modernBlue)" opacity="0.7">
+    <animate attributeName="opacity" values="0.7;1;0.7" dur="4s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="87" y="85" width="8" height="8" rx="2" fill="url(#modernBlue)" opacity="0.5">
+    <animate attributeName="opacity" values="0.5;0.9;0.5" dur="3.5s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="105" y="85" width="8" height="8" rx="2" fill="url(#modernBlue)" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;1;0.8" dur="3s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="117" y="85" width="8" height="8" rx="2" fill="url(#modernBlue)" opacity="0.6">
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="4.5s" repeatCount="indefinite"/>
+  </rect>
+  
+  <!-- Second Floor Windows -->
+  <rect x="75" y="130" width="8" height="8" rx="2" fill="url(#modernBlue)" opacity="0.6">
+    <animate attributeName="opacity" values="0.6;0.9;0.6" dur="3.8s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="87" y="130" width="8" height="8" rx="2" fill="url(#modernBlue)" opacity="0.7">
+    <animate attributeName="opacity" values="0.7;1;0.7" dur="2.8s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="105" y="130" width="8" height="8" rx="2" fill="url(#modernBlue)" opacity="0.5">
+    <animate attributeName="opacity" values="0.5;0.8;0.5" dur="4.2s" repeatCount="indefinite"/>
+  </rect>
+  <rect x="117" y="130" width="8" height="8" rx="2" fill="url(#modernBlue)" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;1;0.8" dur="3.2s" repeatCount="indefinite"/>
+  </rect>
+  
+  <!-- Modern Entrance -->
+  <rect x="85" y="150" width="30" height="20" rx="3" fill="rgba(255,255,255,0.9)" opacity="0.8"/>
+  <rect x="95" y="155" width="10" height="15" rx="2" fill="url(#modernBlue)" opacity="0.6"/>
+  
+  <!-- Side Wings -->
+  <rect x="50" y="100" width="25" height="70" rx="3" fill="url(#buildingGradient)" opacity="0.6"/>
+  <rect x="125" y="100" width="25" height="70" rx="3" fill="url(#buildingGradient)" opacity="0.6"/>
+  
+  <!-- Side Wing Windows -->
+  <rect x="55" y="110" width="6" height="6" rx="1" fill="url(#modernBlue)" opacity="0.5"/>
+  <rect x="65" y="110" width="6" height="6" rx="1" fill="url(#modernBlue)" opacity="0.6"/>
+  <rect x="55" y="125" width="6" height="6" rx="1" fill="url(#modernBlue)" opacity="0.7"/>
+  <rect x="65" y="125" width="6" height="6" rx="1" fill="url(#modernBlue)" opacity="0.5"/>
+  
+  <rect x="130" y="110" width="6" height="6" rx="1" fill="url(#modernBlue)" opacity="0.6"/>
+  <rect x="140" y="110" width="6" height="6" rx="1" fill="url(#modernBlue)" opacity="0.7"/>
+  <rect x="130" y="125" width="6" height="6" rx="1" fill="url(#modernBlue)" opacity="0.5"/>
+  <rect x="140" y="125" width="6" height="6" rx="1" fill="url(#modernBlue)" opacity="0.8"/>
+  
+  <!-- Floating Care Symbols -->
+  <path d="M35 70 Q40 65 45 70 Q50 75 45 80 Q40 75 35 70" fill="url(#warmGradient)" opacity="0.4">
+    <animateTransform attributeName="transform" type="rotate" values="0 40 72.5;360 40 72.5" dur="10s" repeatCount="indefinite"/>
+  </path>
+  
+  <circle cx="160" cy="60" r="4" fill="url(#warmGradient)" opacity="0.5">
+    <animate attributeName="cy" values="60;55;60" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  
+  <circle cx="40" cy="140" r="3" fill="url(#modernBlue)" opacity="0.4">
+    <animate attributeName="cy" values="140;135;140" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Modern Tech Elements -->
+  <circle cx="165" cy="130" r="2" fill="url(#modernBlue)" opacity="0.6">
+    <animate attributeName="r" values="2;4;2" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Heartbeat Monitor Line -->
+  <path d="M20 180 L40 180 L45 175 L50 185 L55 170 L60 190 L65 180 L180 180" 
+        stroke="url(#warmGradient)" stroke-width="2" fill="none" opacity="0.5" filter="url(#softGlow)">
+    <animate attributeName="stroke-dasharray" values="0,220;220,0" dur="4s" repeatCount="indefinite"/>
+  </path>
+</svg>

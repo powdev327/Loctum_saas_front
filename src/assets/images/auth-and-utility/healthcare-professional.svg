@@ -1,0 +1,58 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="modernGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:0.8"/>
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:0.8"/>
+    </linearGradient>
+    <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:0.9"/>
+      <stop offset="100%" style="stop-color:#ee5a52;stop-opacity:0.9"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="100" cy="100" r="90" fill="url(#modernGradient1)" opacity="0.1"/>
+  <circle cx="100" cy="100" r="75" fill="url(#modernGradient1)" opacity="0.05"/>
+  
+  <!-- Doctor Figure -->
+  <!-- Head -->
+  <circle cx="100" cy="70" r="25" fill="url(#modernGradient1)" opacity="0.8"/>
+  
+  <!-- Body -->
+  <rect x="80" y="90" width="40" height="55" rx="8" fill="url(#modernGradient1)" opacity="0.8"/>
+  
+  <!-- White Coat -->
+  <rect x="75" y="95" width="50" height="50" rx="10" fill="rgba(255,255,255,0.9)" opacity="0.8"/>
+  
+  <!-- Stethoscope -->
+  <path d="M85 105 Q90 100 95 105 Q100 110 105 105 Q110 100 115 105" stroke="url(#modernGradient1)" stroke-width="3" fill="none" opacity="0.9"/>
+  <circle cx="115" cy="105" r="4" fill="url(#modernGradient1)" opacity="0.9"/>
+  
+  <!-- Medical Cross -->
+  <rect x="95" y="115" width="10" height="3" fill="url(#heartGradient)" filter="url(#glow)"/>
+  <rect x="98.5" y="111.5" width="3" height="10" fill="url(#heartGradient)" filter="url(#glow)"/>
+  
+  <!-- Floating Elements -->
+  <circle cx="140" cy="80" r="3" fill="url(#heartGradient)" opacity="0.6">
+    <animate attributeName="cy" values="80;75;80" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="60" cy="120" r="2" fill="url(#modernGradient1)" opacity="0.4">
+    <animate attributeName="cy" values="120;115;120" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="130" cy="140" r="2.5" fill="url(#heartGradient)" opacity="0.5">
+    <animate attributeName="cy" values="140;135;140" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Heartbeat Line -->
+  <path d="M40 160 L60 160 L65 150 L70 170 L75 140 L80 180 L85 160 L160 160" 
+        stroke="url(#heartGradient)" stroke-width="2" fill="none" opacity="0.6" filter="url(#glow)">
+    <animate attributeName="stroke-dasharray" values="0,200;200,0" dur="3s" repeatCount="indefinite"/>
+  </path>
+</svg>
