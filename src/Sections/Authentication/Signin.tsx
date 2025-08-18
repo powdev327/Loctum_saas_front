@@ -118,19 +118,21 @@ const Signin = () => {
           </ScrollAnimate>
 
           <ScrollAnimate delay={400}>
-            <button
-              type="submit"
-              className="form-primary-btn"
-              disabled={!userType}
-            >
-              {t('auth.signIn')}
-            </button>
+            <div className="signin-button-container">
+              <button
+                type="submit"
+                className="form-primary-btn-half"
+                disabled={!userType}
+              >
+                {t('auth.signIn')}
+              </button>
+              <NavLink to="/forgot-password" className="auth-link">
+                {t('auth.forgotPassword')}
+              </NavLink>
+            </div>
           </ScrollAnimate>
 
           <ScrollAnimate delay={450}>
-            <NavLink to="/forgot-password" className="auth-link">
-              {t('auth.forgotPassword')}
-            </NavLink>
             <p className="mt-3">
               {t('auth.dontHaveAccount')}{" "}
               <NavLink to="/sign-up">{t('auth.registerNow')}</NavLink>
@@ -150,10 +152,10 @@ const Signin = () => {
               {t('auth.signInWith')}
             </div>
             <div className="social-buttons">
-              <button className="social-btn" disabled={!userType}>
+              <button className="social-btn">
                 <img src={GoogleIcon} alt="Google" />
               </button>
-              <button className="social-btn" disabled={!userType}>
+              <button className="social-btn">
                 <img src={FacebookIcon} alt="Facebook" />
               </button>
             </div>

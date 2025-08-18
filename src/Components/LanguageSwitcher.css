@@ -9,16 +9,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 6px;
+  padding: 2px 4px;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
+  border-radius: 4px;
   color: rgba(255, 255, 255, 0.95);
   cursor: pointer;
   transition: all 0.3s ease;
   width: fit-content;
+  min-width: auto;
   outline: none;
 }
 
@@ -44,8 +45,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 15px;
+  width: 32px;
+  height: 16px;
   border-radius: 2px;
   overflow: hidden;
   flex-shrink: 0;
@@ -62,12 +63,12 @@
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   .language-toggle-simple {
-    padding: 3px 5px;
+    padding: 2px 3px;
   }
   
   .flag-container {
-    width: 26px;
-    height: 13px;
+    width: 28px;
+    height: 14px;
   }
 }
 

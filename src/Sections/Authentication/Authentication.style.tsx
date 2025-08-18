@@ -499,6 +499,71 @@ const AuthenticationStyleWrapper = styled.section`
       }
     }
 
+    .form-primary-btn-half {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 14px 20px;
+      width: 50%;
+      font-weight: 700;
+      font-size: 15px;
+      line-height: 1.4;
+      color: rgba(255, 255, 255, 0.95);
+      cursor: pointer !important;
+      transition: all 0.3s ease;
+      box-shadow: 
+        0 4px 15px rgba(102, 126, 234, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+      margin-top: 8px;
+      &:hover {
+        cursor: pointer !important;
+        transform: translateY(-2px);
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+        box-shadow: 
+          0 8px 25px rgba(102, 126, 234, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.3),
+          0 0 0 1px rgba(255, 255, 255, 0.1);
+      }
+      &:active {
+        transform: translateY(0);
+      }
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+        background: rgba(108, 117, 125, 0.3);
+        box-shadow: 
+          0 4px 15px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      }
+    }
+    
+    .signin-button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin-top: 8px;
+      
+      .form-primary-btn-half {
+        align-self: center;
+      }
+      
+      .auth-link {
+        margin-bottom: 0;
+        text-align: center;
+      }
+      
+      @media (max-width: 768px) {
+        .form-primary-btn-half {
+          width: 100%;
+        }
+      }
+    }
+
     .form-primary-btn-compact {
       background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%);
       backdrop-filter: blur(20px);
@@ -880,6 +945,7 @@ const AuthenticationStyleWrapper = styled.section`
     gap: 16px;
     margin: 0;
     justify-content: center;
+    align-items: center;
     
     .category-btn {
       display: flex;
